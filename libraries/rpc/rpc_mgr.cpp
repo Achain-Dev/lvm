@@ -28,7 +28,7 @@ void RpcMgr::start() {
     _rpc_server.listen(_end_point);
     _receive_msg_thread_ptr->async([&]() {
         this->accept_loop();
-    }).wait();
+    });
 }
 
 void RpcMgr::set_endpoint(std::string& ip_addr, int port) {
