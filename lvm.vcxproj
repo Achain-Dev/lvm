@@ -1,0 +1,347 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="14.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="GRBit|Win32">
+      <Configuration>GRBit</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="GRBit|x64">
+      <Configuration>GRBit</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{1E8D5CD5-1494-4BAB-9E22-316E3F214DBA}</ProjectGuid>
+    <RootNamespace>GRBit</RootNamespace>
+    <WindowsTargetPlatformVersion>8.1</WindowsTargetPlatformVersion>
+    <ProjectName>lvm</ProjectName>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v140</PlatformToolset>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='GRBit|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v140</PlatformToolset>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v120</PlatformToolset>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='GRBit|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v120</PlatformToolset>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v140</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v120</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='GRBit|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='GRBit|x64'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup />
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>Disabled</Optimization>
+      <SDLCheck>true</SDLCheck>
+      <AdditionalIncludeDirectories>D:\projects\goopal3.0\20160826\libraries\include;D:\projects\goopal3.0\20160826\libraries\include\lua;D:\GRBit_ver1\boost_1.55.x64;D:\GRBit_ver1\fc\include;D:\GRBit_ver1\grbit\libraries\blockchain\include;D:\GRBit_ver1\leveldb\include;D:\GRBit_ver1\db\include;D:\GRBit_ver1\include;D:\GRBit_ver1\grbit\libraries\utilities\include;D:\GRBit_ver1\grbit\libraries\wallet\include;D:\GRBit_ver1\grbit\libraries\cli\include;D:\GRBit_ver1\vendor\miniupnp;D:\GRBit_ver1\grbit\libraries\net\include;D:\GRBit_ver1\grbit\libraries\client\include;D:\GRBit_ver1\grbit\libraries\api\include;D:\GRBit_ver1\grbit\libraries\rpc\include;D:\GRBit_ver1\grbit\libraries\rpc_stubs\include</AdditionalIncludeDirectories>
+    </ClCompile>
+    <Link>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='GRBit|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>Disabled</Optimization>
+      <SDLCheck>true</SDLCheck>
+      <AdditionalIncludeDirectories>D:\projects\goopal3.0\20160826\libraries\include;D:\projects\goopal3.0\20160826\libraries\include\lua;D:\GRBit_ver1\boost_1.55.x64;D:\GRBit_ver1\fc\include;D:\GRBit_ver1\grbit\libraries\blockchain\include;D:\GRBit_ver1\leveldb\include;D:\GRBit_ver1\db\include;D:\GRBit_ver1\include;D:\GRBit_ver1\grbit\libraries\utilities\include;D:\GRBit_ver1\grbit\libraries\wallet\include;D:\GRBit_ver1\grbit\libraries\cli\include;D:\GRBit_ver1\vendor\miniupnp;D:\GRBit_ver1\grbit\libraries\net\include;D:\GRBit_ver1\grbit\libraries\client\include;D:\GRBit_ver1\grbit\libraries\api\include;D:\GRBit_ver1\grbit\libraries\rpc\include;D:\GRBit_ver1\grbit\libraries\rpc_stubs\include</AdditionalIncludeDirectories>
+    </ClCompile>
+    <Link>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>Disabled</Optimization>
+      <SDLCheck>true</SDLCheck>
+      <AdditionalIncludeDirectories>.\include;.\libraries\include;</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>_WINSOCK_DEPRECATED_NO_WARNINGS;_MBCS;_DEBUG;WIN32;_WINDOWS;NOMINMAX;_WIN32_WINNT=0x0501;_CRT_SECURE_NO_WARNINGS;_SCL_SECURE_NO_WARNINGS;BOOST_ALL_NO_LIB;_SECURE_SCL=0;ALP_GLOBAL_API_LOG=1;ALP_TEST_NETWORK;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalOptions>/bigobj %(AdditionalOptions)</AdditionalOptions>
+      <MinimalRebuild>false</MinimalRebuild>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+    </ClCompile>
+    <Link>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalLibraryDirectories>.\lib</AdditionalLibraryDirectories>
+      <AdditionalDependencies>kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;bts_db.lib;leveldb_debug.lib;easylzma_static_debug.lib;udt_debug.lib;libboost_thread-vc120-mt-gd-1_55.lib;libboost_date_time-vc120-mt-gd-1_55.lib;libboost_system-vc120-mt-gd-1_55.lib;libboost_filesystem-vc120-mt-gd-1_55.lib;libboost_program_options-vc120-mt-gd-1_55.lib;libboost_signals-vc120-mt-gd-1_55.lib;libboost_serialization-vc120-mt-gd-1_55.lib;libboost_chrono-vc120-mt-gd-1_55.lib;libboost_unit_test_framework-vc120-mt-gd-1_55.lib;libboost_context-vc120-mt-gd-1_55.lib;libboost_locale-vc120-mt-gd-1_55.lib;libboost_iostreams-vc120-mt-gd-1_55.lib;libboost_coroutine-vc120-mt-gd-1_55.lib;ssleay32MDd.lib;libeay32MDd.lib;WS2_32.lib;Userenv.lib;Rpcrt4.lib;crypt32.lib;shlwapi.lib;miniupnpc_debug.lib;WS2_32.Lib;IPHlpApi.Lib;fc_debug.lib;secp256k1_debug.lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='GRBit|x64'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>Disabled</Optimization>
+      <SDLCheck>true</SDLCheck>
+      <AdditionalIncludeDirectories>..\..\include;.\libraries\include</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>_WINSOCK_DEPRECATED_NO_WARNINGS;_MBCS;_DEBUG;WIN32;_WINDOWS;NOMINMAX;_WIN32_WINNT=0x0501;_CRT_SECURE_NO_WARNINGS;_SCL_SECURE_NO_WARNINGS;BOOST_ALL_NO_LIB;_SECURE_SCL=0;ALP_GLOBAL_API_LOG=1;ALP_TEST_NETWORK;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalOptions>/bigobj %(AdditionalOptions)</AdditionalOptions>
+      <MinimalRebuild>false</MinimalRebuild>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+    </ClCompile>
+    <Link>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalLibraryDirectories>..\..\lib</AdditionalLibraryDirectories>
+      <AdditionalDependencies>kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;leveldb.lib;fc_debug.lib;easylzma_static_debug.lib;udt_debug.lib;libboost_thread-vc120-mt-gd-1_55.lib;libboost_date_time-vc120-mt-gd-1_55.lib;libboost_system-vc120-mt-gd-1_55.lib;libboost_filesystem-vc120-mt-gd-1_55.lib;libboost_program_options-vc120-mt-gd-1_55.lib;libboost_signals-vc120-mt-gd-1_55.lib;libboost_serialization-vc120-mt-gd-1_55.lib;libboost_chrono-vc120-mt-gd-1_55.lib;libboost_unit_test_framework-vc120-mt-gd-1_55.lib;libboost_context-vc120-mt-gd-1_55.lib;libboost_locale-vc120-mt-gd-1_55.lib;libboost_iostreams-vc120-mt-gd-1_55.lib;libboost_coroutine-vc120-mt-gd-1_55.lib;ssleay32MDd.lib;libeay32MDd.lib;WS2_32.lib;Userenv.lib;Rpcrt4.lib;crypt32.lib;shlwapi.lib;miniupnpc.lib;WS2_32.Lib;IPHlpApi.Lib;secp256k1_debug.lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>MaxSpeed</Optimization>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <SDLCheck>true</SDLCheck>
+    </ClCompile>
+    <Link>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>Disabled</Optimization>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <SDLCheck>true</SDLCheck>
+      <AdditionalIncludeDirectories>.\include;.\libraries\include;</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;NDEBUGWIN32;_CONSOLE;NDEBUG;NOMINMAX;_WIN32_WINNT=0x0501;_CRT_SECURE_NO_WARNINGS;_SCL_SERCURE_NO_WARNINGS;BOOST_ALL_NO_LIB;CMAKE_INTDIR="Release";ALP_GLOBAL_API_LOG=1;_WINSOCK_DEPRECATED_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+    </ClCompile>
+    <Link>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <EnableCOMDATFolding>false</EnableCOMDATFolding>
+      <OptimizeReferences>false</OptimizeReferences>
+      <AdditionalLibraryDirectories>.\lib</AdditionalLibraryDirectories>
+      <AdditionalDependencies>kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;bts_db.lib;leveldb.lib;easylzma_static.lib;udt.lib;libboost_thread-vc120-mt-1_55.lib;libboost_date_time-vc120-mt-1_55.lib;libboost_system-vc120-mt-1_55.lib;libboost_filesystem-vc120-mt-1_55.lib;libboost_program_options-vc120-mt-1_55.lib;libboost_signals-vc120-mt-1_55.lib;libboost_serialization-vc120-mt-1_55.lib;libboost_chrono-vc120-mt-1_55.lib;libboost_unit_test_framework-vc120-mt-1_55.lib;libboost_context-vc120-mt-1_55.lib;libboost_locale-vc120-mt-1_55.lib;libboost_iostreams-vc120-mt-1_55.lib;libboost_coroutine-vc120-mt-1_55.lib;ssleay32MD.lib;libeay32MD.lib;WS2_32.lib;Userenv.lib;Rpcrt4.lib;crypt32.lib;shlwapi.lib;miniupnpc.lib;WS2_32.Lib;IPHlpApi.Lib;fc.lib;secp256k1.lib;</AdditionalDependencies>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClCompile Include="libraries\base\config.cpp" />
+    <ClCompile Include="libraries\base\CommonApi.cpp" />
+    <ClCompile Include="libraries\client\client.cpp" />
+    <ClCompile Include="libraries\cli\cli.cpp" />
+    <ClCompile Include="libraries\cli\method_data_handler.cpp" />
+    <ClCompile Include="libraries\glua\glua_compile_op.cpp" />
+    <ClCompile Include="libraries\glua\glua_api_types.cpp" />
+    <ClCompile Include="libraries\glua\glua_astparser.cpp" />
+    <ClCompile Include="libraries\glua\glua_contractentry.cpp" />
+    <ClCompile Include="libraries\glua\glua_contractoperations.cpp" />
+    <ClCompile Include="libraries\glua\glua_debug_file.cpp" />
+    <ClCompile Include="libraries\glua\glua_decompile.cpp" />
+    <ClCompile Include="libraries\glua\glua_disassemble.cpp" />
+    <ClCompile Include="libraries\glua\glua_loader.cpp" />
+    <ClCompile Include="libraries\glua\glua_lutil.cpp" />
+    <ClCompile Include="libraries\glua\glua_proto_info.cpp" />
+    <ClCompile Include="libraries\glua\glua_statement.cpp" />
+    <ClCompile Include="libraries\glua\glua_state_scope.cpp" />
+    <ClCompile Include="libraries\glua\glua_structs.cpp" />
+    <ClCompile Include="libraries\glua\glua_task_mgr.cpp" />
+    <ClCompile Include="libraries\glua\glua_tokenparser.cpp" />
+    <ClCompile Include="libraries\glua\glua_vm.cpp" />
+    <ClCompile Include="libraries\glua\lapi.cpp" />
+    <ClCompile Include="libraries\glua\lauxlib.cpp" />
+    <ClCompile Include="libraries\glua\lbaselib.cpp" />
+    <ClCompile Include="libraries\glua\lbitlib.cpp" />
+    <ClCompile Include="libraries\glua\lcode.cpp" />
+    <ClCompile Include="libraries\glua\lcompile.cpp" />
+    <ClCompile Include="libraries\glua\lcorolib.cpp" />
+    <ClCompile Include="libraries\glua\lctype.cpp" />
+    <ClCompile Include="libraries\glua\ldblib.cpp" />
+    <ClCompile Include="libraries\glua\ldebug.cpp" />
+    <ClCompile Include="libraries\glua\ldo.cpp" />
+    <ClCompile Include="libraries\glua\ldump.cpp" />
+    <ClCompile Include="libraries\glua\lfunc.cpp" />
+    <ClCompile Include="libraries\glua\lgc.cpp" />
+    <ClCompile Include="libraries\glua\lhashmap.cpp" />
+    <ClCompile Include="libraries\glua\lhttplib.cpp" />
+    <ClCompile Include="libraries\glua\linit.cpp" />
+    <ClCompile Include="libraries\glua\liolib.cpp" />
+    <ClCompile Include="libraries\glua\ljsonlib.cpp" />
+    <ClCompile Include="libraries\glua\ljsonrpclib.cpp" />
+    <ClCompile Include="libraries\glua\llex.cpp" />
+    <ClCompile Include="libraries\glua\lmathlib.cpp" />
+    <ClCompile Include="libraries\glua\lmem.cpp" />
+    <ClCompile Include="libraries\glua\lnetlib.cpp" />
+    <ClCompile Include="libraries\glua\loadlib.cpp" />
+    <ClCompile Include="libraries\glua\lobject.cpp" />
+    <ClCompile Include="libraries\glua\lopcodes.cpp" />
+    <ClCompile Include="libraries\glua\loslib.cpp" />
+    <ClCompile Include="libraries\glua\lparser.cpp" />
+    <ClCompile Include="libraries\glua\lparsercombinator.cpp" />
+    <ClCompile Include="libraries\glua\lprefix.cpp" />
+    <ClCompile Include="libraries\glua\lremote_debugger.cpp" />
+    <ClCompile Include="libraries\glua\lrepl.cpp" />
+    <ClCompile Include="libraries\glua\lstate.cpp" />
+    <ClCompile Include="libraries\glua\lstring.cpp" />
+    <ClCompile Include="libraries\glua\lstrlib.cpp" />
+    <ClCompile Include="libraries\glua\ltable.cpp" />
+    <ClCompile Include="libraries\glua\ltablib.cpp" />
+    <ClCompile Include="libraries\glua\lthinkyounglib.cpp" />
+    <ClCompile Include="libraries\glua\ltimelib.cpp" />
+    <ClCompile Include="libraries\glua\ltm.cpp" />
+    <ClCompile Include="libraries\glua\ltypechecker.cpp" />
+    <ClCompile Include="libraries\glua\ltype_checker_type_info.cpp" />
+    <ClCompile Include="libraries\glua\lua.cpp" />
+    <ClCompile Include="libraries\glua\luac.cpp" />
+    <ClCompile Include="libraries\glua\lundump.cpp" />
+    <ClCompile Include="libraries\glua\lutf8lib.cpp" />
+    <ClCompile Include="libraries\glua\lvm.cpp" />
+    <ClCompile Include="libraries\glua\lzio.cpp" />
+    <ClCompile Include="libraries\glua\thinkyoung_lua_api.cpp" />
+    <ClCompile Include="libraries\glua\thinkyoung_lua_lib.cpp" />
+    <ClCompile Include="libraries\rpc\rpc_mgr.cpp" />
+    <ClCompile Include="libraries\rpc\rpc_task_handler.cpp" />
+    <ClCompile Include="libraries\rpc\stcp_socket.cpp" />
+    <ClCompile Include="libraries\stub\stub.cpp" />
+    <ClCompile Include="libraries\task\task.cpp" />
+    <ClCompile Include="libraries\task\task_handle_base.cpp" />
+    <ClCompile Include="main.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="libraries\include\base\config.hpp" />
+    <ClInclude Include="libraries\include\base\easylogging++.h" />
+    <ClInclude Include="libraries\include\base\exceptions.hpp" />
+    <ClInclude Include="libraries\include\base\misc.hpp" />
+    <ClInclude Include="libraries\include\client\client.hpp" />
+    <ClInclude Include="libraries\include\cli\cli.hpp" />
+    <ClInclude Include="libraries\include\cli\method_data_handler.hpp" />
+    <ClInclude Include="libraries\include\glua\GluaChainApi.hpp" />
+    <ClInclude Include="libraries\include\glua\glua_complie_op.h" />
+    <ClInclude Include="libraries\include\glua\exceptions.h" />
+    <ClInclude Include="libraries\include\glua\glua_api_types.h" />
+    <ClInclude Include="libraries\include\glua\glua_astparser.h" />
+    <ClInclude Include="libraries\include\glua\glua_common.h" />
+    <ClInclude Include="libraries\include\glua\glua_compat.h" />
+    <ClInclude Include="libraries\include\glua\glua_contractentry.hpp" />
+    <ClInclude Include="libraries\include\glua\glua_contractoperations.hpp" />
+    <ClInclude Include="libraries\include\glua\glua_debug_file.h" />
+    <ClInclude Include="libraries\include\glua\glua_decompile.h" />
+    <ClInclude Include="libraries\include\glua\glua_disassemble.h" />
+    <ClInclude Include="libraries\include\glua\glua_loader.h" />
+    <ClInclude Include="libraries\include\glua\glua_lutil.h" />
+    <ClInclude Include="libraries\include\glua\glua_parser.h" />
+    <ClInclude Include="libraries\include\glua\glua_proto_info.h" />
+    <ClInclude Include="libraries\include\glua\glua_statement.h" />
+    <ClInclude Include="libraries\include\glua\glua_structs.h" />
+    <ClInclude Include="libraries\include\glua\glua_task_mgr.h" />
+    <ClInclude Include="libraries\include\glua\glua_tokenparser.h" />
+    <ClInclude Include="libraries\include\glua\glua_vm.h" />
+    <ClInclude Include="libraries\include\glua\lapi.h" />
+    <ClInclude Include="libraries\include\glua\lauxlib.h" />
+    <ClInclude Include="libraries\include\glua\lcode.h" />
+    <ClInclude Include="libraries\include\glua\lcompile.h" />
+    <ClInclude Include="libraries\include\glua\lctype.h" />
+    <ClInclude Include="libraries\include\glua\ldebug.h" />
+    <ClInclude Include="libraries\include\glua\ldo.h" />
+    <ClInclude Include="libraries\include\glua\lfunc.h" />
+    <ClInclude Include="libraries\include\glua\lgc.h" />
+    <ClInclude Include="libraries\include\glua\lhashmap.h" />
+    <ClInclude Include="libraries\include\glua\llex.h" />
+    <ClInclude Include="libraries\include\glua\llimits.h" />
+    <ClInclude Include="libraries\include\glua\lmem.h" />
+    <ClInclude Include="libraries\include\glua\lnetlib.h" />
+    <ClInclude Include="libraries\include\glua\lobject.h" />
+    <ClInclude Include="libraries\include\glua\lopcodes.h" />
+    <ClInclude Include="libraries\include\glua\lparser.h" />
+    <ClInclude Include="libraries\include\glua\lparsercombinator.h" />
+    <ClInclude Include="libraries\include\glua\lprefix.h" />
+    <ClInclude Include="libraries\include\glua\lremote_debugger.h" />
+    <ClInclude Include="libraries\include\glua\lrepl.h" />
+    <ClInclude Include="libraries\include\glua\lstate.h" />
+    <ClInclude Include="libraries\include\glua\lstring.h" />
+    <ClInclude Include="libraries\include\glua\ltable.h" />
+    <ClInclude Include="libraries\include\glua\lthinkyounglib.h" />
+    <ClInclude Include="libraries\include\glua\ltm.h" />
+    <ClInclude Include="libraries\include\glua\ltypechecker.h" />
+    <ClInclude Include="libraries\include\glua\ltype_checker_type_info.h" />
+    <ClInclude Include="libraries\include\glua\lua.h" />
+    <ClInclude Include="libraries\include\glua\lua.hpp" />
+    <ClInclude Include="libraries\include\glua\luaconf.h" />
+    <ClInclude Include="libraries\include\glua\lualib.h" />
+    <ClInclude Include="libraries\include\glua\lundump.h" />
+    <ClInclude Include="libraries\include\glua\lvm.h" />
+    <ClInclude Include="libraries\include\glua\lzio.h" />
+    <ClInclude Include="libraries\include\glua\thinkyoung_lua_api.h" />
+    <ClInclude Include="libraries\include\glua\thinkyoung_lua_lib.h" />
+    <ClInclude Include="libraries\include\lua\exceptions.h" />
+    <ClInclude Include="libraries\include\rpc\rpc_mgr.hpp" />
+    <ClInclude Include="libraries\include\rpc\rpc_msg.hpp" />
+    <ClInclude Include="libraries\include\rpc\rpc_task_handler.hpp" />
+    <ClInclude Include="libraries\include\rpc\stcp_socket.hpp" />
+    <ClInclude Include="libraries\include\stub\stub.hpp" />
+    <ClInclude Include="libraries\include\task\task.hpp" />
+    <ClInclude Include="libraries\include\task\task_handler_base.hpp" />
+    <ClInclude Include="libraries\include\util\util.hpp" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

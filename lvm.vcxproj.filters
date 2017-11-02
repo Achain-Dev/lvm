@@ -1,0 +1,520 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="libraries">
+      <UniqueIdentifier>{80f15751-96a0-4746-8cfa-ef0fb6aeae1c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="libraries\include">
+      <UniqueIdentifier>{af651983-6e13-482a-b8b5-817d9becc37d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="libraries\client">
+      <UniqueIdentifier>{7f66cd02-ec85-49a3-aedb-72b933c3a836}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="libraries\include\client">
+      <UniqueIdentifier>{3fc24c23-babc-4ba9-ac73-64e90deab402}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="libraries\glua">
+      <UniqueIdentifier>{ef3630bd-cd76-43a4-b43a-3de7dabb2c24}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="libraries\include\glua">
+      <UniqueIdentifier>{5b796dbe-205c-4819-89ac-9108e46cfb54}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="libraries\include\base">
+      <UniqueIdentifier>{47a81cb3-2996-451e-b5d2-4e11d9511e24}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="libraries\include\cli">
+      <UniqueIdentifier>{8a2726be-0961-4856-a788-07a7ca72ed0f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="libraries\cli">
+      <UniqueIdentifier>{cf1ee33d-a560-49d2-8199-7a3a9341fe98}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="libraries\stub">
+      <UniqueIdentifier>{33de40ac-5e18-47e3-b19b-b527cf437919}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="libraries\include\stub">
+      <UniqueIdentifier>{c8410e98-cfa2-4c89-813d-96f8540faee4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="libraries\task">
+      <UniqueIdentifier>{04cb45c2-803c-4350-baee-e6645822dc41}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="libraries\include\task">
+      <UniqueIdentifier>{0ba95177-9f7d-4b29-bfc1-585de24c9d5a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="libraries\rpc">
+      <UniqueIdentifier>{f270a601-77af-4675-9dfe-4ef9a689a936}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="libraries\include\rpc">
+      <UniqueIdentifier>{c2579059-ecbc-4d3b-b706-b7d5c81da86b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="libraries\base">
+      <UniqueIdentifier>{124e0eee-7df5-4a49-bcaa-3de79f297106}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="libraries\include\util">
+      <UniqueIdentifier>{df73ef7f-d095-4b73-9ac3-903726b12074}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="libraries\glua\glua_api_types.cpp">
+      <Filter>libraries\glua</Filter>
+    </ClCompile>
+    <ClCompile Include="libraries\glua\glua_astparser.cpp">
+      <Filter>libraries\glua</Filter>
+    </ClCompile>
+    <ClCompile Include="libraries\glua\glua_debug_file.cpp">
+      <Filter>libraries\glua</Filter>
+    </ClCompile>
+    <ClCompile Include="libraries\glua\glua_decompile.cpp">
+      <Filter>libraries\glua</Filter>
+    </ClCompile>
+    <ClCompile Include="libraries\glua\glua_disassemble.cpp">
+      <Filter>libraries\glua</Filter>
+    </ClCompile>
+    <ClCompile Include="libraries\glua\glua_loader.cpp">
+      <Filter>libraries\glua</Filter>
+    </ClCompile>
+    <ClCompile Include="libraries\glua\glua_lutil.cpp">
+      <Filter>libraries\glua</Filter>
+    </ClCompile>
+    <ClCompile Include="libraries\glua\glua_proto_info.cpp">
+      <Filter>libraries\glua</Filter>
+    </ClCompile>
+    <ClCompile Include="libraries\glua\glua_state_scope.cpp">
+      <Filter>libraries\glua</Filter>
+    </ClCompile>
+    <ClCompile Include="libraries\glua\glua_statement.cpp">
+      <Filter>libraries\glua</Filter>
+    </ClCompile>
+    <ClCompile Include="libraries\glua\glua_structs.cpp">
+      <Filter>libraries\glua</Filter>
+    </ClCompile>
+    <ClCompile Include="libraries\glua\glua_tokenparser.cpp">
+      <Filter>libraries\glua</Filter>
+    </ClCompile>
+    <ClCompile Include="libraries\glua\glua_vm.cpp">
+      <Filter>libraries\glua</Filter>
+    </ClCompile>
+    <ClCompile Include="libraries\glua\lapi.cpp">
+      <Filter>libraries\glua</Filter>
+    </ClCompile>
+    <ClCompile Include="libraries\glua\lauxlib.cpp">
+      <Filter>libraries\glua</Filter>
+    </ClCompile>
+    <ClCompile Include="libraries\glua\lbaselib.cpp">
+      <Filter>libraries\glua</Filter>
+    </ClCompile>
+    <ClCompile Include="libraries\glua\lbitlib.cpp">
+      <Filter>libraries\glua</Filter>
+    </ClCompile>
+    <ClCompile Include="libraries\glua\lcode.cpp">
+      <Filter>libraries\glua</Filter>
+    </ClCompile>
+    <ClCompile Include="libraries\glua\lcompile.cpp">
+      <Filter>libraries\glua</Filter>
+    </ClCompile>
+    <ClCompile Include="libraries\glua\lcorolib.cpp">
+      <Filter>libraries\glua</Filter>
+    </ClCompile>
+    <ClCompile Include="libraries\glua\lctype.cpp">
+      <Filter>libraries\glua</Filter>
+    </ClCompile>
+    <ClCompile Include="libraries\glua\ldblib.cpp">
+      <Filter>libraries\glua</Filter>
+    </ClCompile>
+    <ClCompile Include="libraries\glua\ldebug.cpp">
+      <Filter>libraries\glua</Filter>
+    </ClCompile>
+    <ClCompile Include="libraries\glua\ldo.cpp">
+      <Filter>libraries\glua</Filter>
+    </ClCompile>
+    <ClCompile Include="libraries\glua\ldump.cpp">
+      <Filter>libraries\glua</Filter>
+    </ClCompile>
+    <ClCompile Include="libraries\glua\lfunc.cpp">
+      <Filter>libraries\glua</Filter>
+    </ClCompile>
+    <ClCompile Include="libraries\glua\lgc.cpp">
+      <Filter>libraries\glua</Filter>
+    </ClCompile>
+    <ClCompile Include="libraries\glua\lhashmap.cpp">
+      <Filter>libraries\glua</Filter>
+    </ClCompile>
+    <ClCompile Include="libraries\glua\lhttplib.cpp">
+      <Filter>libraries\glua</Filter>
+    </ClCompile>
+    <ClCompile Include="libraries\glua\linit.cpp">
+      <Filter>libraries\glua</Filter>
+    </ClCompile>
+    <ClCompile Include="libraries\glua\liolib.cpp">
+      <Filter>libraries\glua</Filter>
+    </ClCompile>
+    <ClCompile Include="libraries\glua\ljsonlib.cpp">
+      <Filter>libraries\glua</Filter>
+    </ClCompile>
+    <ClCompile Include="libraries\glua\ljsonrpclib.cpp">
+      <Filter>libraries\glua</Filter>
+    </ClCompile>
+    <ClCompile Include="libraries\glua\llex.cpp">
+      <Filter>libraries\glua</Filter>
+    </ClCompile>
+    <ClCompile Include="libraries\glua\lmathlib.cpp">
+      <Filter>libraries\glua</Filter>
+    </ClCompile>
+    <ClCompile Include="libraries\glua\lmem.cpp">
+      <Filter>libraries\glua</Filter>
+    </ClCompile>
+    <ClCompile Include="libraries\glua\lnetlib.cpp">
+      <Filter>libraries\glua</Filter>
+    </ClCompile>
+    <ClCompile Include="libraries\glua\loadlib.cpp">
+      <Filter>libraries\glua</Filter>
+    </ClCompile>
+    <ClCompile Include="libraries\glua\lobject.cpp">
+      <Filter>libraries\glua</Filter>
+    </ClCompile>
+    <ClCompile Include="libraries\glua\lopcodes.cpp">
+      <Filter>libraries\glua</Filter>
+    </ClCompile>
+    <ClCompile Include="libraries\glua\loslib.cpp">
+      <Filter>libraries\glua</Filter>
+    </ClCompile>
+    <ClCompile Include="libraries\glua\lparser.cpp">
+      <Filter>libraries\glua</Filter>
+    </ClCompile>
+    <ClCompile Include="libraries\glua\lparsercombinator.cpp">
+      <Filter>libraries\glua</Filter>
+    </ClCompile>
+    <ClCompile Include="libraries\glua\lprefix.cpp">
+      <Filter>libraries\glua</Filter>
+    </ClCompile>
+    <ClCompile Include="libraries\glua\lremote_debugger.cpp">
+      <Filter>libraries\glua</Filter>
+    </ClCompile>
+    <ClCompile Include="libraries\glua\lrepl.cpp">
+      <Filter>libraries\glua</Filter>
+    </ClCompile>
+    <ClCompile Include="libraries\glua\lstate.cpp">
+      <Filter>libraries\glua</Filter>
+    </ClCompile>
+    <ClCompile Include="libraries\glua\lstring.cpp">
+      <Filter>libraries\glua</Filter>
+    </ClCompile>
+    <ClCompile Include="libraries\glua\lstrlib.cpp">
+      <Filter>libraries\glua</Filter>
+    </ClCompile>
+    <ClCompile Include="libraries\glua\ltable.cpp">
+      <Filter>libraries\glua</Filter>
+    </ClCompile>
+    <ClCompile Include="libraries\glua\ltablib.cpp">
+      <Filter>libraries\glua</Filter>
+    </ClCompile>
+    <ClCompile Include="libraries\glua\lthinkyounglib.cpp">
+      <Filter>libraries\glua</Filter>
+    </ClCompile>
+    <ClCompile Include="libraries\glua\ltimelib.cpp">
+      <Filter>libraries\glua</Filter>
+    </ClCompile>
+    <ClCompile Include="libraries\glua\ltm.cpp">
+      <Filter>libraries\glua</Filter>
+    </ClCompile>
+    <ClCompile Include="libraries\glua\ltype_checker_type_info.cpp">
+      <Filter>libraries\glua</Filter>
+    </ClCompile>
+    <ClCompile Include="libraries\glua\ltypechecker.cpp">
+      <Filter>libraries\glua</Filter>
+    </ClCompile>
+    <ClCompile Include="libraries\glua\lua.cpp">
+      <Filter>libraries\glua</Filter>
+    </ClCompile>
+    <ClCompile Include="libraries\glua\luac.cpp">
+      <Filter>libraries\glua</Filter>
+    </ClCompile>
+    <ClCompile Include="libraries\glua\lundump.cpp">
+      <Filter>libraries\glua</Filter>
+    </ClCompile>
+    <ClCompile Include="libraries\glua\lutf8lib.cpp">
+      <Filter>libraries\glua</Filter>
+    </ClCompile>
+    <ClCompile Include="libraries\glua\lvm.cpp">
+      <Filter>libraries\glua</Filter>
+    </ClCompile>
+    <ClCompile Include="libraries\glua\lzio.cpp">
+      <Filter>libraries\glua</Filter>
+    </ClCompile>
+    <ClCompile Include="libraries\glua\thinkyoung_lua_api.cpp">
+      <Filter>libraries\glua</Filter>
+    </ClCompile>
+    <ClCompile Include="libraries\glua\thinkyoung_lua_lib.cpp">
+      <Filter>libraries\glua</Filter>
+    </ClCompile>
+    <ClCompile Include="libraries\client\client.cpp">
+      <Filter>libraries\client</Filter>
+    </ClCompile>
+    <ClCompile Include="main.cpp" />
+    <ClCompile Include="libraries\stub\stub.cpp">
+      <Filter>libraries\stub</Filter>
+    </ClCompile>
+    <ClCompile Include="libraries\task\task_handle_base.cpp">
+      <Filter>libraries\task</Filter>
+    </ClCompile>
+    <ClCompile Include="libraries\rpc\rpc_mgr.cpp">
+      <Filter>libraries\rpc</Filter>
+    </ClCompile>
+    <ClCompile Include="libraries\cli\cli.cpp">
+      <Filter>libraries\cli</Filter>
+    </ClCompile>
+    <ClCompile Include="libraries\cli\method_data_handler.cpp">
+      <Filter>libraries\cli</Filter>
+    </ClCompile>
+    <ClCompile Include="libraries\base\config.cpp">
+      <Filter>libraries\base</Filter>
+    </ClCompile>
+    <ClCompile Include="libraries\glua\glua_compile_op.cpp">
+      <Filter>libraries\glua</Filter>
+    </ClCompile>
+    <ClCompile Include="libraries\base\CommonApi.cpp">
+      <Filter>libraries\base</Filter>
+    </ClCompile>
+    <ClCompile Include="libraries\rpc\stcp_socket.cpp">
+      <Filter>libraries\rpc</Filter>
+    </ClCompile>
+    <ClCompile Include="libraries\rpc\rpc_task_handler.cpp">
+      <Filter>libraries\rpc</Filter>
+    </ClCompile>
+    <ClCompile Include="libraries\glua\glua_task_mgr.cpp">
+      <Filter>libraries\glua</Filter>
+    </ClCompile>
+    <ClCompile Include="libraries\task\task.cpp">
+      <Filter>libraries\task</Filter>
+    </ClCompile>
+    <ClCompile Include="libraries\glua\glua_contractentry.cpp">
+      <Filter>libraries\glua</Filter>
+    </ClCompile>
+    <ClCompile Include="libraries\glua\glua_contractoperations.cpp">
+      <Filter>libraries\glua</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="libraries\include\glua\exceptions.h">
+      <Filter>libraries\include\glua</Filter>
+    </ClInclude>
+    <ClInclude Include="libraries\include\lua\exceptions.h">
+      <Filter>libraries\include\glua</Filter>
+    </ClInclude>
+    <ClInclude Include="libraries\include\glua\glua_api_types.h">
+      <Filter>libraries\include\glua</Filter>
+    </ClInclude>
+    <ClInclude Include="libraries\include\glua\glua_astparser.h">
+      <Filter>libraries\include\glua</Filter>
+    </ClInclude>
+    <ClInclude Include="libraries\include\glua\glua_common.h">
+      <Filter>libraries\include\glua</Filter>
+    </ClInclude>
+    <ClInclude Include="libraries\include\glua\glua_compat.h">
+      <Filter>libraries\include\glua</Filter>
+    </ClInclude>
+    <ClInclude Include="libraries\include\glua\glua_debug_file.h">
+      <Filter>libraries\include\glua</Filter>
+    </ClInclude>
+    <ClInclude Include="libraries\include\glua\glua_decompile.h">
+      <Filter>libraries\include\glua</Filter>
+    </ClInclude>
+    <ClInclude Include="libraries\include\glua\glua_disassemble.h">
+      <Filter>libraries\include\glua</Filter>
+    </ClInclude>
+    <ClInclude Include="libraries\include\glua\glua_loader.h">
+      <Filter>libraries\include\glua</Filter>
+    </ClInclude>
+    <ClInclude Include="libraries\include\glua\glua_lutil.h">
+      <Filter>libraries\include\glua</Filter>
+    </ClInclude>
+    <ClInclude Include="libraries\include\glua\glua_parser.h">
+      <Filter>libraries\include\glua</Filter>
+    </ClInclude>
+    <ClInclude Include="libraries\include\glua\glua_proto_info.h">
+      <Filter>libraries\include\glua</Filter>
+    </ClInclude>
+    <ClInclude Include="libraries\include\glua\glua_statement.h">
+      <Filter>libraries\include\glua</Filter>
+    </ClInclude>
+    <ClInclude Include="libraries\include\glua\glua_structs.h">
+      <Filter>libraries\include\glua</Filter>
+    </ClInclude>
+    <ClInclude Include="libraries\include\glua\glua_tokenparser.h">
+      <Filter>libraries\include\glua</Filter>
+    </ClInclude>
+    <ClInclude Include="libraries\include\glua\glua_vm.h">
+      <Filter>libraries\include\glua</Filter>
+    </ClInclude>
+    <ClInclude Include="libraries\include\glua\lapi.h">
+      <Filter>libraries\include\glua</Filter>
+    </ClInclude>
+    <ClInclude Include="libraries\include\glua\lauxlib.h">
+      <Filter>libraries\include\glua</Filter>
+    </ClInclude>
+    <ClInclude Include="libraries\include\glua\lcode.h">
+      <Filter>libraries\include\glua</Filter>
+    </ClInclude>
+    <ClInclude Include="libraries\include\glua\lcompile.h">
+      <Filter>libraries\include\glua</Filter>
+    </ClInclude>
+    <ClInclude Include="libraries\include\glua\lctype.h">
+      <Filter>libraries\include\glua</Filter>
+    </ClInclude>
+    <ClInclude Include="libraries\include\glua\ldebug.h">
+      <Filter>libraries\include\glua</Filter>
+    </ClInclude>
+    <ClInclude Include="libraries\include\glua\ldo.h">
+      <Filter>libraries\include\glua</Filter>
+    </ClInclude>
+    <ClInclude Include="libraries\include\glua\lfunc.h">
+      <Filter>libraries\include\glua</Filter>
+    </ClInclude>
+    <ClInclude Include="libraries\include\glua\lgc.h">
+      <Filter>libraries\include\glua</Filter>
+    </ClInclude>
+    <ClInclude Include="libraries\include\glua\lhashmap.h">
+      <Filter>libraries\include\glua</Filter>
+    </ClInclude>
+    <ClInclude Include="libraries\include\glua\llex.h">
+      <Filter>libraries\include\glua</Filter>
+    </ClInclude>
+    <ClInclude Include="libraries\include\glua\llimits.h">
+      <Filter>libraries\include\glua</Filter>
+    </ClInclude>
+    <ClInclude Include="libraries\include\glua\lmem.h">
+      <Filter>libraries\include\glua</Filter>
+    </ClInclude>
+    <ClInclude Include="libraries\include\glua\lnetlib.h">
+      <Filter>libraries\include\glua</Filter>
+    </ClInclude>
+    <ClInclude Include="libraries\include\glua\lobject.h">
+      <Filter>libraries\include\glua</Filter>
+    </ClInclude>
+    <ClInclude Include="libraries\include\glua\lopcodes.h">
+      <Filter>libraries\include\glua</Filter>
+    </ClInclude>
+    <ClInclude Include="libraries\include\glua\lparser.h">
+      <Filter>libraries\include\glua</Filter>
+    </ClInclude>
+    <ClInclude Include="libraries\include\glua\lparsercombinator.h">
+      <Filter>libraries\include\glua</Filter>
+    </ClInclude>
+    <ClInclude Include="libraries\include\glua\lprefix.h">
+      <Filter>libraries\include\glua</Filter>
+    </ClInclude>
+    <ClInclude Include="libraries\include\glua\lremote_debugger.h">
+      <Filter>libraries\include\glua</Filter>
+    </ClInclude>
+    <ClInclude Include="libraries\include\glua\lrepl.h">
+      <Filter>libraries\include\glua</Filter>
+    </ClInclude>
+    <ClInclude Include="libraries\include\glua\lstate.h">
+      <Filter>libraries\include\glua</Filter>
+    </ClInclude>
+    <ClInclude Include="libraries\include\glua\lstring.h">
+      <Filter>libraries\include\glua</Filter>
+    </ClInclude>
+    <ClInclude Include="libraries\include\glua\ltable.h">
+      <Filter>libraries\include\glua</Filter>
+    </ClInclude>
+    <ClInclude Include="libraries\include\glua\lthinkyounglib.h">
+      <Filter>libraries\include\glua</Filter>
+    </ClInclude>
+    <ClInclude Include="libraries\include\glua\ltm.h">
+      <Filter>libraries\include\glua</Filter>
+    </ClInclude>
+    <ClInclude Include="libraries\include\glua\ltype_checker_type_info.h">
+      <Filter>libraries\include\glua</Filter>
+    </ClInclude>
+    <ClInclude Include="libraries\include\glua\ltypechecker.h">
+      <Filter>libraries\include\glua</Filter>
+    </ClInclude>
+    <ClInclude Include="libraries\include\glua\lua.h">
+      <Filter>libraries\include\glua</Filter>
+    </ClInclude>
+    <ClInclude Include="libraries\include\glua\luaconf.h">
+      <Filter>libraries\include\glua</Filter>
+    </ClInclude>
+    <ClInclude Include="libraries\include\glua\lualib.h">
+      <Filter>libraries\include\glua</Filter>
+    </ClInclude>
+    <ClInclude Include="libraries\include\glua\lundump.h">
+      <Filter>libraries\include\glua</Filter>
+    </ClInclude>
+    <ClInclude Include="libraries\include\glua\lvm.h">
+      <Filter>libraries\include\glua</Filter>
+    </ClInclude>
+    <ClInclude Include="libraries\include\glua\lzio.h">
+      <Filter>libraries\include\glua</Filter>
+    </ClInclude>
+    <ClInclude Include="libraries\include\glua\thinkyoung_lua_api.h">
+      <Filter>libraries\include\glua</Filter>
+    </ClInclude>
+    <ClInclude Include="libraries\include\glua\thinkyoung_lua_lib.h">
+      <Filter>libraries\include\glua</Filter>
+    </ClInclude>
+    <ClInclude Include="libraries\include\client\client.hpp">
+      <Filter>libraries\include\client</Filter>
+    </ClInclude>
+    <ClInclude Include="libraries\include\base\config.hpp">
+      <Filter>libraries\include\base</Filter>
+    </ClInclude>
+    <ClInclude Include="libraries\include\cli\cli.hpp">
+      <Filter>libraries\include\cli</Filter>
+    </ClInclude>
+    <ClInclude Include="libraries\include\stub\stub.hpp">
+      <Filter>libraries\include\stub</Filter>
+    </ClInclude>
+    <ClInclude Include="libraries\include\task\task_handler_base.hpp">
+      <Filter>libraries\include\task</Filter>
+    </ClInclude>
+    <ClInclude Include="libraries\include\task\task.hpp">
+      <Filter>libraries\include\task</Filter>
+    </ClInclude>
+    <ClInclude Include="libraries\include\rpc\rpc_mgr.hpp">
+      <Filter>libraries\include\rpc</Filter>
+    </ClInclude>
+    <ClInclude Include="libraries\include\cli\method_data_handler.hpp">
+      <Filter>libraries\include\cli</Filter>
+    </ClInclude>
+    <ClInclude Include="libraries\include\glua\glua_complie_op.h">
+      <Filter>libraries\include\glua</Filter>
+    </ClInclude>
+    <ClInclude Include="libraries\include\base\easylogging++.h">
+      <Filter>libraries\include\base</Filter>
+    </ClInclude>
+    <ClInclude Include="libraries\include\rpc\stcp_socket.hpp">
+      <Filter>libraries\include\rpc</Filter>
+    </ClInclude>
+    <ClInclude Include="libraries\include\rpc\rpc_msg.hpp">
+      <Filter>libraries\include\rpc</Filter>
+    </ClInclude>
+    <ClInclude Include="libraries\include\rpc\rpc_task_handler.hpp">
+      <Filter>libraries\include\rpc</Filter>
+    </ClInclude>
+    <ClInclude Include="libraries\include\util\util.hpp">
+      <Filter>libraries\include\util</Filter>
+    </ClInclude>
+    <ClInclude Include="libraries\include\base\exceptions.hpp">
+      <Filter>libraries\include\base</Filter>
+    </ClInclude>
+    <ClInclude Include="libraries\include\glua\glua_task_mgr.h">
+      <Filter>libraries\include\glua</Filter>
+    </ClInclude>
+    <ClInclude Include="libraries\include\base\misc.hpp">
+      <Filter>libraries\include\base</Filter>
+    </ClInclude>
+    <ClInclude Include="libraries\include\glua\GluaChainApi.hpp">
+      <Filter>libraries\include\glua</Filter>
+    </ClInclude>
+    <ClInclude Include="libraries\include\glua\glua_contractoperations.hpp">
+      <Filter>libraries\include\glua</Filter>
+    </ClInclude>
+    <ClInclude Include="libraries\include\glua\glua_contractentry.hpp">
+      <Filter>libraries\include\glua</Filter>
+    </ClInclude>
+    <ClInclude Include="libraries\include\glua\lua.hpp">
+      <Filter>libraries\include\glua</Filter>
+    </ClInclude>
+  </ItemGroup>
+</Project>
