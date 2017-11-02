@@ -1206,6 +1206,12 @@ end
                 return get_lua_state_value_node(L, key).value;
             }
 
+            void set_lua_state_instructions_limit(lua_State *L, int limit)
+            {
+                GluaStateValue value = { limit };
+                set_lua_state_value(L, INSTRUCTIONS_LIMIT_LUA_STATE_MAP_KEY, value, LUA_STATE_VALUE_INT);
+            }
+
             int get_lua_state_instructions_executed_count(lua_State *L) {
                 int *insts_executed_count = get_lua_state_value(L, INSTRUCTIONS_EXECUTED_COUNT_LUA_STATE_MAP_KEY).int_pointer_value;
 

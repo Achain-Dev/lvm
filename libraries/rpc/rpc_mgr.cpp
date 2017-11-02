@@ -179,85 +179,17 @@ void RpcMgr::read_loop(StcpSocketPtr& sock) {
         throw *exception_to_rethrow;
 }
 
-Message* RpcMgr::generate_message(void* task_ptr) {
-    FC_ASSERT(task_ptr != NULL);
-    TaskBase* task_base_prt = NULL;
-    Message* msg_ptr;
-    //get task_type
-    task_base_prt = (TaskBase*)task_ptr;
-    
-    switch (task_base_prt->task_type) {
-        case COMPILE_TASK_EXE_RESULT: {
-#if 0
-            //GRbit 的代码，先放在这里
-            CompileTaskRpc compile_rpc(*(CompileTask*)task_ptr);
-            msg_ptr = new Message(compile_rpc);
-            //set msg_id from CompileTask
-            msg_ptr->msg_id = compile_rpc.data.task_id;
-#endif
-            CompileTaskResultRpc reslut(*(CompileTaskResult*)task_ptr);
-            msg_ptr = new Message(reslut);
-            msg_ptr->msg_id = reslut.data.task_id;
-            break;
-        }
-        
-        case CALL_TASK: {
-            CallTaskRpc call_rpc(*(CallTask*)task_ptr);
-            msg_ptr = new Message(call_rpc);
-            //set msg_id from CallTask
-            msg_ptr->msg_id = call_rpc.data.task_id;
-            break;
-        }
-        
-        case REGISTER_TASK: {
-            RegisterTaskRpc register_rpc(*(RegisterTask*)task_ptr);
-            msg_ptr = new Message(register_rpc);
-            //set msg_id from CallTask
-            msg_ptr->msg_id = register_rpc.data.task_id;
-            break;
-        }
-        
-        default: {
-            FC_THROW_EXCEPTION(lvm::global_exception::task_type_error, \
-                               "the msg_type of task response error " \
-                               "$ {msg_type}", ("msg_type", task_base_prt->task_type));
-            break;
-        }
-    }
-    
-    return msg_ptr;
-}
-
-void RpcMgr::send_message(void* task_ptr) {
-    FC_ASSERT(task_ptr != NULL);
+void RpcMgr::send_message(Message& rpc_msg) {
     uint32_t size_of_message_and_header = 0;
     uint32_t size_with_padding = 0;
-    uint32_t msg_id = 0;
-    Message* msg_ptr = NULL;
     StcpSocketPtr sock_ptr = NULL;
-    
-    //get Message from task
-    try {
-        //the memery of msg_ptr is new in generate_message,
-        //delete the memery here
-        msg_ptr = generate_message(task_ptr);
-        FC_ASSERT(msg_ptr != NULL);
-        
-    } catch (lvm::global_exception::task_type_error) {
-        //TODO
-        delete msg_ptr;
-    }
-    
     //padding rpc data
-    size_of_message_and_header = sizeof(MessageHeader) + msg_ptr->size;
+    size_of_message_and_header = sizeof(MessageHeader) + rpc_msg.size;
     //pad the message we send to a multiple of 16 bytes
     size_with_padding = 16 * ((size_of_message_and_header + 15) / 16);
     std::unique_ptr<char[]> padded_message(new char[size_with_padding]);
-    memcpy(padded_message.get(), (char*)msg_ptr, sizeof(MessageHeader));
-    memcpy(padded_message.get() + sizeof(MessageHeader), msg_ptr->data.data(), msg_ptr->size);
-    //delete msg_ptr
-    msg_id = msg_ptr->msg_id;
-    delete msg_ptr;
+    memcpy(padded_message.get(), (char*)&rpc_msg, sizeof(MessageHeader));
+    memcpy(padded_message.get() + sizeof(MessageHeader), rpc_msg.data.data(), rpc_msg.size);
     
     //send response
     try {
@@ -265,9 +197,6 @@ void RpcMgr::send_message(void* task_ptr) {
         FC_ASSERT(sock_ptr != NULL);
         sock_ptr->write(padded_message.get(), size_with_padding);
         sock_ptr->flush();
-        //close this connection and release it
-        sock_ptr->close();
-        delete_connection();
         
     } catch (fc::exception& er) {
         //TODO

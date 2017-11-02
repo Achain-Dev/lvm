@@ -31,12 +31,12 @@ class RpcMgr {
     void insert_connection(StcpSocketPtr&);
     void delete_connection();
     void close_connections();
-    void send_message(void* task);
+    void send_message(Message& rpc_msg);
     
   private:
     void accept_loop();
     void read_loop(StcpSocketPtr& sock);
-    Message* generate_message(void* task);
+    Message& generate_message(TaskImplResult* task);
     
     
   private:

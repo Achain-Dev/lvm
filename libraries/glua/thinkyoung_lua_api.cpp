@@ -234,7 +234,6 @@ namespace thinkyoung {
                 //    
                 //if (!eval_state_ptr)
                 //    return NULL;
-                    
                 /*thinkyoung::blockchain::ChainInterface* cur_state = eval_state_ptr->_current_state;
                 oContractEntry entry = cur_state->get_contract_entry(std::string(name));
                 

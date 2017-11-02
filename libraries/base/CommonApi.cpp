@@ -9,7 +9,6 @@ commonapi from old Version
 #include <string>
 namespace thinkyoung {
     namespace utilities {
-    
         int common_fread_octets(FILE* fp, void* dst_stream, int len) {
             return (int)fread(dst_stream, len, 1, fp);
         }
@@ -95,5 +94,4 @@ namespace thinkyoung {
             return true;
         }
     }
-    
 } // end namespace thinkyoung::utilities

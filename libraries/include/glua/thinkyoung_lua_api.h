@@ -423,9 +423,6 @@ typedef std::unordered_map<std::string, ContractChangesMapP> AllContractsChanges
 
 struct Code;
 namespace thinkyoung {
-
-
-    
     namespace lua {
         namespace api {
         
@@ -553,6 +550,5 @@ namespace thinkyoung {
         }
     }
 }
-
 
 #endif

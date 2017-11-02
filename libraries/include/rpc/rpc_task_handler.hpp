@@ -20,14 +20,14 @@ class RpcTaskHandler : public TaskHandlerBase {
     RpcTaskHandler(RpcMgr*);
     virtual ~RpcTaskHandler();
     
-    void send_message(void *);
+    void send_message(Message& msg);
     
   protected:
     virtual TaskBase* parse_to_task(const std::string& task,
                                     fc::buffered_istream* argument_stream);
     virtual void task_finished(TaskImplResult* result);
   private:
-    StcpSocketPtr get_connection();
+    Message generate_message(TaskImplResult* task_ptr);
     
   private:
     RpcMgr* _rpc_mgr_ptr;
