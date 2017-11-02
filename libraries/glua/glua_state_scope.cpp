@@ -52,6 +52,10 @@ namespace thinkyoung {
                 set_lua_state_value(_L, key, value, type);
             }
             
+            void GluaStateScope::set_instructions_limit(int limit) {
+                return set_lua_state_instructions_limit(_L, limit);
+            }
+            
             int GluaStateScope::get_instructions_executed_count() {
                 return get_lua_state_instructions_executed_count(_L);
             }

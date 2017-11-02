@@ -13,8 +13,7 @@
 #include <stdint.h>
 #include <string>
 
-#define LUA_TASK_FORM_CLI 0
-#define LUA_TASK_FORM_RPC 1
+struct Message;
 
 enum LUA_TASK_TYPE {
     COMPILE_TASK = 0,
@@ -37,7 +36,7 @@ struct TaskBase {
     
     uint32_t task_id;     //a random value,CLI or achain launch a request with a task_id
     uint16_t task_type;   //here,change LUA_TASK_TYPE to uint32_t, fit FC name
-    uint8_t task_from;    //LUA_TASK_FORM_CLI¡¢LUA_TASK_FORM_RPC
+    uint8_t task_from;    //LUA_TASK_FORM_CLI LUA_TASK_FORM_RPC
 };
 
 struct TaskImplResult : public TaskBase {
@@ -46,6 +45,7 @@ struct TaskImplResult : public TaskBase {
     void   init_task_base(TaskBase* task);
     
     virtual  std::string  get_result_string();
+    virtual  Message get_rpc_message() = 0;
   public:
     uint64_t      error_code;
     std::string   error_msg;
@@ -56,10 +56,59 @@ struct CompileTaskResult : public TaskImplResult {
     CompileTaskResult(TaskBase* task);
     
     virtual  std::string  get_result_string();
+    virtual  Message get_rpc_message();
     
     std::string  gpc_path_file;
 };
 
+struct RegisterTaskResult : public TaskImplResult {
+    RegisterTaskResult() {}
+    RegisterTaskResult(TaskBase* task);
+    
+    virtual  std::string  get_result_string();
+    virtual  Message get_rpc_message();
+    
+    //TODO
+};
+
+struct CallTaskResult : public TaskImplResult {
+    CallTaskResult() {}
+    CallTaskResult(TaskBase* task);
+    
+    virtual  std::string  get_result_string();
+    virtual  Message get_rpc_message();
+    //TODO
+};
+
+struct TransferTaskResult : public TaskImplResult {
+    TransferTaskResult() {}
+    TransferTaskResult(TaskBase* task);
+    
+    virtual  std::string  get_result_string();
+    virtual  Message get_rpc_message();
+    //TODO
+};
+
+struct UpgradeTaskResult : public TaskImplResult {
+    UpgradeTaskResult() {}
+    UpgradeTaskResult(TaskBase* task);
+    
+    virtual  std::string  get_result_string();
+    virtual  Message get_rpc_message();
+    //TODO
+};
+
+struct DestroyTaskResult : public TaskImplResult {
+    DestroyTaskResult() {}
+    DestroyTaskResult(TaskBase* task);
+    
+    virtual  std::string  get_result_string();
+    virtual  Message get_rpc_message();
+    //TODO
+};
+
+
+//task
 struct CompileTask : public TaskBase {
     CompileTask() {
         task_type = COMPILE_TASK;
@@ -109,6 +158,8 @@ struct CallTask : public TaskBase {
     std::string             str_caller_address;
     std::string             str_contract_address;
     std::string             str_contract_id;
+    std::string             str_method;
+    std::string             str_args;
     //GluaStateValue          statevalue;
     Code                    contract_code;
 };
@@ -123,6 +174,7 @@ struct TransferTask : public TaskBase {
     std::string             str_caller_address;
     std::string             str_contract_address;
     std::string             str_contract_id;
+    std::string             str_args;
     //GluaStateValue          statevalue;
     Code                    contract_code;
 };
@@ -154,13 +206,14 @@ FC_REFLECT(TaskBase, (task_id)(task_type)(task_from))
 FC_REFLECT_DERIVED(CompileTask, (TaskBase), (glua_path_file))
 FC_REFLECT_DERIVED(CallTask, (TaskBase), (gpc_code)(num_limit)
                    (str_caller)(str_caller_address)(str_contract_address)
-                   (str_contract_id)(contract_code))
+                   (str_method) (str_args) (str_contract_id)(contract_code))
+
 FC_REFLECT_DERIVED(RegisterTask, (TaskBase), (gpc_code)(num_limit)
                    (str_caller)(str_caller_address)(str_contract_address)
                    (str_contract_id)(contract_code))
 
 FC_REFLECT_DERIVED(TransferTask, (TaskBase), (gpc_code)(num_limit)
-                   (str_caller)(str_caller_address)(str_contract_address)
+                   (str_caller)(str_caller_address)(str_contract_address)(str_args)
                    (str_contract_id)(contract_code))
 
 FC_REFLECT_DERIVED(UpgradeTask, (TaskBase), (gpc_code)(num_limit)
@@ -173,5 +226,10 @@ FC_REFLECT_DERIVED(DestroyTask, (TaskBase), (gpc_code)(num_limit)
 
 FC_REFLECT_DERIVED(TaskImplResult, (TaskBase), (error_code)(error_msg))
 FC_REFLECT_DERIVED(CompileTaskResult, (TaskImplResult), (gpc_path_file))
+FC_REFLECT_DERIVED(RegisterTaskResult, (TaskImplResult))
+FC_REFLECT_DERIVED(CallTaskResult, (TaskImplResult))
+FC_REFLECT_DERIVED(TransferTaskResult, (TaskImplResult))
+FC_REFLECT_DERIVED(UpgradeTaskResult, (TaskImplResult))
+FC_REFLECT_DERIVED(DestroyTaskResult, (TaskImplResult))
 
 #endif

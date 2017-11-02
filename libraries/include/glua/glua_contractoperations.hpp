@@ -45,4 +45,11 @@ struct TransferContractOperation  : ContractOperation {
     virtual void evaluate(TaskAndCallback& _inst_taskandcallback) const;
 };
 
+static void setGluaStateScopeValue(thinkyoung::lua::lib::GluaStateScope& scope,
+                                   const std::string& str_caller,
+                                   const std::string& str_caller_addr,
+                                   const GluaStateValue& statevalue,
+                                   const size_t limit_num
+                                  );
+
 #endif

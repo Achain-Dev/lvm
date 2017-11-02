@@ -2,6 +2,8 @@
 
 #include <fc/time.hpp>
 
+#include <rpc/rpc_msg.hpp>
+
 #include <sstream>
 
 TaskBase::TaskBase() 
@@ -40,11 +42,78 @@ std::string TaskImplResult::get_result_string() {
 
 std::string CompileTaskResult::get_result_string() {
     std::string result = TaskImplResult::get_result_string();
-    
     std::stringstream stream_result;
     stream_result << "  gpc_path_file : " << gpc_path_file;
     result += stream_result.str();
     result = "{" + result + "\n}";
 
     return result;
+}
+
+Message CompileTaskResult::get_rpc_message() {
+    CompileTaskResultRpc reslut(*this);
+    Message rpc_msg(reslut);
+    rpc_msg.msg_id = reslut.data.task_id;
+    return rpc_msg;
+}
+
+Message RegisterTaskResult::get_rpc_message() {
+    RegisterTaskResultRpc reslut(*this);
+    Message rpc_msg(reslut);
+    rpc_msg.msg_id = reslut.data.task_id;
+    return rpc_msg;
+}
+
+Message CallTaskResult::get_rpc_message() {
+    CallTaskResultRpc reslut(*this);
+    Message rpc_msg(reslut);
+    rpc_msg.msg_id = reslut.data.task_id;
+    return rpc_msg;
+}
+
+Message TransferTaskResult::get_rpc_message() {
+    TransferTaskResultRpc reslut(*this);
+    Message rpc_msg(reslut);
+    rpc_msg.msg_id = reslut.data.task_id;
+    return rpc_msg;
+}
+
+Message UpgradeTaskResult::get_rpc_message() {
+    UpgradeTaskResultRpc reslut(*this);
+    Message rpc_msg(reslut);
+    rpc_msg.msg_id = reslut.data.task_id;
+    return rpc_msg;
+}
+
+Message DestroyTaskResult::get_rpc_message() {
+    DestroyTaskResultRpc reslut(*this);
+    Message rpc_msg(reslut);
+    rpc_msg.msg_id = reslut.data.task_id;
+    return rpc_msg;
+}
+
+
+std::string RegisterTaskResult::get_result_string() {
+    //TODO
+    return NULL;
+}
+
+std::string CallTaskResult::get_result_string() {
+    //TODO
+    return NULL;
+}
+
+std::string TransferTaskResult::get_result_string() {
+    //TODO
+    return NULL;
+}
+
+std::string UpgradeTaskResult::get_result_string() {
+    //TODO
+    return NULL;
+}
+
+std::string DestroyTaskResult::get_result_string() {
+    //TODO
+    return NULL;
 }

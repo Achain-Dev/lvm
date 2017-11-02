@@ -19,14 +19,13 @@ rpc message
 #define MAX_MESSAGE_SIZE   (512 * 10000 * 5)
 
 
-enum LuaMessageTypeEnum {
+enum LuaRpcMessageTypeEnum {
     COMPILE_MESSAGE_TYPE = 1008,
     CALL_MESSAGE_TYPE,
     REGTISTER_MESSAGE_TYPE,
-    
-    COMPILE_TASK_EXE_RESULT,
-    CALL_TASK_EXE_RESULT,
-    REGTISTER_TASK_EXE_RESULT,
+    UPGRADE_MESSAGE_TYPE,
+    TRANSFER_MESSAGE_TYPE,
+    DESTROY_MESSAGE_TYPE,
     MESSAGE_COUNT
 };
 
@@ -100,8 +99,9 @@ struct Message : public MessageHeader {
     }
 };
 
+//task:
 struct CompileTaskRpc {
-    static const LuaMessageTypeEnum type;
+    static const LuaRpcMessageTypeEnum type;
     CompileTask data;
     
     CompileTaskRpc() {}
@@ -111,7 +111,7 @@ struct CompileTaskRpc {
 };
 
 struct CallTaskRpc {
-    static const LuaMessageTypeEnum type;
+    static const LuaRpcMessageTypeEnum type;
     CallTask data;
     
     CallTaskRpc() {}
@@ -121,7 +121,7 @@ struct CallTaskRpc {
 };
 
 struct RegisterTaskRpc {
-    static const LuaMessageTypeEnum type;
+    static const LuaRpcMessageTypeEnum type;
     RegisterTask data;
     
     RegisterTaskRpc() {}
@@ -130,8 +130,39 @@ struct RegisterTaskRpc {
     {}
 };
 
+struct UpgradeTaskRpc {
+    static const LuaRpcMessageTypeEnum type;
+    UpgradeTask data;
+    
+    UpgradeTaskRpc() {}
+    UpgradeTaskRpc(UpgradeTask& para) :
+        data(std::move(para))
+    {}
+};
+
+struct TransferTaskRpc {
+    static const LuaRpcMessageTypeEnum type;
+    TransferTask data;
+    
+    TransferTaskRpc() {}
+    TransferTaskRpc(TransferTask& para) :
+        data(std::move(para))
+    {}
+};
+
+struct DestroyTaskRpc {
+    static const LuaRpcMessageTypeEnum type;
+    DestroyTask data;
+    
+    DestroyTaskRpc() {}
+    DestroyTaskRpc(DestroyTask& para) :
+        data(std::move(para))
+    {}
+};
+
+//result:
 struct CompileTaskResultRpc {
-    static const LuaMessageTypeEnum type;
+    static const LuaRpcMessageTypeEnum type;
     CompileTaskResult data;
     
     CompileTaskResultRpc() {}
@@ -140,14 +171,75 @@ struct CompileTaskResultRpc {
     {}
 };
 
-FC_REFLECT_ENUM(LuaMessageTypeEnum, (COMPILE_MESSAGE_TYPE)(CALL_MESSAGE_TYPE)(REGTISTER_MESSAGE_TYPE))
+struct RegisterTaskResultRpc {
+    static const LuaRpcMessageTypeEnum type;
+    RegisterTaskResult data;
+    
+    RegisterTaskResultRpc() {}
+    RegisterTaskResultRpc(RegisterTaskResult& para) :
+        data(std::move(para))
+    {}
+};
+
+struct CallTaskResultRpc {
+    static const LuaRpcMessageTypeEnum type;
+    CallTaskResult data;
+    
+    CallTaskResultRpc() {}
+    CallTaskResultRpc(CallTaskResult& para) :
+        data(std::move(para))
+    {}
+};
+
+struct TransferTaskResultRpc {
+    static const LuaRpcMessageTypeEnum type;
+    TransferTaskResult data;
+    
+    TransferTaskResultRpc() {}
+    TransferTaskResultRpc(TransferTaskResult& para) :
+        data(std::move(para))
+    {}
+};
+
+struct UpgradeTaskResultRpc {
+    static const LuaRpcMessageTypeEnum type;
+    UpgradeTaskResult data;
+    
+    UpgradeTaskResultRpc() {}
+    UpgradeTaskResultRpc(UpgradeTaskResult& para) :
+        data(std::move(para))
+    {}
+};
+
+struct DestroyTaskResultRpc {
+    static const LuaRpcMessageTypeEnum type;
+    DestroyTaskResult data;
+    
+    DestroyTaskResultRpc() {}
+    DestroyTaskResultRpc(DestroyTaskResult& para) :
+        data(std::move(para))
+    {}
+};
+
+
+FC_REFLECT_ENUM(LuaRpcMessageTypeEnum, (COMPILE_MESSAGE_TYPE)(CALL_MESSAGE_TYPE)(REGTISTER_MESSAGE_TYPE))
 FC_REFLECT(MessageHeader, (size)(msg_id)(msg_type)(from))
 FC_REFLECT_DERIVED(Message, (MessageHeader), (data))
 
 FC_REFLECT(CompileTaskRpc, (data))
 FC_REFLECT(CallTaskRpc, (data))
 FC_REFLECT(RegisterTaskRpc, (data))
+FC_REFLECT(TransferTaskRpc, (data))
+FC_REFLECT(UpgradeTaskRpc, (data))
+FC_REFLECT(DestroyTaskRpc, (data))
+
+//result
 FC_REFLECT(CompileTaskResultRpc, (data))
+FC_REFLECT(RegisterTaskResultRpc, (data))
+FC_REFLECT(CallTaskResultRpc, (data))
+FC_REFLECT(TransferTaskResultRpc, (data))
+FC_REFLECT(UpgradeTaskResultRpc, (data))
+FC_REFLECT(DestroyTaskResultRpc, (data))
 
 
 

@@ -5,10 +5,18 @@
 #include <base/exceptions.hpp>
 #include <iostream>
 
-const LuaMessageTypeEnum CompileTaskRpc::type = LuaMessageTypeEnum::COMPILE_MESSAGE_TYPE;
-const LuaMessageTypeEnum CallTaskRpc::type = LuaMessageTypeEnum::CALL_MESSAGE_TYPE;
-const LuaMessageTypeEnum RegisterTaskRpc::type = LuaMessageTypeEnum::REGTISTER_MESSAGE_TYPE;
-const LuaMessageTypeEnum CompileTaskResultRpc::type = LuaMessageTypeEnum::COMPILE_TASK_EXE_RESULT;
+//task
+const LuaRpcMessageTypeEnum CompileTaskRpc::type = LuaRpcMessageTypeEnum::COMPILE_MESSAGE_TYPE;
+const LuaRpcMessageTypeEnum CallTaskRpc::type = LuaRpcMessageTypeEnum::CALL_MESSAGE_TYPE;
+const LuaRpcMessageTypeEnum RegisterTaskRpc::type = LuaRpcMessageTypeEnum::REGTISTER_MESSAGE_TYPE;
+
+//result
+const LuaRpcMessageTypeEnum CompileTaskResultRpc::type = LuaRpcMessageTypeEnum::COMPILE_MESSAGE_TYPE;
+const LuaRpcMessageTypeEnum RegisterTaskResultRpc::type = LuaRpcMessageTypeEnum::REGTISTER_MESSAGE_TYPE;
+const LuaRpcMessageTypeEnum CallTaskResultRpc::type = LuaRpcMessageTypeEnum::CALL_MESSAGE_TYPE;
+const LuaRpcMessageTypeEnum UpgradeTaskResultRpc::type = LuaRpcMessageTypeEnum::UPGRADE_MESSAGE_TYPE;
+const LuaRpcMessageTypeEnum DestroyTaskResultRpc::type = LuaRpcMessageTypeEnum::DESTROY_MESSAGE_TYPE;
+const LuaRpcMessageTypeEnum TransferTaskResultRpc::type = LuaRpcMessageTypeEnum::TRANSFER_MESSAGE_TYPE;
 
 
 RpcTaskHandler::RpcTaskHandler(RpcMgr* rpcMgrPtr) {
@@ -78,16 +86,22 @@ TaskBase* RpcTaskHandler::parse_to_task(const std::string& task,
 }
 
 void RpcTaskHandler::task_finished(TaskImplResult* result) {
+    FC_ASSERT(result != NULL);
+    FC_ASSERT(result->task_from == FROM_RPC);
+    Message msg(generate_message(result));
+    send_message(msg);
 }
 
 
-//luamgr get connection from this interface£¬then send response to chain
-StcpSocketPtr RpcTaskHandler::get_connection() {
+void RpcTaskHandler::send_message(Message& msg) {
     FC_ASSERT(_rpc_mgr_ptr != NULL);
-    return _rpc_mgr_ptr->get_connection();
+    return _rpc_mgr_ptr->send_message(msg);
 }
 
-void RpcTaskHandler::send_message(void* task) {
-    FC_ASSERT(_rpc_mgr_ptr != NULL);
-    return _rpc_mgr_ptr->send_message(task);
+Message RpcTaskHandler::generate_message(TaskImplResult* task_ptr) {
+    FC_ASSERT(task_ptr != NULL);
+    FC_ASSERT(task_ptr->task_type == COMPILE_TASK || task_ptr->task_type == REGISTER_TASK ||
+              task_ptr->task_type == UPGRADE_TASK || task_ptr->task_type == CALL_TASK ||
+              task_ptr->task_type == TRANSFER_TASK || task_ptr->task_type == DESTROY_TASK);
+    return task_ptr->get_rpc_message();
 }
