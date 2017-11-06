@@ -26,7 +26,7 @@ static int unit_test_check_equal_number(lua_State *L) {
         return 1;
     }
     
-    global_glua_chain_api->throw_exception(L, THINKYOUNG_API_SIMPLE_ERROR, "check equal error happen");
+    global_glua_chain_api->throw_exception(L, LVM_API_SIMPLE_ERROR, "check equal error happen");
     return 0;
 }
 
@@ -37,7 +37,7 @@ static int unit_test_check(lua_State *L) {
         return 1;
     }
     
-    global_glua_chain_api->throw_exception(L, THINKYOUNG_API_SIMPLE_ERROR, "check condition error happen");
+    global_glua_chain_api->throw_exception(L, LVM_API_SIMPLE_ERROR, "check condition error happen");
     return 0;
 }
 
@@ -48,13 +48,13 @@ static int stop_vm(lua_State *L) {
 
 static int throw_error(lua_State *L) {
     if (lua_gettop(L) < 1 || !lua_isstring(L, -1)) {
-        global_glua_chain_api->throw_exception(L, THINKYOUNG_API_THROW_ERROR, "empty error");
+        global_glua_chain_api->throw_exception(L, LVM_API_THROW_ERROR, "empty error");
         // lvm::lua::lib::notify_lua_state_stop(L);
         return 0;
     }
     
     const char *msg = luaL_checkstring(L, -1);
-    global_glua_chain_api->throw_exception(L, THINKYOUNG_API_THROW_ERROR, msg);
+    global_glua_chain_api->throw_exception(L, LVM_API_THROW_ERROR, msg);
     L->force_stopping = true;
     // lvm::lua::lib::notify_lua_state_stop(L);
     return 0;
@@ -67,7 +67,7 @@ static const char *empty_string = "";
 */
 static int register_storage(lua_State *L) {
     if (!lua_istable(L, 1)) {
-        global_glua_chain_api->throw_exception(L, THINKYOUNG_API_SIMPLE_ERROR, "first argument of register_storage must be contract");
+        global_glua_chain_api->throw_exception(L, LVM_API_SIMPLE_ERROR, "first argument of register_storage must be contract");
         return 0;
     }
     
@@ -413,7 +413,7 @@ bool luaL_commit_storage_changes(lua_State *L) {
         auto stream = global_glua_chain_api->open_contract_by_address(L, starting_contract_address.c_str());
         
         if (stream && stream->contract_storage_properties.size() > 0) {
-            global_glua_chain_api->throw_exception(L, THINKYOUNG_API_SIMPLE_ERROR, "some storage of this contract not init");
+            global_glua_chain_api->throw_exception(L, LVM_API_SIMPLE_ERROR, "some storage of this contract not init");
             return false;
         }
     }
@@ -422,7 +422,7 @@ bool luaL_commit_storage_changes(lua_State *L) {
         auto stream = global_glua_chain_api->open_contract_by_address(L, it->first.c_str());
         
         if (!stream) {
-            global_glua_chain_api->throw_exception(L, THINKYOUNG_API_SIMPLE_ERROR, "Can't get contract info by contract address %s", it->first.c_str());
+            global_glua_chain_api->throw_exception(L, LVM_API_SIMPLE_ERROR, "Can't get contract info by contract address %s", it->first.c_str());
             return false;
         }
         
@@ -438,7 +438,7 @@ bool luaL_commit_storage_changes(lua_State *L) {
                 const auto &storage_properties_in_chain = stream->contract_storage_properties;
                 
                 if (it->second->size() != storage_properties_in_chain.size()) {
-                    global_glua_chain_api->throw_exception(L, THINKYOUNG_API_SIMPLE_ERROR, "some storage of this contract not init");
+                    global_glua_chain_api->throw_exception(L, LVM_API_SIMPLE_ERROR, "some storage of this contract not init");
                     return false;
                 }
                 
@@ -446,7 +446,7 @@ bool luaL_commit_storage_changes(lua_State *L) {
                     //if (p1.second.before.type == lvm::blockchain::StorageValueTypes::storage_value_null)
                     //  continue;
                     if (storage_properties_in_chain.find(p1.first) == storage_properties_in_chain.end()) {
-                        global_glua_chain_api->throw_exception(L, THINKYOUNG_API_SIMPLE_ERROR, "Can't find storage %s", p1.first.c_str());
+                        global_glua_chain_api->throw_exception(L, LVM_API_SIMPLE_ERROR, "Can't find storage %s", p1.first.c_str());
                         return false;
                     }
                     
@@ -457,7 +457,7 @@ bool luaL_commit_storage_changes(lua_State *L) {
                         // 运行时[]也会变现为{}
                         if (!lvm::blockchain::is_any_table_storage_value_type(storage_info_in_chain)
                                 && !lvm::blockchain::is_any_array_storage_value_type(storage_info_in_chain)) {
-                            global_glua_chain_api->throw_exception(L, THINKYOUNG_API_SIMPLE_ERROR, "storage %s type not matched in chain", p1.first.c_str());
+                            global_glua_chain_api->throw_exception(L, LVM_API_SIMPLE_ERROR, "storage %s type not matched in chain", p1.first.c_str());
                             return false;
                         }
                         
@@ -469,7 +469,7 @@ bool luaL_commit_storage_changes(lua_State *L) {
                             auto item_after = p1.second.after.value.table_value->begin()->second;
                             
                             if (item_after.type != lvm::blockchain::get_item_type_in_table_or_array(storage_info_in_chain)) {
-                                global_glua_chain_api->throw_exception(L, THINKYOUNG_API_SIMPLE_ERROR, "storage %s type not matched in chain", p1.first.c_str());
+                                global_glua_chain_api->throw_exception(L, LVM_API_SIMPLE_ERROR, "storage %s type not matched in chain", p1.first.c_str());
                                 return false;
                             }
                         }
@@ -523,7 +523,7 @@ bool luaL_commit_storage_changes(lua_State *L) {
                         // 运行时[]也会变现为{}
                         if (!lvm::blockchain::is_any_table_storage_value_type(storage_info_in_chain)
                                 && !lvm::blockchain::is_any_array_storage_value_type(storage_info_in_chain)) {
-                            global_glua_chain_api->throw_exception(L, THINKYOUNG_API_SIMPLE_ERROR, "storage %s type not matched in chain", it2->first.c_str());
+                            global_glua_chain_api->throw_exception(L, LVM_API_SIMPLE_ERROR, "storage %s type not matched in chain", it2->first.c_str());
                             return false;
                         }
                         
@@ -535,7 +535,7 @@ bool luaL_commit_storage_changes(lua_State *L) {
                             auto item_after = it2->second.after.value.table_value->begin()->second;
                             
                             if (item_after.type != lvm::blockchain::get_item_type_in_table_or_array(storage_info_in_chain)) {
-                                global_glua_chain_api->throw_exception(L, THINKYOUNG_API_SIMPLE_ERROR, "storage %s type not matched in chain", it2->first.c_str());
+                                global_glua_chain_api->throw_exception(L, LVM_API_SIMPLE_ERROR, "storage %s type not matched in chain", it2->first.c_str());
                                 return false;
                             }
                         }
@@ -573,7 +573,7 @@ bool luaL_commit_storage_changes(lua_State *L) {
                     is_first = true;
                     
                     if (!GluaStorageValue::is_same_base_type_with_type_parse(p.second.type, item_value_type)) {
-                        global_glua_chain_api->throw_exception(L, THINKYOUNG_API_SIMPLE_ERROR,
+                        global_glua_chain_api->throw_exception(L, LVM_API_SIMPLE_ERROR,
                                                                "array/map's value type must be same in contract storage");
                         return false;
                     }
@@ -663,7 +663,7 @@ namespace glua {
             const auto &code_contract_id = get_contract_id_string_in_storage_operation(L);
             
             if (code_contract_id != contract_id) {
-                global_glua_chain_api->throw_exception(L, THINKYOUNG_API_SIMPLE_ERROR, "contract can only access its own storage directly");
+                global_glua_chain_api->throw_exception(L, LVM_API_SIMPLE_ERROR, "contract can only access its own storage directly");
                 lvm::lua::lib::notify_lua_state_stop(L);
                 L->force_stopping = true;
                 return 0;
@@ -723,13 +723,13 @@ namespace glua {
             lvm::lua::lib::increment_lvm_instructions_executed_count(L, CHAIN_GLUA_API_EACH_INSTRUCTIONS_COUNT - 1);
             
             if (lua_gettop(L) < 2) {
-                global_glua_chain_api->throw_exception(L, THINKYOUNG_API_SIMPLE_ERROR, "get_storage need 2 arguments");
+                global_glua_chain_api->throw_exception(L, LVM_API_SIMPLE_ERROR, "get_storage need 2 arguments");
                 lvm::lua::lib::notify_lua_state_stop(L);
                 return 0;
             }
             
             if (!lua_istable(L, 1)) {
-                global_glua_chain_api->throw_exception(L, THINKYOUNG_API_SIMPLE_ERROR, "first argument of get_storage must be contract");
+                global_glua_chain_api->throw_exception(L, LVM_API_SIMPLE_ERROR, "first argument of get_storage must be contract");
                 return 0;
             }
             
@@ -740,7 +740,7 @@ namespace glua {
                 contract_id = empty_string;
                 
             if (!lua_isstring(L, 2) && !lua_isnumber(L, 2)) {
-                global_glua_chain_api->throw_exception(L, THINKYOUNG_API_SIMPLE_ERROR, "second argument of set_storage must be string or integer");
+                global_glua_chain_api->throw_exception(L, LVM_API_SIMPLE_ERROR, "second argument of set_storage must be string or integer");
                 lvm::lua::lib::notify_lua_state_stop(L);
                 L->force_stopping = true;
                 return 0;
@@ -755,14 +755,14 @@ namespace glua {
             const auto &code_contract_id = get_contract_id_string_in_storage_operation(L);
             
             if (code_contract_id != contract_id && code_contract_id != contract_id) {
-                global_glua_chain_api->throw_exception(L, THINKYOUNG_API_SIMPLE_ERROR, "contract can only access its own storage directly");
+                global_glua_chain_api->throw_exception(L, LVM_API_SIMPLE_ERROR, "contract can only access its own storage directly");
                 lvm::lua::lib::notify_lua_state_stop(L);
                 L->force_stopping = true;
                 return 0;
             }
             
             if (!name || strlen(name) < 1) {
-                global_glua_chain_api->throw_exception(L, THINKYOUNG_API_SIMPLE_ERROR, "second argument of set_storage must be name");
+                global_glua_chain_api->throw_exception(L, LVM_API_SIMPLE_ERROR, "second argument of set_storage must be name");
                 return 0;
             }
             
@@ -802,7 +802,7 @@ namespace glua {
             /*
             if (arg2.type >= LVALUE_NOT_SUPPORT)
             {
-            global_glua_chain_api->throw_exception(L, THINKYOUNG_API_SIMPLE_ERROR, "third argument of set_storage must be value");
+            global_glua_chain_api->throw_exception(L, LVM_API_SIMPLE_ERROR, "third argument of set_storage must be value");
             return 0;
             }
             */
@@ -831,14 +831,14 @@ namespace glua {
             auto after = arg2;
             
             if (after.type == lvm::blockchain::StorageValueTypes::storage_value_null) {
-                global_glua_chain_api->throw_exception(L, THINKYOUNG_API_SIMPLE_ERROR, (name_str + "storage can't change to nil").c_str());
+                global_glua_chain_api->throw_exception(L, LVM_API_SIMPLE_ERROR, (name_str + "storage can't change to nil").c_str());
                 lvm::lua::lib::notify_lua_state_stop(L);
                 return 0;
             }
             
             if (before.type != lvm::blockchain::StorageValueTypes::storage_value_null
                     && (before.type != after.type && !lua_storage_is_table(before.type))) {
-                global_glua_chain_api->throw_exception(L, THINKYOUNG_API_SIMPLE_ERROR, (std::string(name) + "storage can't change type").c_str());
+                global_glua_chain_api->throw_exception(L, LVM_API_SIMPLE_ERROR, (std::string(name) + "storage can't change type").c_str());
                 lvm::lua::lib::notify_lua_state_stop(L);
                 return 0;
             }
@@ -847,7 +847,7 @@ namespace glua {
             if (!lvm::lua::lib::is_calling_contract_init_api(L)
                     && before.type == lvm::blockchain::StorageValueTypes::storage_value_null) {
                 // when not in init api
-                global_glua_chain_api->throw_exception(L, THINKYOUNG_API_SIMPLE_ERROR, (std::string(name) + "storage can't register storage after inited").c_str());
+                global_glua_chain_api->throw_exception(L, LVM_API_SIMPLE_ERROR, (std::string(name) + "storage can't register storage after inited").c_str());
                 lvm::lua::lib::notify_lua_state_stop(L);
                 return 0;
             }
@@ -859,7 +859,7 @@ namespace glua {
                 if (nullptr != inner_table) {
                     for (auto it = inner_table->begin(); it != inner_table->end(); ++it) {
                         if (lua_storage_is_table(it->second.type)) {
-                            global_glua_chain_api->throw_exception(L, THINKYOUNG_API_SIMPLE_ERROR, "storage not support nested map");
+                            global_glua_chain_api->throw_exception(L, LVM_API_SIMPLE_ERROR, "storage not support nested map");
                             lvm::lua::lib::notify_lua_state_stop(L);
                             return 0;
                         }
@@ -882,7 +882,7 @@ namespace glua {
                                 
                             } else {
                                 if (table_value_type != it->second.type) {
-                                    global_glua_chain_api->throw_exception(L, THINKYOUNG_API_SIMPLE_ERROR, "storage table type must be same");
+                                    global_glua_chain_api->throw_exception(L, LVM_API_SIMPLE_ERROR, "storage table type must be same");
                                     lvm::lua::lib::notify_lua_state_stop(L);
                                     return 0;
                                 }
@@ -898,7 +898,7 @@ namespace glua {
                             
                         } else {
                             if (table_value_type != it->second.type) {
-                                global_glua_chain_api->throw_exception(L, THINKYOUNG_API_SIMPLE_ERROR, "storage table type must be same");
+                                global_glua_chain_api->throw_exception(L, LVM_API_SIMPLE_ERROR, "storage table type must be same");
                                 lvm::lua::lib::notify_lua_state_stop(L);
                                 return 0;
                             }
@@ -914,7 +914,7 @@ namespace glua {
                                 for (auto it2 = it->after.value.table_value->begin(); it2 != it->after.value.table_value->end(); ++it2) {
                                     if (it2->second.type != lvm::blockchain::StorageValueTypes::storage_value_null) {
                                         if (it2->second.type != table_value_type) {
-                                            global_glua_chain_api->throw_exception(L, THINKYOUNG_API_SIMPLE_ERROR, "storage table type must be same");
+                                            global_glua_chain_api->throw_exception(L, LVM_API_SIMPLE_ERROR, "storage table type must be same");
                                             lvm::lua::lib::notify_lua_state_stop(L);
                                             return 0;
                                         }
@@ -947,13 +947,13 @@ namespace glua {
             lvm::lua::lib::increment_lvm_instructions_executed_count(L, CHAIN_GLUA_API_EACH_INSTRUCTIONS_COUNT - 1);
             
             if (lua_gettop(L) < 3) {
-                global_glua_chain_api->throw_exception(L, THINKYOUNG_API_SIMPLE_ERROR, "set_storage need 2 arguments");
+                global_glua_chain_api->throw_exception(L, LVM_API_SIMPLE_ERROR, "set_storage need 2 arguments");
                 lvm::lua::lib::notify_lua_state_stop(L);
                 return 0;
             }
             
             if (!lua_istable(L, 1)) {
-                global_glua_chain_api->throw_exception(L, THINKYOUNG_API_SIMPLE_ERROR, "first argument of set_storage must be contract");
+                global_glua_chain_api->throw_exception(L, LVM_API_SIMPLE_ERROR, "first argument of set_storage must be contract");
                 return 0;
             }
             
@@ -964,7 +964,7 @@ namespace glua {
                 contract_id = empty_string;
                 
             if (!lua_isstring(L, 2) && !lua_isnumber(L, 2)) {
-                global_glua_chain_api->throw_exception(L, THINKYOUNG_API_SIMPLE_ERROR, "second argument of set_storage must be string or integer");
+                global_glua_chain_api->throw_exception(L, LVM_API_SIMPLE_ERROR, "second argument of set_storage must be string or integer");
                 lvm::lua::lib::notify_lua_state_stop(L);
                 L->force_stopping = true;
                 return 0;
@@ -1014,13 +1014,13 @@ namespace lvm {
 */
 static int rollback_storage(lua_State *L) {
     if (lua_gettop(L) < 1) {
-        global_glua_chain_api->throw_exception(L, THINKYOUNG_API_SIMPLE_ERROR, "rollback_storage need 1 arguments");
+        global_glua_chain_api->throw_exception(L, LVM_API_SIMPLE_ERROR, "rollback_storage need 1 arguments");
         lvm::lua::lib::notify_lua_state_stop(L);
         return 0;
     }
     
     if (!lua_istable(L, 1)) {
-        global_glua_chain_api->throw_exception(L, THINKYOUNG_API_SIMPLE_ERROR, "first argument of rollback_storage must be contract");
+        global_glua_chain_api->throw_exception(L, LVM_API_SIMPLE_ERROR, "first argument of rollback_storage must be contract");
         return 0;
     }
     

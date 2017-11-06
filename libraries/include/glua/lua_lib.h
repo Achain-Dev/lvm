@@ -541,7 +541,7 @@ namespace lvm
         error_msg[LUA_COMPILE_ERROR_MAX_LENGTH-1] = '\-';       \
         memcpy(error, error_msg, sizeof(char)*(1 + strlen(error_msg)));								\
      }												\
-     global_glua_chain_api->throw_exception(L, THINKYOUNG_API_SIMPLE_ERROR, error_format, ##__VA_ARGS__);		\
+     global_glua_chain_api->throw_exception(L, LVM_API_SIMPLE_ERROR, error_format, ##__VA_ARGS__);		\
 } while(0)
 
 #define lcompile_error_set(L, error, error_format, ...) do {	   \
@@ -563,7 +563,7 @@ namespace lvm
 }
 
 #define lmalloc_error(L) do { \
-		global_glua_chain_api->throw_exception(L, THINKYOUNG_API_SIMPLE_ERROR, "malloc memory error"); \
+		global_glua_chain_api->throw_exception(L, LVM_API_SIMPLE_ERROR, "malloc memory error"); \
 	} while(0)
 
 #define GLUA_TYPE_NAMESPACE_PREFIX "$type$"

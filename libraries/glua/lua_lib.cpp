@@ -366,14 +366,14 @@ next: (table) => bool
             // 从当前合约总转账到
             static int transfer_from_contract_to_public_account(lua_State *L) {
                 if (lua_gettop(L) < 3) {
-                    lvm::lua::api::global_glua_chain_api->throw_exception(L, THINKYOUNG_API_SIMPLE_ERROR, "transfer_from_contract_to_public_account need 3 arguments");
+                    lvm::lua::api::global_glua_chain_api->throw_exception(L, LVM_API_SIMPLE_ERROR, "transfer_from_contract_to_public_account need 3 arguments");
                     return 0;
                 }
                 
                 const char *contract_id = get_contract_id_in_api(L);
                 
                 if (nullptr == contract_id) {
-                    lvm::lua::api::global_glua_chain_api->throw_exception(L, THINKYOUNG_API_SIMPLE_ERROR, "contract transfer must be called in contract api");
+                    lvm::lua::api::global_glua_chain_api->throw_exception(L, LVM_API_SIMPLE_ERROR, "contract transfer must be called in contract api");
                     return 0;
                 }
                 
@@ -382,7 +382,7 @@ next: (table) => bool
                 auto amount_str = luaL_checkinteger(L, 3);
                 
                 if (amount_str <= 0) {
-                    lvm::lua::api::global_glua_chain_api->throw_exception(L, THINKYOUNG_API_SIMPLE_ERROR, "amount must be positive");
+                    lvm::lua::api::global_glua_chain_api->throw_exception(L, LVM_API_SIMPLE_ERROR, "amount must be positive");
                     return 0;
                 }
                 
@@ -396,14 +396,14 @@ next: (table) => bool
             /************************************************************************/
             static int transfer_from_contract_to_address(lua_State *L) {
                 if (lua_gettop(L) < 3) {
-                    lvm::lua::api::global_glua_chain_api->throw_exception(L, THINKYOUNG_API_SIMPLE_ERROR, "transfer_from_contract_to_address need 3 arguments");
+                    lvm::lua::api::global_glua_chain_api->throw_exception(L, LVM_API_SIMPLE_ERROR, "transfer_from_contract_to_address need 3 arguments");
                     return 0;
                 }
                 
                 const char *contract_id = get_contract_id_in_api(L);
                 
                 if (!contract_id) {
-                    lvm::lua::api::global_glua_chain_api->throw_exception(L, THINKYOUNG_API_SIMPLE_ERROR, "contract transfer must be called in contract api");
+                    lvm::lua::api::global_glua_chain_api->throw_exception(L, LVM_API_SIMPLE_ERROR, "contract transfer must be called in contract api");
                     return 0;
                 }
                 
@@ -412,7 +412,7 @@ next: (table) => bool
                 auto amount_str = luaL_checkinteger(L, 3);
                 
                 if (amount_str <= 0) {
-                    lvm::lua::api::global_glua_chain_api->throw_exception(L, THINKYOUNG_API_SIMPLE_ERROR, "amount must be positive");
+                    lvm::lua::api::global_glua_chain_api->throw_exception(L, LVM_API_SIMPLE_ERROR, "amount must be positive");
                     return 0;
                 }
                 
@@ -425,7 +425,7 @@ next: (table) => bool
                 const char *cur_contract_id = get_contract_id_in_api(L);
                 
                 if (!cur_contract_id) {
-                    lvm::lua::api::global_glua_chain_api->throw_exception(L, THINKYOUNG_API_SIMPLE_ERROR, "can't get current contract address");
+                    lvm::lua::api::global_glua_chain_api->throw_exception(L, LVM_API_SIMPLE_ERROR, "can't get current contract address");
                     return 0;
                 }
                 
@@ -435,7 +435,7 @@ next: (table) => bool
             
             static int get_contract_balance_amount(lua_State *L) {
                 if (lua_gettop(L) > 0 && !lua_isstring(L, 1)) {
-                    lvm::lua::api::global_glua_chain_api->throw_exception(L, THINKYOUNG_API_SIMPLE_ERROR,
+                    lvm::lua::api::global_glua_chain_api->throw_exception(L, LVM_API_SIMPLE_ERROR,
                             "get_contract_balance_amount need 1 string argument of contract address");
                     return 0;
                 }
@@ -443,13 +443,13 @@ next: (table) => bool
                 auto contract_address = luaL_checkstring(L, 1);
                 
                 if (strlen(contract_address) < 1) {
-                    lvm::lua::api::global_glua_chain_api->throw_exception(L, THINKYOUNG_API_SIMPLE_ERROR,
+                    lvm::lua::api::global_glua_chain_api->throw_exception(L, LVM_API_SIMPLE_ERROR,
                             "contract address can't be empty");
                     return 0;
                 }
                 
                 if (lua_gettop(L) < 2 || !lua_isstring(L, 2)) {
-                    lvm::lua::api::global_glua_chain_api->throw_exception(L, THINKYOUNG_API_SIMPLE_ERROR, "get balance amount need asset symbol");
+                    lvm::lua::api::global_glua_chain_api->throw_exception(L, LVM_API_SIMPLE_ERROR, "get balance amount need asset symbol");
                     return 0;
                 }
                 
@@ -570,7 +570,7 @@ next: (table) => bool
                 auto msg = luaL_checkstring(L, -1);
                 
                 if (nullptr != msg)
-                    lvm::lua::api::global_glua_chain_api->throw_exception(L, THINKYOUNG_API_SIMPLE_ERROR, msg);
+                    lvm::lua::api::global_glua_chain_api->throw_exception(L, LVM_API_SIMPLE_ERROR, msg);
                     
                 return 0;
             }
@@ -604,14 +604,14 @@ next: (table) => bool
             
             static int wait_for_future_random(lua_State *L) {
                 if (lua_gettop(L) < 1 || !lua_isinteger(L, 1)) {
-                    lvm::lua::api::global_glua_chain_api->throw_exception(L, THINKYOUNG_API_SIMPLE_ERROR, "wait_for_future_random need a integer param");
+                    lvm::lua::api::global_glua_chain_api->throw_exception(L, LVM_API_SIMPLE_ERROR, "wait_for_future_random need a integer param");
                     return 0;
                 }
                 
                 auto next = luaL_checkinteger(L, 1);
                 
                 if (next <= 0) {
-                    lvm::lua::api::global_glua_chain_api->throw_exception(L, THINKYOUNG_API_SIMPLE_ERROR, "wait_for_future_random first param must be positive number");
+                    lvm::lua::api::global_glua_chain_api->throw_exception(L, LVM_API_SIMPLE_ERROR, "wait_for_future_random first param must be positive number");
                     return 0;
                 }
                 
@@ -625,7 +625,7 @@ next: (table) => bool
             /************************************************************************/
             static int get_waited_block_random(lua_State *L) {
                 if (lua_gettop(L) < 1 || !lua_isinteger(L, 1)) {
-                    lvm::lua::api::global_glua_chain_api->throw_exception(L, THINKYOUNG_API_SIMPLE_ERROR, "get_waited need a integer param");
+                    lvm::lua::api::global_glua_chain_api->throw_exception(L, LVM_API_SIMPLE_ERROR, "get_waited need a integer param");
                     return 0;
                 }
                 
@@ -637,7 +637,7 @@ next: (table) => bool
             
             static int emit_thinkyoung_event(lua_State *L) {
                 if (lua_gettop(L) < 2 && (!lua_isstring(L, 1) || !lua_isstring(L, 2))) {
-                    lvm::lua::api::global_glua_chain_api->throw_exception(L, THINKYOUNG_API_SIMPLE_ERROR, "emit need 2 string params");
+                    lvm::lua::api::global_glua_chain_api->throw_exception(L, LVM_API_SIMPLE_ERROR, "emit need 2 string params");
                     return 0;
                 }
                 
@@ -854,7 +854,7 @@ next: (table) => bool
                         return 0;
                     }
                     
-                    lvm::lua::api::global_glua_chain_api->throw_exception(L, THINKYOUNG_API_SIMPLE_ERROR, "attempt to update a read-only table!");
+                    lvm::lua::api::global_glua_chain_api->throw_exception(L, LVM_API_SIMPLE_ERROR, "attempt to update a read-only table!");
                     lua_pop(L, 2); // stack: t, k, v
                     return 0;
                     
@@ -876,7 +876,7 @@ next: (table) => bool
             //    end
             static int glua_core_lib_storage_metatable_index(lua_State *L) {
                 if (!lua_isstring(L, 2)) {
-                    lvm::lua::api::global_glua_chain_api->throw_exception(L, THINKYOUNG_API_SIMPLE_ERROR, "only string can be storage key");
+                    lvm::lua::api::global_glua_chain_api->throw_exception(L, LVM_API_SIMPLE_ERROR, "only string can be storage key");
                     L->force_stopping = true;
                     lua_pushnil(L);
                     return 1;
@@ -915,7 +915,7 @@ next: (table) => bool
             //  end
             static int glua_core_lib_storage_metatable_new_index(lua_State *L) {
                 if (!lua_isstring(L, 2)) {
-                    lvm::lua::api::global_glua_chain_api->throw_exception(L, THINKYOUNG_API_SIMPLE_ERROR, "only string can be storage key");
+                    lvm::lua::api::global_glua_chain_api->throw_exception(L, LVM_API_SIMPLE_ERROR, "only string can be storage key");
                     L->force_stopping = true;
                     lua_pushnil(L);
                     return 1;
@@ -1468,7 +1468,7 @@ end
                         for (const auto & item : type_checker.errors())
                             ss << item.second << "\n";
                         if (throw_exception)
-                            lvm::lua::api::global_glua_chain_api->throw_exception(L, THINKYOUNG_API_COMPILE_ERROR, ss.str().c_str());
+                            lvm::lua::api::global_glua_chain_api->throw_exception(L, LVM_API_COMPILE_ERROR, ss.str().c_str());
                         if (error && throw_exception)
                         {
                             lcompile_error_set(L, error, ss.str().c_str());
@@ -1507,7 +1507,7 @@ end
                             catch (glua::core::GluaException const &e)
                             {
                                 if (throw_exception)
-                                    lvm::lua::api::global_glua_chain_api->throw_exception(L, THINKYOUNG_API_COMPILE_ERROR, e.what());
+                                    lvm::lua::api::global_glua_chain_api->throw_exception(L, LVM_API_COMPILE_ERROR, e.what());
                                 if (error && throw_exception)
                                 {
                                     lcompile_error_set(L, error, e.what());
@@ -1726,7 +1726,7 @@ end
                 }
                 catch (std::exception e)
                 {
-                    lvm::lua::api::global_glua_chain_api->throw_exception(L, THINKYOUNG_API_PARSER_ERROR, e.what());
+                    lvm::lua::api::global_glua_chain_api->throw_exception(L, LVM_API_PARSER_ERROR, e.what());
                     if (changed)
                         *changed = false;
                     return origin_code;
@@ -2151,10 +2151,10 @@ end
                     if (error && strlen(error) > 0)
                     {
                         lua_set_compile_error(L, error);
-                        lvm::lua::api::global_glua_chain_api->throw_exception(L, THINKYOUNG_API_COMPILE_ERROR, error);
+                        lvm::lua::api::global_glua_chain_api->throw_exception(L, LVM_API_COMPILE_ERROR, error);
                     }
                     else
-                        lvm::lua::api::global_glua_chain_api->throw_exception(L, THINKYOUNG_API_COMPILE_ERROR, "compile error");
+                        lvm::lua::api::global_glua_chain_api->throw_exception(L, LVM_API_COMPILE_ERROR, "compile error");
                     return false;
                 }
                 if (lvm::lua::api::global_glua_chain_api->has_exception(L))
@@ -2162,7 +2162,7 @@ end
                 if (!luaL_get_contract_apis(L, stream, error))
                 {
                     lcompile_error_get(L, error);
-                    lvm::lua::api::global_glua_chain_api->throw_exception(L, THINKYOUNG_API_COMPILE_ERROR, "compile error");
+                    lvm::lua::api::global_glua_chain_api->throw_exception(L, LVM_API_COMPILE_ERROR, "compile error");
                     return false;
                 }
                 lcompile_error_get(L, error);
@@ -2175,7 +2175,7 @@ end
                     {
                         lua_set_compile_error(L, "contract's id/name/storage property can't be api name");
                         lcompile_error_get(L, error);
-                        lvm::lua::api::global_glua_chain_api->throw_exception(L, THINKYOUNG_API_COMPILE_ERROR, error);
+                        lvm::lua::api::global_glua_chain_api->throw_exception(L, LVM_API_COMPILE_ERROR, error);
                         return false;
                     }
                 }
@@ -2191,7 +2191,7 @@ end
                 // check contract bytecode
                 if (!check_contract_bytecode_stream(L, stream, error))
                 {
-                    lvm::lua::api::global_glua_chain_api->throw_exception(L, THINKYOUNG_API_COMPILE_ERROR, "compile error when check contract bytecode");
+                    lvm::lua::api::global_glua_chain_api->throw_exception(L, LVM_API_COMPILE_ERROR, "compile error when check contract bytecode");
                     return false;
                 }
                 lua_getglobal(L, "last_return");
@@ -2201,7 +2201,7 @@ end
                     const char *error_str = "contract code must end with return a module/table";
                     if (error)
                         strcpy(error, error_str);
-                    lvm::lua::api::global_glua_chain_api->throw_exception(L, THINKYOUNG_API_SIMPLE_ERROR, error_str);
+                    lvm::lua::api::global_glua_chain_api->throw_exception(L, LVM_API_SIMPLE_ERROR, error_str);
                     return false;
                 }
                 else
@@ -2214,7 +2214,7 @@ end
                         const char *error_str = "contract must have init function";
                         if (error)
                             strcpy(error, error_str);
-                        lvm::lua::api::global_glua_chain_api->throw_exception(L, THINKYOUNG_API_SIMPLE_ERROR, error_str);
+                        lvm::lua::api::global_glua_chain_api->throw_exception(L, LVM_API_SIMPLE_ERROR, error_str);
                         return false;
                     }
                     lua_pop(L, 1); // pop init

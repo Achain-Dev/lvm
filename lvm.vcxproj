@@ -197,7 +197,6 @@
     <ClCompile Include="libraries\glua\glua_debug_file.cpp" />
     <ClCompile Include="libraries\glua\glua_decompile.cpp" />
     <ClCompile Include="libraries\glua\glua_disassemble.cpp" />
-    <ClCompile Include="libraries\glua\glua_loader.cpp" />
     <ClCompile Include="libraries\glua\glua_lutil.cpp" />
     <ClCompile Include="libraries\glua\glua_proto_info.cpp" />
     <ClCompile Include="libraries\glua\glua_statement.cpp" />
@@ -286,7 +285,6 @@
     <ClInclude Include="libraries\include\glua\glua_debug_file.h" />
     <ClInclude Include="libraries\include\glua\glua_decompile.h" />
     <ClInclude Include="libraries\include\glua\glua_disassemble.h" />
-    <ClInclude Include="libraries\include\glua\glua_loader.h" />
     <ClInclude Include="libraries\include\glua\glua_lutil.h" />
     <ClInclude Include="libraries\include\glua\glua_parser.h" />
     <ClInclude Include="libraries\include\glua\glua_proto_info.h" />

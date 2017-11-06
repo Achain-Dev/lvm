@@ -123,7 +123,7 @@ namespace glua {
             std::string _error;
             std::vector<std::pair<int, std::string>> _errors;
             std::vector<LuaProtoSTreeP> _current_checking_proto_stack; // 当前正在检查的proto的栈,自顶向下递归检查
-			std::shared_ptr<thinkyoung::lua::core::LuaDebugFileInfo> ldf; // 调试信息文件信息
+			std::shared_ptr<lvm::lua::core::LuaDebugFileInfo> ldf; // 调试信息文件信息
 			size_t _middle_inserted_code_lines; // 中间生成的代码+头部库代码的行数，通过这个来得到源文件和中间lua源文件的行号映射关系
 			// std::vector<LuaFunctionCallExternalChecker> _functioncall_external_checkers; // 附加函数类型检查处理
 			std::vector<std::string> _emit_events; // emit关键字抛出的event名称列表
