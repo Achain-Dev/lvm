@@ -31,7 +31,7 @@ namespace glua
 			}
 			inline GluaException(const char *msg)
 			{
-				_code = THINKYOUNG_API_SIMPLE_ERROR;
+				_code = LVM_API_SIMPLE_ERROR;
 				_error_msg = msg;
 			}
 			inline GluaException& operator=(const GluaException& other) {
@@ -92,7 +92,7 @@ namespace glua
 
 #define LUA_DECLARE_EXCEPTION(TYPE, CODE, WHAT) LUA_DECLARE_DERIVED_EXCEPTION(TYPE, glua::core::GluaException, CODE, WHAT)
 
-namespace thinkyoung
+namespace lvm
 {
 	namespace lua
 	{

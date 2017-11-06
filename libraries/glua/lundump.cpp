@@ -37,7 +37,7 @@ typedef struct {
 
 static l_noret error(LoadState *S, const char *why) {
     luaO_pushfstring(S->L, "%s: %s precompiled chunk", S->name, why);
-	global_glua_chain_api->throw_exception(S->L, THINKYOUNG_API_SIMPLE_ERROR, "%s: %s precompiled chunk", S->name, why);
+	global_glua_chain_api->throw_exception(S->L, LVM_API_SIMPLE_ERROR, "%s: %s precompiled chunk", S->name, why);
 	// TODO: set error in L struct
     luaD_throw(S->L, LUA_ERRSYNTAX);
 }

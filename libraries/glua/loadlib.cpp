@@ -482,7 +482,7 @@ static int searcher_thinkyoung(lua_State *L) {
     }
     if (!stream)
     {
-        global_glua_chain_api->throw_exception(L, THINKYOUNG_API_SIMPLE_ERROR, "load contract %s error", origin_contract_name);
+        global_glua_chain_api->throw_exception(L, LVM_API_SIMPLE_ERROR, "load contract %s error", origin_contract_name);
         return 1;
     }
     struct StreamScope {
@@ -507,7 +507,7 @@ static int searcher_thinkyoung(lua_State *L) {
         {
             memcpy(L->compile_error, error, sizeof(char)*(strlen(error) + 1));
         }
-        global_glua_chain_api->throw_exception(L, THINKYOUNG_API_SIMPLE_ERROR, error ? error : "contract bytecode stream error");
+        global_glua_chain_api->throw_exception(L, LVM_API_SIMPLE_ERROR, error ? error : "contract bytecode stream error");
         return 1;
     }
 

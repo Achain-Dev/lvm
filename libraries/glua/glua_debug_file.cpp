@@ -9,7 +9,7 @@
 #include <boost/property_tree/json_parser.hpp>
 #include <boost/foreach.hpp>
 
-namespace thinkyoung
+namespace lvm
 {
 	namespace lua
 	{
@@ -18,7 +18,7 @@ namespace thinkyoung
 			using boost::property_tree::ptree;
 			using boost::property_tree::read_json;
 			using boost::property_tree::write_json;
-			namespace gle = thinkyoung::lua::exceptions;
+			namespace gle = lvm::lua::exceptions;
 
 
 			LuaDebugFileInfo::LuaDebugFileInfo()

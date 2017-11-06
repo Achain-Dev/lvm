@@ -47,7 +47,7 @@ void UpgradeContractOperation::evaluate(TaskAndCallback& _inst_taskandcallback, 
     if (exception_code > 0) {
         exception_msg = (char*)get_lua_state_value(scope.L(), "exception_msg").string_value;
         
-        if (exception_code == THINKYOUNG_API_LVM_LIMIT_OVER_ERROR) {
+        if (exception_code == LVM_API_LVM_LIMIT_OVER_ERROR) {
             FC_CAPTURE_AND_THROW(lvm::global_exception::contract_run_out_of_money);
             
         } else {
@@ -85,7 +85,7 @@ void DestroyContractOperation::evaluate(TaskAndCallback& _inst_taskandcallback, 
     if (exception_code > 0) {
         exception_msg = (char*)get_lua_state_value(scope.L(), "exception_msg").string_value;
         
-        if (exception_code == THINKYOUNG_API_LVM_LIMIT_OVER_ERROR) {
+        if (exception_code == LVM_API_LVM_LIMIT_OVER_ERROR) {
             FC_CAPTURE_AND_THROW(lvm::global_exception::contract_run_out_of_money);
             
         } else {
@@ -123,7 +123,7 @@ void CallContractOperation::evaluate(TaskAndCallback& _inst_taskandcallback, Tas
     if (exception_code > 0) {
         exception_msg = (char*)get_lua_state_value(scope.L(), "exception_msg").string_value;
         
-        if (exception_code == THINKYOUNG_API_LVM_LIMIT_OVER_ERROR) {
+        if (exception_code == LVM_API_LVM_LIMIT_OVER_ERROR) {
             FC_CAPTURE_AND_THROW(lvm::global_exception::contract_run_out_of_money);
             
         } else {
@@ -163,7 +163,7 @@ void TransferContractOperation::evaluate(TaskAndCallback& _inst_taskandcallback,
     if (exception_code > 0) {
         exception_msg = (char*)get_lua_state_value(scope.L(), "exception_msg").string_value;
         
-        if (exception_code == THINKYOUNG_API_LVM_LIMIT_OVER_ERROR) {
+        if (exception_code == LVM_API_LVM_LIMIT_OVER_ERROR) {
             FC_CAPTURE_AND_THROW(lvm::global_exception::contract_run_out_of_money);
             
         } else {

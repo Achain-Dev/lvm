@@ -2876,7 +2876,7 @@ namespace glua {
 					}
 				} exit_scope(this);
 			}
-			ldf = std::make_shared<thinkyoung::lua::core::LuaDebugFileInfo>();
+			ldf = std::make_shared<lvm::lua::core::LuaDebugFileInfo>();
             this->_proto = std::make_shared<LuaProtoSTree>();
             _current_checking_proto_stack.clear();
             auto global_proto = std::make_shared<LuaProtoSTree>();
