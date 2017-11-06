@@ -4,8 +4,8 @@
 #include <glua/lauxlib.h>
 #include <glua/lobject.h>
 #include <glua/lapi.h>
-#include <glua/thinkyoung_lua_api.h>
-#include <glua/thinkyoung_lua_lib.h>
+#include <glua/lua_api.h>
+#include <glua/lua_lib.h>
 #include <glua/glua_lutil.h>
 
 #include <stdio.h>
@@ -433,7 +433,7 @@ void luaL_doREPL(lua_State *L)
     int status;
     const char *oldprogname = progname;
     progname = nullptr;  /* no 'progname' on errors in interactive mode */
-    int *state = thinkyoung::lua::lib::get_repl_state(L);
+    int *state = lvm::lua::lib::get_repl_state(L);
     while ((status = loadline(L)) != -1 && *state > 0) {
         if (status == LUA_OK)
             status = docall(L, 0, LUA_MULTRET);

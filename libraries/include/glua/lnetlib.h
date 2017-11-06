@@ -14,7 +14,7 @@
 
 #include "glua/lauxlib.h"
 #include "glua/lualib.h"
-#include "glua/thinkyoung_lua_api.h"
+#include "glua/lua_api.h"
 
 typedef boost::asio::ip::tcp::socket TcpSocket;
 

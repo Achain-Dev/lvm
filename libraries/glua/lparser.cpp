@@ -8,12 +8,7 @@
 #define LUA_CORE
 
 #include "glua/lprefix.h"
-
-
-#include <string.h>
-
 #include "glua/lua.h"
-
 #include "glua/lcode.h"
 #include "glua/ldebug.h"
 #include "glua/ldo.h"
@@ -26,10 +21,9 @@
 #include "glua/lstate.h"
 #include "glua/lstring.h"
 #include "glua/ltable.h"
+#include "glua/lua_api.h"
 
-#include "glua/thinkyoung_lua_api.h"
-
-
+#include <string.h>
 
 /* maximum number of local variables per function (must be smaller
    than 250, due to the bytecode format) */

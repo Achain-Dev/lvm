@@ -3,27 +3,21 @@
 ** Basic library
 ** See Copyright Notice in lua.h
 */
-
 #define lbaselib_cpp
 
+#include "glua/lauxlib.h"
 #include "glua/lprefix.h"
-
+#include "glua/lstate.h"
+#include "glua/lua.h"
+#include "glua/lua_lib.h"
+#include "glua/lualib.h"
 
 #include <ctype.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 
-#include "glua/lua.h"
-
-#include "glua/lauxlib.h"
-#include "glua/lualib.h"
-#include "glua/lstate.h"
-
-#include "glua/thinkyoung_lua_lib.h"
-
-using thinkyoung::lua::api::global_glua_chain_api;
-
+using lvm::lua::api::global_glua_chain_api;
 
 static int luaB_print(lua_State *L) {
     int n = lua_gettop(L);  /* number of arguments */
@@ -73,7 +67,7 @@ static int luaB_pprint(lua_State *L)
 
 static int luaB_exit_repl(lua_State *L)
 {
-    thinkyoung::lua::lib::stop_repl(L);
+    lvm::lua::lib::stop_repl(L);
     return 0;
 }
 

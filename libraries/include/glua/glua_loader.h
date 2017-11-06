@@ -1,17 +1,16 @@
-
-#ifndef glua_loader_h
-#define glua_loader_h
+#ifndef _GLUA_LOADER_H_
+#define _GLUA_LOADER_H_
 
 #include "glua/lprefix.h"
+#include "glua/llimits.h"
+#include "glua/lstate.h"
+#include "glua/lua.h"
+#include "glua/lua_api.h"
+
 #include <stdio.h>
 #include <string.h>
 #include <string>
 #include <list>
-
-#include "glua/llimits.h"
-#include "glua/lstate.h"
-#include "glua/lua.h"
-#include "glua/thinkyoung_lua_api.h"
 
 namespace thinkyoung
 {

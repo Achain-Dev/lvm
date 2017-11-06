@@ -35,12 +35,12 @@
 #include <glua/ltable.h>
 #include <glua/ltm.h>
 #include <glua/lvm.h>
-#include <glua/thinkyoung_lua_api.h>
-#include <glua/thinkyoung_lua_lib.h>
+#include <glua/lua_api.h>
+#include <glua/lua_lib.h>
 #include <glua/glua_debug_file.h>
 #include <glua/lremote_debugger.h>
 
-using thinkyoung::lua::api::global_glua_chain_api;
+using lvm::lua::api::global_glua_chain_api;
 
 
 /* limit for table tag-method chains (to avoid loops) */
@@ -971,23 +971,23 @@ newframe:  /* reentry point when frame changes (call/return) */
     k = cl->p->k;  /* local reference to function's constant table */
     base = ci->u.l.base;  /* local copy of function's base */
 
-    int insts_limit = thinkyoung::lua::lib::get_lua_state_value(L, INSTRUCTIONS_LIMIT_LUA_STATE_MAP_KEY).int_value;
-    int *stopped_pointer = thinkyoung::lua::lib::get_lua_state_value(L, LUA_STATE_STOP_TO_RUN_IN_LVM_STATE_MAP_KEY).int_pointer_value;
+    int insts_limit = lvm::lua::lib::get_lua_state_value(L, INSTRUCTIONS_LIMIT_LUA_STATE_MAP_KEY).int_value;
+    int *stopped_pointer = lvm::lua::lib::get_lua_state_value(L, LUA_STATE_STOP_TO_RUN_IN_LVM_STATE_MAP_KEY).int_pointer_value;
     if (nullptr == stopped_pointer)
     {
-        thinkyoung::lua::lib::notify_lua_state_stop(L);
-        thinkyoung::lua::lib::resume_lua_state_running(L);
-        stopped_pointer = thinkyoung::lua::lib::get_lua_state_value(L, LUA_STATE_STOP_TO_RUN_IN_LVM_STATE_MAP_KEY).int_pointer_value;
+        lvm::lua::lib::notify_lua_state_stop(L);
+        lvm::lua::lib::resume_lua_state_running(L);
+        stopped_pointer = lvm::lua::lib::get_lua_state_value(L, LUA_STATE_STOP_TO_RUN_IN_LVM_STATE_MAP_KEY).int_pointer_value;
     }
     int has_insts_limit = insts_limit > 0 ? 1 : 0;
-    int *insts_executed_count = thinkyoung::lua::lib::get_lua_state_value(L, INSTRUCTIONS_EXECUTED_COUNT_LUA_STATE_MAP_KEY).int_pointer_value;
+    int *insts_executed_count = lvm::lua::lib::get_lua_state_value(L, INSTRUCTIONS_EXECUTED_COUNT_LUA_STATE_MAP_KEY).int_pointer_value;
     if (nullptr == insts_executed_count)
     {
         insts_executed_count = static_cast<int*>(lua_malloc(L, sizeof(int)));
         *insts_executed_count = 0;
         GluaStateValue lua_state_value_of_exected_count;
         lua_state_value_of_exected_count.int_pointer_value = insts_executed_count;
-        thinkyoung::lua::lib::set_lua_state_value(L, INSTRUCTIONS_EXECUTED_COUNT_LUA_STATE_MAP_KEY, lua_state_value_of_exected_count, LUA_STATE_VALUE_INT_POINTER);
+        lvm::lua::lib::set_lua_state_value(L, INSTRUCTIONS_EXECUTED_COUNT_LUA_STATE_MAP_KEY, lua_state_value_of_exected_count, LUA_STATE_VALUE_INT_POINTER);
     }
     if (*insts_executed_count < 0)
         *insts_executed_count = 0;

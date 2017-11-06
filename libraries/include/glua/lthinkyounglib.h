@@ -15,8 +15,8 @@
 #include <glua/lualib.h>
 #include <glua/lapi.h>
 
-#include <glua/thinkyoung_lua_api.h>
-#include <glua/thinkyoung_lua_lib.h>
+#include <glua/lua_api.h>
+#include <glua/lua_lib.h>
 
 namespace glua
 {

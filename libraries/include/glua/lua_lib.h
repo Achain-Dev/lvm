@@ -2,29 +2,26 @@
 * some lib for thinkyoung lua
 * @author 
 */
+#ifndef _LUA_LIB_H_
+#define _LUA_LIB_H_
 
-#ifndef thinkyoung_lua_lib_h
-#define thinkyoung_lua_lib_h
-
+#include <glua/lhashmap.h>
+#include <glua/llimits.h>
+#include <glua/lobject.h>
 #include <glua/lprefix.h>
+#include <glua/lua.h>
+#include <glua/lua_api.h>
+#include <glua/lstate.h>
 
-
-#include <setjmp.h>
+#include <list>
 #include <stdlib.h>
 #include <string.h>
-#include <list>
-#include <vector>
+#include <set>
+#include <setjmp.h>
 #include <stack>
 #include <string>
 #include <unordered_map>
-#include <set>
-
-#include <glua/lua.h>
-#include <glua/lhashmap.h>
-#include <glua/lstate.h>
-#include <glua/llimits.h>
-#include <glua/lobject.h>
-#include <glua/thinkyoung_lua_api.h>
+#include <vector>
 
 #define BOOL_VAL(val) ((val)>0?true:false)
 
@@ -71,7 +68,7 @@ typedef struct _GluaStateValueNode {
 } GluaStateValueNode;
 
 
-namespace thinkyoung
+namespace lvm
 {
     namespace lua
     {

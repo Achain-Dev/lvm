@@ -1,19 +1,19 @@
 #ifndef glua_tokenparser_h
 #define glua_tokenparser_h
 
+#include <glua/exceptions.h>
+#include <glua/llimits.h>
 #include <glua/lprefix.h>
+#include <glua/lstate.h>
+#include <glua/lua.h>
+#include <glua/lua_api.h>
+
 #include <stdio.h>
 #include <string.h>
 #include <string>
 #include <list>
 #include <queue>
 #include <sstream>
-
-#include <glua/llimits.h>
-#include <glua/lstate.h>			  
-#include <glua/lua.h>
-#include <glua/thinkyoung_lua_api.h>
-#include <glua/exceptions.h>
 
 namespace glua
 {

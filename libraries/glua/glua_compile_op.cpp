@@ -1,15 +1,13 @@
+#include "base/common_api.hpp"
+#include "base/exceptions.hpp"
+#include "glua/glua_complie_op.h"
+#include "glua/glua_lutil.h"
 
 #include<fc/exception/exception.hpp>
 #include<fc/string.hpp>
 #include<boost/uuid/sha1.hpp>
+
 #include<string>
-
-#include"base/CommonApi.hpp"
-#include"glua/glua_lutil.h"
-#include "Exceptions.hpp"
-
-#include "glua/glua_complie_op.h"
-
 
 CompileOp::CompileOp() {
 }
@@ -35,7 +33,7 @@ fc::path CompileOp::compile_contract(const fc::path& filename) const {
         out_filename = filename_str.substr(0, pos) + ".gpc";
         
     } else {
-        FC_THROW_EXCEPTION(thinkyoung::blockchain::invalid_contract_filename, "contract source file name should end with .lua or .glua");
+        FC_THROW_EXCEPTION(lvm::global_exception::invalid_contract_filename, "contract source file name should end with .lua or .glua");
     }
     
     GluaModuleByteStream* p_lua_module = new GluaModuleByteStream();
@@ -54,10 +52,10 @@ fc::path CompileOp::compile_contract(const fc::path& filename) const {
     glua::util::TimeDiff time_diff;
     time_diff.start();
     
-    if (!thinkyoung::lua::lib::compile_contract_to_stream(filename_str.c_str(), p_lua_module, err_msg, nullptr, USE_TYPE_CHECK)) {
+    if (!lvm::lua::lib::compile_contract_to_stream(filename_str.c_str(), p_lua_module, err_msg, nullptr, USE_TYPE_CHECK)) {
         delete p_lua_module;
         err_msg[LUA_EXCEPTION_MULTILINE_STRNG_MAX_LENGTH] = '\0';
-        FC_THROW_EXCEPTION(thinkyoung::blockchain::compile_contract_fail, err_msg);
+        FC_THROW_EXCEPTION(lvm::global_exception::compile_contract_fail, err_msg);
     }
     
     time_diff.end();
@@ -67,7 +65,7 @@ fc::path CompileOp::compile_contract(const fc::path& filename) const {
         delete p_lua_module;
         p_lua_module = nullptr;
         err_msg[LUA_EXCEPTION_MULTILINE_STRNG_MAX_LENGTH] = '\0';
-        FC_THROW_EXCEPTION(thinkyoung::blockchain::save_bytecode_to_gpcfile_fail, err_msg);
+        FC_THROW_EXCEPTION(lvm::global_exception::save_bytecode_to_gpcfile_fail, err_msg);
     }
     
     if (p_lua_module)
@@ -123,48 +121,48 @@ int CompileOp::save_code_to_file(const fc::string& name, GluaModuleByteStream *s
     sha.get_digest(digest);
     
     for (int i = 0; i < 5; ++i)
-        thinkyoung::utilities::common_fwrite_int(f, (int*)&digest[i]);
+        lvm::utilities::common_fwrite_int(f, (int*)&digest[i]);
         
     int p_new_stream_buf_size = (int)p_new_stream->buff.size();
-    thinkyoung::utilities::common_fwrite_int(f, &p_new_stream_buf_size);
+    lvm::utilities::common_fwrite_int(f, &p_new_stream_buf_size);
     p_new_stream->buff.resize(p_new_stream_buf_size);
-    thinkyoung::utilities::common_fwrite_stream(f, p_new_stream->buff.data(), p_new_stream->buff.size());
+    lvm::utilities::common_fwrite_stream(f, p_new_stream->buff.data(), p_new_stream->buff.size());
     int contract_apis_count = (int)p_new_stream->contract_apis.size();
-    thinkyoung::utilities::common_fwrite_int(f, &contract_apis_count);
+    lvm::utilities::common_fwrite_int(f, &contract_apis_count);
     
     for (int i = 0; i < contract_apis_count; ++i) {
         int api_len = p_new_stream->contract_apis[i].length();
-        thinkyoung::utilities::common_fwrite_int(f, &api_len);
-        thinkyoung::utilities::common_fwrite_stream(f, p_new_stream->contract_apis[i].c_str(), api_len);
+        lvm::utilities::common_fwrite_int(f, &api_len);
+        lvm::utilities::common_fwrite_stream(f, p_new_stream->contract_apis[i].c_str(), api_len);
     }
     
     int offline_apis_count = (int)p_new_stream->offline_apis.size();
-    thinkyoung::utilities::common_fwrite_int(f, &offline_apis_count);
+    lvm::utilities::common_fwrite_int(f, &offline_apis_count);
     
     for (int i = 0; i < offline_apis_count; ++i) {
         int offline_api_len = p_new_stream->offline_apis[i].length();
-        thinkyoung::utilities::common_fwrite_int(f, &offline_api_len);
-        thinkyoung::utilities::common_fwrite_stream(f, p_new_stream->offline_apis[i].c_str(), offline_api_len);
+        lvm::utilities::common_fwrite_int(f, &offline_api_len);
+        lvm::utilities::common_fwrite_stream(f, p_new_stream->offline_apis[i].c_str(), offline_api_len);
     }
     
     int contract_emit_events_count = p_new_stream->contract_emit_events.size();
-    thinkyoung::utilities::common_fwrite_int(f, &contract_emit_events_count);
+    lvm::utilities::common_fwrite_int(f, &contract_emit_events_count);
     
     for (int i = 0; i < contract_emit_events_count; ++i) {
         int event_len = p_new_stream->contract_emit_events[i].length();
-        thinkyoung::utilities::common_fwrite_int(f, &event_len);
-        thinkyoung::utilities::common_fwrite_stream(f, p_new_stream->contract_emit_events[i].c_str(), event_len);
+        lvm::utilities::common_fwrite_int(f, &event_len);
+        lvm::utilities::common_fwrite_stream(f, p_new_stream->contract_emit_events[i].c_str(), event_len);
     }
     
     int contract_storage_properties_count = p_new_stream->contract_storage_properties.size();
-    thinkyoung::utilities::common_fwrite_int(f, &contract_storage_properties_count);
+    lvm::utilities::common_fwrite_int(f, &contract_storage_properties_count);
     
     for (const auto& storage_info : p_new_stream->contract_storage_properties) {
         int storage_len = storage_info.first.length();
-        thinkyoung::utilities::common_fwrite_int(f, &storage_len);
-        thinkyoung::utilities::common_fwrite_stream(f, storage_info.first.c_str(), storage_len);
+        lvm::utilities::common_fwrite_int(f, &storage_len);
+        lvm::utilities::common_fwrite_stream(f, storage_info.first.c_str(), storage_len);
         int storage_type = storage_info.second;
-        thinkyoung::utilities::common_fwrite_int(f, &storage_type);
+        lvm::utilities::common_fwrite_int(f, &storage_type);
     }
     
     fclose(f);

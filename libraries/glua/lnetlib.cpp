@@ -1,7 +1,14 @@
 ﻿#define lnetlib_cpp
 
+#include <glua/lauxlib.h>
+#include <glua/lnetlib.h>
 #include <glua/lprefix.h>
+#include <glua/lua.h>
+#include <glua/lualib.h>
+#include <glua/lua_api.h>
 
+#include <boost/asio.hpp>
+#include <boost/asio/ip/tcp.hpp>
 
 #include <stdlib.h>
 #include <string.h>
@@ -10,17 +17,8 @@
 #include <sstream>
 #include <string>
 #include <thread>
-#include <boost/asio.hpp>
-#include <boost/asio/ip/tcp.hpp>
 
-#include <glua/lua.h>
-
-#include <glua/lauxlib.h>
-#include <glua/lualib.h>
-#include <glua/thinkyoung_lua_api.h>
-#include <glua/lnetlib.h>
-
-using thinkyoung::lua::api::global_glua_chain_api;
+using lvm::lua::api::global_glua_chain_api;
 
 
 namespace glua

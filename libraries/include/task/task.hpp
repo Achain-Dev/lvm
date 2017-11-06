@@ -3,11 +3,12 @@
    date: 2017.10.17
    contract task entity
 */
-
 #ifndef _TASK_H_
 #define _TASK_H_
+
 #include <glua/glua_contractentry.hpp>
-#include <glua/thinkyoung_lua_lib.h>
+#include <glua/lua_lib.h>
+
 #include <fc/filesystem.hpp>
 
 #include <stdint.h>

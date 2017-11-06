@@ -1,11 +1,12 @@
-#ifndef     _GLUA_CONTRACTOPERATIONS_H
-#define    _GLUA_CONTRACTOPERATIONS_H
-
-#include <glua/glua_contractentry.hpp>
-#include <glua/thinkyoung_lua_lib.h>
+#ifndef  _GLUA_CONTRACTOPERATIONS_H_
+#define  _GLUA_CONTRACTOPERATIONS_H_
 
 #include <base/misc.hpp>
+#include <glua/glua_contractentry.hpp>
+#include <glua/lua_lib.h>
+
 #include <fc/reflect/reflect.hpp>
+
 #include <stdint.h>
 #include <string>
 
@@ -45,11 +46,10 @@ struct TransferContractOperation  : ContractOperation {
     virtual void evaluate(TaskAndCallback& _inst_taskandcallback, TaskImplResult* result) const;
 };
 
-static void setGluaStateScopeValue(thinkyoung::lua::lib::GluaStateScope& scope,
+static void setGluaStateScopeValue(lvm::lua::lib::GluaStateScope& scope,
                                    const std::string& str_caller,
                                    const std::string& str_caller_addr,
                                    const GluaStateValue& statevalue,
                                    const size_t limit_num
                                   );
-
 #endif

@@ -1,7 +1,18 @@
 ﻿// TODO: async apis
 
 #include "glua/lprefix.h"
+#include "glua/lua.h"
+#include "glua/lauxlib.h"
+#include "glua/lualib.h"
+#include "glua/lua_api.h"
+#include "glua/lua_lib.h"
+#include "glua/lnetlib.h"
+#include "glua/lapi.h"
 
+#include <boost/asio.hpp>
+#include <boost/asio/ip/tcp.hpp>
+#include <boost/algorithm/string.hpp>
+#include <boost/bind/bind.hpp>
 
 #include <errno.h>
 #include <locale.h>
@@ -12,21 +23,8 @@
 #include <unordered_map>
 #include <vector>
 #include <mutex>
-#include <boost/asio.hpp>
-#include <boost/asio/ip/tcp.hpp>
-#include <boost/algorithm/string.hpp>
 
-#include "glua/lua.h"
-
-#include "glua/lauxlib.h"
-#include "glua/lualib.h"
-#include "glua/thinkyoung_lua_api.h"
-#include "glua/thinkyoung_lua_lib.h"
-#include "glua/lnetlib.h"
-#include "glua/lapi.h"
-#include <boost/bind/bind.hpp>
-
-using thinkyoung::lua::api::global_glua_chain_api;
+using lvm::lua::api::global_glua_chain_api;
 
 #undef LUA_HTTP_SERVERNAME
 #define LUA_HTTP_SERVERNAME "glua_http_server";

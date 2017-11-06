@@ -185,7 +185,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="libraries\base\config.cpp" />
-    <ClCompile Include="libraries\base\CommonApi.cpp" />
+    <ClCompile Include="libraries\base\common_api.cpp" />
     <ClCompile Include="libraries\client\client.cpp" />
     <ClCompile Include="libraries\cli\cli.cpp" />
     <ClCompile Include="libraries\cli\method_data_handler.cpp" />
@@ -255,8 +255,8 @@
     <ClCompile Include="libraries\glua\lutf8lib.cpp" />
     <ClCompile Include="libraries\glua\lvm.cpp" />
     <ClCompile Include="libraries\glua\lzio.cpp" />
-    <ClCompile Include="libraries\glua\thinkyoung_lua_api.cpp" />
-    <ClCompile Include="libraries\glua\thinkyoung_lua_lib.cpp" />
+    <ClCompile Include="libraries\glua\lua_api.cpp" />
+    <ClCompile Include="libraries\glua\lua_lib.cpp" />
     <ClCompile Include="libraries\rpc\rpc_mgr.cpp" />
     <ClCompile Include="libraries\rpc\rpc_task_handler.cpp" />
     <ClCompile Include="libraries\rpc\stcp_socket.cpp" />
@@ -266,6 +266,7 @@
     <ClCompile Include="main.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="libraries\include\base\common_api.hpp" />
     <ClInclude Include="libraries\include\base\config.hpp" />
     <ClInclude Include="libraries\include\base\easylogging++.h" />
     <ClInclude Include="libraries\include\base\exceptions.hpp" />
@@ -273,7 +274,7 @@
     <ClInclude Include="libraries\include\client\client.hpp" />
     <ClInclude Include="libraries\include\cli\cli.hpp" />
     <ClInclude Include="libraries\include\cli\method_data_handler.hpp" />
-    <ClInclude Include="libraries\include\glua\GluaChainApi.hpp" />
+    <ClInclude Include="libraries\include\glua\glua_chain_api.hpp" />
     <ClInclude Include="libraries\include\glua\glua_complie_op.h" />
     <ClInclude Include="libraries\include\glua\exceptions.h" />
     <ClInclude Include="libraries\include\glua\glua_api_types.h" />
@@ -329,8 +330,8 @@
     <ClInclude Include="libraries\include\glua\lundump.h" />
     <ClInclude Include="libraries\include\glua\lvm.h" />
     <ClInclude Include="libraries\include\glua\lzio.h" />
-    <ClInclude Include="libraries\include\glua\thinkyoung_lua_api.h" />
-    <ClInclude Include="libraries\include\glua\thinkyoung_lua_lib.h" />
+    <ClInclude Include="libraries\include\glua\lua_api.h" />
+    <ClInclude Include="libraries\include\glua\lua_lib.h" />
     <ClInclude Include="libraries\include\lua\exceptions.h" />
     <ClInclude Include="libraries\include\rpc\rpc_mgr.hpp" />
     <ClInclude Include="libraries\include\rpc\rpc_msg.hpp" />
