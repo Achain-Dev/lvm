@@ -1,7 +1,7 @@
 #include <stub/stub.hpp>
 #include "base/easylogging++.h"
 #include <glua/glua_complie_op.h>
-#include <glua/GluaChainApi.hpp>
+#include <glua/glua_chain_api.hpp>
 #include <fc/log/logger.hpp>
 
 Stub::Stub() {

@@ -498,9 +498,6 @@
     <ClInclude Include="libraries\include\base\misc.hpp">
       <Filter>libraries\include\base</Filter>
     </ClInclude>
-    <ClInclude Include="libraries\include\glua\GluaChainApi.hpp">
-      <Filter>libraries\include\glua</Filter>
-    </ClInclude>
     <ClInclude Include="libraries\include\glua\glua_contractoperations.hpp">
       <Filter>libraries\include\glua</Filter>
     </ClInclude>
@@ -518,6 +515,9 @@
     </ClInclude>
     <ClInclude Include="libraries\include\base\common_api.hpp">
       <Filter>libraries\include\base</Filter>
+    </ClInclude>
+    <ClInclude Include="libraries\include\glua\glua_chain_api.hpp">
+      <Filter>libraries\include\glua</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

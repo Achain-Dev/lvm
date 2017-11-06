@@ -274,7 +274,7 @@
     <ClInclude Include="libraries\include\client\client.hpp" />
     <ClInclude Include="libraries\include\cli\cli.hpp" />
     <ClInclude Include="libraries\include\cli\method_data_handler.hpp" />
-    <ClInclude Include="libraries\include\glua\GluaChainApi.hpp" />
+    <ClInclude Include="libraries\include\glua\glua_chain_api.hpp" />
     <ClInclude Include="libraries\include\glua\glua_complie_op.h" />
     <ClInclude Include="libraries\include\glua\exceptions.h" />
     <ClInclude Include="libraries\include\glua\glua_api_types.h" />

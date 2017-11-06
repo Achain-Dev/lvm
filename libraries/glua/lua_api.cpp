@@ -8,7 +8,7 @@
 #include "glua/glua_lutil.h"
 #include "glua/lstate.h"
 #include "glua/lobject.h"
-#include <glua/GluaChainApi.hpp>
+#include <glua/glua_chain_api.hpp>
 #include <glua/glua_contractentry.hpp>
 
 #include <stdio.h>
