@@ -3,11 +3,12 @@
    date: 2017.10.17
    contract task entity
 */
-
 #ifndef _TASK_H_
 #define _TASK_H_
+
 #include <glua/glua_contractentry.hpp>
-#include <glua/thinkyoung_lua_lib.h>
+#include <glua/lua_lib.h>
+
 #include <fc/filesystem.hpp>
 
 #include <stdint.h>
@@ -122,7 +123,7 @@ struct RegisterTask : public TaskBase {
     };
     
     std::string             gpc_code;
-    int                         num_limit;
+    int                     num_limit;
     std::string             str_caller;
     std::string             str_caller_address;
     std::string             str_contract_address;
@@ -138,7 +139,7 @@ struct UpgradeTask : public TaskBase {
         task_type = UPGRADE_TASK;
     };
     std::string             gpc_code;
-    int                         num_limit;
+    int                     num_limit;
     std::string             str_caller;
     std::string             str_caller_address;
     std::string             str_contract_address;
@@ -153,7 +154,7 @@ struct CallTask : public TaskBase {
         task_type = CALL_TASK;
     };
     std::string             gpc_code;
-    int                         num_limit;
+    int                     num_limit;
     std::string             str_caller;
     std::string             str_caller_address;
     std::string             str_contract_address;
@@ -169,7 +170,7 @@ struct TransferTask : public TaskBase {
         task_type = TRANSFER_TASK;
     };
     std::string             gpc_code;
-    int                         num_limit;
+    int                     num_limit;
     std::string             str_caller;
     std::string             str_caller_address;
     std::string             str_contract_address;
@@ -184,7 +185,7 @@ struct DestroyTask : public TaskBase {
         task_type = DESTROY_TASK;
     };
     std::string            gpc_code;
-    int                        num_limit;
+    int                    num_limit;
     std::string            str_caller;
     std::string            str_caller_address;
     std::string            str_contract_address;

@@ -3,34 +3,30 @@
 ** Debug Interface
 ** See Copyright Notice in lua.h
 */
-
 #define ldebug_cpp
 #define LUA_CORE
 
-#include "glua/lprefix.h"
-
+#include <glua/lapi.h>
+#include <glua/lcode.h>
+#include <glua/ldebug.h>
+#include <glua/ldo.h>
+#include <glua/lfunc.h>
+#include <glua/lobject.h>
+#include <glua/lopcodes.h>
+#include <glua/lprefix.h>
+#include <glua/lstate.h>
+#include <glua/lstring.h>
+#include <glua/ltable.h>
+#include <glua/ltm.h>
+#include <glua/lua.h>
+#include <glua/lua_api.h>
+#include <glua/lvm.h>
 
 #include <stdarg.h>
 #include <stddef.h>
 #include <string.h>
 
-#include "glua/lua.h"
-
-#include "glua/lapi.h"
-#include "glua/lcode.h"
-#include "glua/ldebug.h"
-#include "glua/ldo.h"
-#include "glua/lfunc.h"
-#include "glua/lobject.h"
-#include "glua/lopcodes.h"
-#include "glua/lstate.h"
-#include "glua/lstring.h"
-#include "glua/ltable.h"
-#include "glua/ltm.h"
-#include "glua/lvm.h"
-#include <glua/thinkyoung_lua_api.h>
-
-using thinkyoung::lua::api::global_glua_chain_api;
+using lvm::lua::api::global_glua_chain_api;
 
 
 

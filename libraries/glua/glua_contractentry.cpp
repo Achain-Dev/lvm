@@ -1,7 +1,7 @@
-#include <base/CommonApi.hpp>
+#include <base/common_api.hpp>
 #include <base/exceptions.hpp>
 #include <glua/glua_contractentry.hpp>
-#include <glua/thinkyoung_lua_api.h>
+#include <glua/lua_api.h>
 
 #include <fc/array.hpp>
 #include <fc/crypto/ripemd160.hpp>
@@ -10,10 +10,9 @@
 #include <fc/string.hpp>
 #include <boost/uuid/sha1.hpp>
 
-
 #define INIT_API_FROM_FILE(dst_set, except_1, except_2, except_3)\
 {\
-read_count = thinkyoung::utilities::common_fread_int(f, &api_count); \
+read_count = lvm::utilities::common_fread_int(f, &api_count); \
 if (read_count != 1)\
 {\
 fclose(f); \
@@ -22,7 +21,7 @@ throw except_1(); \
 for (int i = 0; i < api_count; i++)\
 {\
 int api_len = 0; \
-read_count = thinkyoung::utilities::common_fread_int(f, &api_len); \
+read_count = lvm::utilities::common_fread_int(f, &api_len); \
 if (read_count != 1)\
 {\
 fclose(f); \
@@ -34,7 +33,7 @@ if (api_buf == NULL) \
 fclose(f); \
 FC_ASSERT(api_buf == NULL, "malloc fail!"); \
 }\
-read_count = thinkyoung::utilities::common_fread_octets(f, api_buf, api_len); \
+read_count = lvm::utilities::common_fread_octets(f, api_buf, api_len); \
 if (read_count != 1)\
 {\
 fclose(f); \
@@ -49,7 +48,7 @@ free(api_buf); \
 
 #define INIT_STORAGE_FROM_FILE(dst_map, except_1, except_2, except_3, except_4)\
 {\
-read_count = thinkyoung::utilities::common_fread_int(f, &storage_count); \
+read_count = lvm::utilities::common_fread_int(f, &storage_count); \
 if (read_count != 1)\
 {\
 fclose(f); \
@@ -58,7 +57,7 @@ throw except_1(); \
 for (int i = 0; i < storage_count; i++)\
 {\
 int storage_name_len = 0; \
-read_count = thinkyoung::utilities::common_fread_int(f, &storage_name_len); \
+read_count = lvm::utilities::common_fread_int(f, &storage_name_len); \
 if (read_count != 1)\
 {\
 fclose(f); \
@@ -70,7 +69,7 @@ if (storage_buf == NULL) \
 fclose(f); \
 FC_ASSERT(storage_buf == NULL, "malloc fail!"); \
 }\
-read_count = thinkyoung::utilities::common_fread_octets(f, storage_buf, storage_name_len); \
+read_count = lvm::utilities::common_fread_octets(f, storage_buf, storage_name_len); \
 if (read_count != 1)\
 {\
 fclose(f); \
@@ -78,7 +77,7 @@ free(storage_buf); \
 throw except_3(); \
 }\
 storage_buf[storage_name_len] = '\0'; \
-read_count = thinkyoung::utilities::common_fread_int(f, (int*)&storage_type); \
+read_count = lvm::utilities::common_fread_int(f, (int*)&storage_type); \
 if (read_count != 1)\
 {\
 fclose(f); \
@@ -104,28 +103,28 @@ Code::Code(const fc::path& path) {
     int read_count = 0;
     
     for (int i = 0; i < 5; ++i) {
-        read_count = thinkyoung::utilities::common_fread_int(f, (int*)&digest[i]);
+        read_count = lvm::utilities::common_fread_int(f, (int*)&digest[i]);
         
         if (read_count != 1) {
             fclose(f);
-            FC_THROW_EXCEPTION(thinkyoung::blockchain::read_verify_code_fail, "Read verify code fail!");
+            FC_THROW_EXCEPTION(lvm::global_exception::read_verify_code_fail, "Read verify code fail!");
         }
     }
     
     int len = 0;
-    read_count = thinkyoung::utilities::common_fread_int(f, &len);
+    read_count = lvm::utilities::common_fread_int(f, &len);
     
     if (read_count != 1 || len < 0 || (len >= (fsize - ftell(f)))) {
         fclose(f);
-        FC_THROW_EXCEPTION(thinkyoung::blockchain::read_bytescode_len_fail, "Read bytescode len fail!");
+        FC_THROW_EXCEPTION(lvm::global_exception::read_bytescode_len_fail, "Read bytescode len fail!");
     }
     
     byte_code.resize(len);
-    read_count = thinkyoung::utilities::common_fread_octets(f, byte_code.data(), len);
+    read_count = lvm::utilities::common_fread_octets(f, byte_code.data(), len);
     
     if (read_count != 1) {
         fclose(f);
-        FC_THROW_EXCEPTION(thinkyoung::blockchain::read_bytescode_fail, "Read bytescode fail!");
+        FC_THROW_EXCEPTION(lvm::global_exception::read_bytescode_fail, "Read bytescode fail!");
     }
     
     boost::uuids::detail::sha1 sha;
@@ -135,7 +134,7 @@ Code::Code(const fc::path& path) {
     
     if (memcmp((void*)digest, (void*)check_digest, sizeof(unsigned int) * 5)) {
         fclose(f);
-        FC_THROW_EXCEPTION(thinkyoung::blockchain::verify_bytescode_sha1_fail, "Verify bytescode SHA1 fail!");
+        FC_THROW_EXCEPTION(lvm::global_exception::verify_bytescode_sha1_fail, "Verify bytescode SHA1 fail!");
     }
     
     for (int i = 0; i < 5; ++i) {
@@ -149,14 +148,26 @@ Code::Code(const fc::path& path) {
     
     int api_count = 0;
     char* api_buf = nullptr;
-    using namespace thinkyoung::blockchain;
-    INIT_API_FROM_FILE(abi, read_api_count_fail, read_api_len_fail, read_api_fail);
-    INIT_API_FROM_FILE(offline_abi, read_offline_api_count_fail, read_offline_api_len_fail, read_offline_api_fail);
-    INIT_API_FROM_FILE(events, read_events_count_fail, read_events_len_fail, read_events_fail);
+    INIT_API_FROM_FILE(abi,
+                       lvm::global_exception::read_api_count_fail,
+                       lvm::global_exception::read_api_len_fail,
+                       lvm::global_exception::read_api_fail);
+    INIT_API_FROM_FILE(offline_abi,
+                       lvm::global_exception::read_offline_api_count_fail,
+                       lvm::global_exception::read_offline_api_len_fail,
+                       lvm::global_exception::read_offline_api_fail);
+    INIT_API_FROM_FILE(events,
+                       lvm::global_exception::read_events_count_fail,
+                       lvm::global_exception::read_events_len_fail,
+                       lvm::global_exception::read_events_fail);
     int storage_count = 0;
     char* storage_buf = nullptr;
-    StorageValueTypes storage_type;
-    INIT_STORAGE_FROM_FILE(storage_properties, read_storage_count_fail, read_storage_name_len_fail, read_storage_name_fail, read_storage_type_fail);
+    lvm::blockchain::StorageValueTypes storage_type;
+    INIT_STORAGE_FROM_FILE(storage_properties,
+                           lvm::global_exception::read_storage_count_fail,
+                           lvm::global_exception::read_storage_name_len_fail,
+                           lvm::global_exception::read_storage_name_fail,
+                           lvm::global_exception::read_storage_type_fail);
     fclose(f);
 }
 std::string Code::GetHash() const {

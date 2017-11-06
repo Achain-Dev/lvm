@@ -3,7 +3,7 @@
 #include <glua/glua_lutil.h>
 #include <glua/exceptions.h>
 
-using thinkyoung::lua::api::global_glua_chain_api;
+using lvm::lua::api::global_glua_chain_api;
 
 namespace glua
 {

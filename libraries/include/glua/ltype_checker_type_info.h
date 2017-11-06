@@ -1,7 +1,17 @@
 #ifndef ltype_checker_type_info_h
 #define ltype_checker_type_info_h
 
+#include <glua/exceptions.h>
+#include <glua/glua_debug_file.h>
+#include <glua/glua_lutil.h>
+#include <glua/glua_tokenparser.h>
+#include <glua/llimits.h>
+#include <glua/lparsercombinator.h>
 #include <glua/lprefix.h>
+#include <glua/lstate.h>
+#include <glua/lua.h>
+#include <glua/lua_api.h>
+
 #include <stdio.h>
 #include <string.h>
 #include <string>
@@ -12,16 +22,6 @@
 #include <memory>
 #include <functional>
 #include <algorithm>
-
-#include <glua/llimits.h>
-#include <glua/lstate.h>		  
-#include <glua/lua.h>
-#include <glua/thinkyoung_lua_api.h>
-#include <glua/glua_tokenparser.h>
-#include <glua/lparsercombinator.h>
-#include <glua/exceptions.h>
-#include <glua/glua_debug_file.h>
-#include <glua/glua_lutil.h>
 
 namespace glua {
 	namespace parser {

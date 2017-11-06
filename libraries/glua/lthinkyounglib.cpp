@@ -13,7 +13,7 @@
 
 #include <glua/lthinkyounglib.h>
 
-using thinkyoung::lua::api::global_glua_chain_api;
+using lvm::lua::api::global_glua_chain_api;
 
 #undef VERSION
 #define VERSION (l_mathop(3.0))
@@ -42,21 +42,21 @@ static int unit_test_check(lua_State *L) {
 }
 
 static int stop_vm(lua_State *L) {
-    thinkyoung::lua::lib::notify_lua_state_stop(L);
+    lvm::lua::lib::notify_lua_state_stop(L);
     return 0;
 }
 
 static int throw_error(lua_State *L) {
     if (lua_gettop(L) < 1 || !lua_isstring(L, -1)) {
         global_glua_chain_api->throw_exception(L, THINKYOUNG_API_THROW_ERROR, "empty error");
-        // thinkyoung::lua::lib::notify_lua_state_stop(L);
+        // lvm::lua::lib::notify_lua_state_stop(L);
         return 0;
     }
     
     const char *msg = luaL_checkstring(L, -1);
     global_glua_chain_api->throw_exception(L, THINKYOUNG_API_THROW_ERROR, msg);
     L->force_stopping = true;
-    // thinkyoung::lua::lib::notify_lua_state_stop(L);
+    // lvm::lua::lib::notify_lua_state_stop(L);
     return 0;
 }
 
@@ -80,7 +80,7 @@ static int register_storage(lua_State *L) {
     lua_pop(L, 1);
     char *name = (char*)luaL_checkstring(L, 2);
     
-    if (thinkyoung::lua::lib::check_in_lua_sandbox(L)) {
+    if (lvm::lua::lib::check_in_lua_sandbox(L)) {
         printf("register storage in sandbox %s:%s\n", contract_name, name);
         return 0;
     }
@@ -91,7 +91,7 @@ static int register_storage(lua_State *L) {
 }
 
 static GluaStorageTableReadList *get_or_init_storage_table_read_list(lua_State *L) {
-    GluaStateValueNode state_value_node = thinkyoung::lua::lib::get_lua_state_value_node(L, LUA_STORAGE_READ_TABLES_KEY);
+    GluaStateValueNode state_value_node = lvm::lua::lib::get_lua_state_value_node(L, LUA_STORAGE_READ_TABLES_KEY);
     GluaStorageTableReadList *list = nullptr;;
     
     if (state_value_node.type != LUA_STATE_VALUE_POINTER || nullptr == state_value_node.value.pointer_value) {
@@ -99,7 +99,7 @@ static GluaStorageTableReadList *get_or_init_storage_table_read_list(lua_State *
         new (list)GluaStorageTableReadList();
         GluaStateValue value_to_store;
         value_to_store.pointer_value = list;
-        thinkyoung::lua::lib::set_lua_state_value(L, LUA_STORAGE_READ_TABLES_KEY, value_to_store, LUA_STATE_VALUE_POINTER);
+        lvm::lua::lib::set_lua_state_value(L, LUA_STORAGE_READ_TABLES_KEY, value_to_store, LUA_STATE_VALUE_POINTER);
         
     } else {
         list = (GluaStorageTableReadList*)state_value_node.value.pointer_value;
@@ -111,7 +111,7 @@ static GluaStorageTableReadList *get_or_init_storage_table_read_list(lua_State *
 static struct GluaStorageValue get_last_storage_changed_value(lua_State *L, const char *contract_id,
         GluaStorageChangeList *list, const std::string &key) {
     struct GluaStorageValue nil_value;
-    nil_value.type = thinkyoung::blockchain::StorageValueTypes::storage_value_null;
+    nil_value.type = lvm::blockchain::StorageValueTypes::storage_value_null;
     auto post_when_read_table = [&](GluaStorageValue value) {
         if (lua_storage_is_table(value.type)) {
             // when read a table, snapshot it and record it, when commit, merge to the changes
@@ -143,7 +143,7 @@ static struct GluaStorageValue get_last_storage_changed_value(lua_State *L, cons
             new (list)GluaStorageChangeList();
             GluaStateValue value_to_store;
             value_to_store.pointer_value = list;
-            thinkyoung::lua::lib::set_lua_state_value(L, LUA_STORAGE_CHANGELIST_KEY, value_to_store, LUA_STATE_VALUE_POINTER);
+            lvm::lua::lib::set_lua_state_value(L, LUA_STORAGE_CHANGELIST_KEY, value_to_store, LUA_STATE_VALUE_POINTER);
         }
         
         GluaStorageChangeItem change_item;
@@ -179,7 +179,7 @@ static bool lua_push_storage_table_value(lua_State *L, GluaTableMap *map, int ty
     lua_createtable(L, 0, 0);
     
     // when is array, push as array
-    if (lua_storage_is_array((thinkyoung::blockchain::StorageValueTypes) type)) {
+    if (lua_storage_is_array((lvm::blockchain::StorageValueTypes) type)) {
         // sort the unordered_map, then push items keys, 1,2,3,... one by one into the new table array
         auto count = 0;
         
@@ -212,28 +212,28 @@ bool lua_push_storage_value(lua_State *L, const GluaStorageValue &value) {
         return false;
         
     switch (value.type) {
-        case thinkyoung::blockchain::StorageValueTypes::storage_value_int:
+        case lvm::blockchain::StorageValueTypes::storage_value_int:
             lua_pushinteger(L, value.value.int_value);
             break;
             
-        case thinkyoung::blockchain::StorageValueTypes::storage_value_bool:
+        case lvm::blockchain::StorageValueTypes::storage_value_bool:
             lua_pushboolean(L, value.value.bool_value);
             break;
             
-        case thinkyoung::blockchain::StorageValueTypes::storage_value_number:
+        case lvm::blockchain::StorageValueTypes::storage_value_number:
             lua_pushnumber(L, value.value.number_value);
             break;
             
-        case thinkyoung::blockchain::StorageValueTypes::storage_value_null:
+        case lvm::blockchain::StorageValueTypes::storage_value_null:
             lua_pushnil(L);
             break;
             
-        case thinkyoung::blockchain::StorageValueTypes::storage_value_string:
+        case lvm::blockchain::StorageValueTypes::storage_value_string:
             lua_pushstring(L, value.value.string_value);
             break;
             
-        case thinkyoung::blockchain::StorageValueTypes::storage_value_stream: {
-            auto stream = (thinkyoung::lua::lib::GluaByteStream*) value.value.userdata_value;
+        case lvm::blockchain::StorageValueTypes::storage_value_stream: {
+            auto stream = (lvm::lua::lib::GluaByteStream*) value.value.userdata_value;
             lua_pushlightuserdata(L, (void*)stream);
             luaL_getmetatable(L, "GluaByteStream_metatable");
             lua_setmetatable(L, -2);
@@ -241,8 +241,8 @@ bool lua_push_storage_value(lua_State *L, const GluaStorageValue &value) {
         break;
         
         default: {
-            if (thinkyoung::blockchain::is_any_table_storage_value_type(value.type)
-                    || thinkyoung::blockchain::is_any_array_storage_value_type(value.type)) {
+            if (lvm::blockchain::is_any_table_storage_value_type(value.type)
+                    || lvm::blockchain::is_any_array_storage_value_type(value.type)) {
                 lua_push_storage_table_value(L, value.value.table_value, value.type);
                 break;
             }
@@ -279,7 +279,7 @@ static GluaStorageChangeItem diff_storage_change_if_is_table(lua_State *L, GluaS
             continue;
         }
         
-        if (it1->second.type == thinkyoung::blockchain::StorageValueTypes::storage_value_null)
+        if (it1->second.type == lvm::blockchain::StorageValueTypes::storage_value_null)
             continue;
             
         new_before->insert(new_before->end(), std::make_pair(it1->first, it1->second));
@@ -324,7 +324,7 @@ bool luaL_commit_storage_changes(lua_State *L) {
     // TODO: 如何获取到这些合约的内存中的对象
     // printf("");
     }*/
-    GluaStateValueNode storage_changelist_node = thinkyoung::lua::lib::get_lua_state_value_node(L, LUA_STORAGE_CHANGELIST_KEY);
+    GluaStateValueNode storage_changelist_node = lvm::lua::lib::get_lua_state_value_node(L, LUA_STORAGE_CHANGELIST_KEY);
     
     if (global_glua_chain_api->has_exception(L)) {
         if (storage_changelist_node.type == LUA_STATE_VALUE_POINTER && nullptr != storage_changelist_node.value.pointer_value) {
@@ -345,7 +345,7 @@ bool luaL_commit_storage_changes(lua_State *L) {
         new (list)GluaStorageChangeList();
         GluaStateValue value_to_store;
         value_to_store.pointer_value = list;
-        thinkyoung::lua::lib::set_lua_state_value(L, LUA_STORAGE_CHANGELIST_KEY, value_to_store, LUA_STATE_VALUE_POINTER);
+        lvm::lua::lib::set_lua_state_value(L, LUA_STORAGE_CHANGELIST_KEY, value_to_store, LUA_STATE_VALUE_POINTER);
         storage_changelist_node.value.pointer_value = list;
     }
     
@@ -407,9 +407,9 @@ bool luaL_commit_storage_changes(lua_State *L) {
     }
     
     // 如果是调用合约初始化init函数，并且storage不为空，而changes为空，报错
-    if (thinkyoung::lua::lib::is_calling_contract_init_api(L)
+    if (lvm::lua::lib::is_calling_contract_init_api(L)
             && changes.size() == 0) {
-        auto starting_contract_address = thinkyoung::lua::lib::get_starting_contract_address(L);
+        auto starting_contract_address = lvm::lua::lib::get_starting_contract_address(L);
         auto stream = global_glua_chain_api->open_contract_by_address(L, starting_contract_address.c_str());
         
         if (stream && stream->contract_storage_properties.size() > 0) {
@@ -429,8 +429,8 @@ bool luaL_commit_storage_changes(lua_State *L) {
         // 如果是调用init API，并且storage所处的合约地址和初始调用的合约地址一样，则要检查storage的after类型是否能和编译期时的storage类型匹配
         bool is_in_starting_contract_init = false;
         
-        if (thinkyoung::lua::lib::is_calling_contract_init_api(L)) {
-            auto starting_contract_address = thinkyoung::lua::lib::get_starting_contract_address(L);
+        if (lvm::lua::lib::is_calling_contract_init_api(L)) {
+            auto starting_contract_address = lvm::lua::lib::get_starting_contract_address(L);
             
             if (it->first == starting_contract_address) {
                 // 检查storage的after类型是否能和编译期时的storage类型匹配
@@ -443,7 +443,7 @@ bool luaL_commit_storage_changes(lua_State *L) {
                 }
                 
                 for (auto &p1 : *(it->second)) {
-                    //if (p1.second.before.type == thinkyoung::blockchain::StorageValueTypes::storage_value_null)
+                    //if (p1.second.before.type == lvm::blockchain::StorageValueTypes::storage_value_null)
                     //  continue;
                     if (storage_properties_in_chain.find(p1.first) == storage_properties_in_chain.end()) {
                         global_glua_chain_api->throw_exception(L, THINKYOUNG_API_SIMPLE_ERROR, "Can't find storage %s", p1.first.c_str());
@@ -452,42 +452,42 @@ bool luaL_commit_storage_changes(lua_State *L) {
                     
                     auto storage_info_in_chain = storage_properties_in_chain.at(p1.first);
                     
-                    if (thinkyoung::blockchain::is_any_table_storage_value_type(p1.second.after.type)
-                            || thinkyoung::blockchain::is_any_array_storage_value_type(p1.second.after.type)) {
+                    if (lvm::blockchain::is_any_table_storage_value_type(p1.second.after.type)
+                            || lvm::blockchain::is_any_array_storage_value_type(p1.second.after.type)) {
                         // 运行时[]也会变现为{}
-                        if (!thinkyoung::blockchain::is_any_table_storage_value_type(storage_info_in_chain)
-                                && !thinkyoung::blockchain::is_any_array_storage_value_type(storage_info_in_chain)) {
+                        if (!lvm::blockchain::is_any_table_storage_value_type(storage_info_in_chain)
+                                && !lvm::blockchain::is_any_array_storage_value_type(storage_info_in_chain)) {
                             global_glua_chain_api->throw_exception(L, THINKYOUNG_API_SIMPLE_ERROR, "storage %s type not matched in chain", p1.first.c_str());
                             return false;
                         }
                         
                         if (p1.second.after.value.table_value->size() > 0) {
                             for (auto &item_in_table : *(p1.second.after.value.table_value)) {
-                                item_in_table.second.try_parse_type(thinkyoung::blockchain::get_storage_base_type(storage_info_in_chain));
+                                item_in_table.second.try_parse_type(lvm::blockchain::get_storage_base_type(storage_info_in_chain));
                             }
                             
                             auto item_after = p1.second.after.value.table_value->begin()->second;
                             
-                            if (item_after.type != thinkyoung::blockchain::get_item_type_in_table_or_array(storage_info_in_chain)) {
+                            if (item_after.type != lvm::blockchain::get_item_type_in_table_or_array(storage_info_in_chain)) {
                                 global_glua_chain_api->throw_exception(L, THINKYOUNG_API_SIMPLE_ERROR, "storage %s type not matched in chain", p1.first.c_str());
                                 return false;
                             }
                         }
                         
                         // 检查after值类型和链上值类型是否匹配
-                        if (p1.second.after.type == thinkyoung::blockchain::storage_value_unknown_table
-                                || p1.second.after.type == thinkyoung::blockchain::storage_value_unknown_array) {
+                        if (p1.second.after.type == lvm::blockchain::storage_value_unknown_table
+                                || p1.second.after.type == lvm::blockchain::storage_value_unknown_array) {
                             p1.second.after.type = storage_info_in_chain;
                         }
                         
-                    } else if (p1.second.after.type == thinkyoung::blockchain::StorageValueTypes::storage_value_number
-                               && storage_info_in_chain == thinkyoung::blockchain::StorageValueTypes::storage_value_int) {
-                        p1.second.after.type = thinkyoung::blockchain::StorageValueTypes::storage_value_int;
+                    } else if (p1.second.after.type == lvm::blockchain::StorageValueTypes::storage_value_number
+                               && storage_info_in_chain == lvm::blockchain::StorageValueTypes::storage_value_int) {
+                        p1.second.after.type = lvm::blockchain::StorageValueTypes::storage_value_int;
                         p1.second.after.value.int_value = (lua_Integer)p1.second.after.value.number_value;
                         
-                    } else if (p1.second.after.type == thinkyoung::blockchain::StorageValueTypes::storage_value_int
-                               && storage_info_in_chain == thinkyoung::blockchain::StorageValueTypes::storage_value_number) {
-                        p1.second.after.type = thinkyoung::blockchain::StorageValueTypes::storage_value_number;
+                    } else if (p1.second.after.type == lvm::blockchain::StorageValueTypes::storage_value_int
+                               && storage_info_in_chain == lvm::blockchain::StorageValueTypes::storage_value_number) {
+                        p1.second.after.type = lvm::blockchain::StorageValueTypes::storage_value_number;
                         p1.second.after.value.number_value = (lua_Number)p1.second.after.value.int_value;
                     }
                 }
@@ -514,46 +514,46 @@ bool luaL_commit_storage_changes(lua_State *L) {
             if (!is_in_starting_contract_init) {
                 const auto &storage_properties_in_chain = stream->contract_storage_properties;
                 
-                if (it2->second.before.type != thinkyoung::blockchain::StorageValueTypes::storage_value_null
+                if (it2->second.before.type != lvm::blockchain::StorageValueTypes::storage_value_null
                         && storage_properties_in_chain.find(it2->first) != storage_properties_in_chain.end()) {
                     auto storage_info_in_chain = storage_properties_in_chain.at(it2->first);
                     
-                    if (thinkyoung::blockchain::is_any_table_storage_value_type(it2->second.after.type)
-                            || thinkyoung::blockchain::is_any_array_storage_value_type(it2->second.after.type)) {
+                    if (lvm::blockchain::is_any_table_storage_value_type(it2->second.after.type)
+                            || lvm::blockchain::is_any_array_storage_value_type(it2->second.after.type)) {
                         // 运行时[]也会变现为{}
-                        if (!thinkyoung::blockchain::is_any_table_storage_value_type(storage_info_in_chain)
-                                && !thinkyoung::blockchain::is_any_array_storage_value_type(storage_info_in_chain)) {
+                        if (!lvm::blockchain::is_any_table_storage_value_type(storage_info_in_chain)
+                                && !lvm::blockchain::is_any_array_storage_value_type(storage_info_in_chain)) {
                             global_glua_chain_api->throw_exception(L, THINKYOUNG_API_SIMPLE_ERROR, "storage %s type not matched in chain", it2->first.c_str());
                             return false;
                         }
                         
                         if (it2->second.after.value.table_value->size() > 0) {
                             for (auto &item_in_table : *(it2->second.after.value.table_value)) {
-                                item_in_table.second.try_parse_type(thinkyoung::blockchain::get_storage_base_type(storage_info_in_chain));
+                                item_in_table.second.try_parse_type(lvm::blockchain::get_storage_base_type(storage_info_in_chain));
                             }
                             
                             auto item_after = it2->second.after.value.table_value->begin()->second;
                             
-                            if (item_after.type != thinkyoung::blockchain::get_item_type_in_table_or_array(storage_info_in_chain)) {
+                            if (item_after.type != lvm::blockchain::get_item_type_in_table_or_array(storage_info_in_chain)) {
                                 global_glua_chain_api->throw_exception(L, THINKYOUNG_API_SIMPLE_ERROR, "storage %s type not matched in chain", it2->first.c_str());
                                 return false;
                             }
                         }
                         
                         // 检查after值类型和链上值类型是否匹配
-                        if (it2->second.after.type == thinkyoung::blockchain::storage_value_unknown_table
-                                || it2->second.after.type == thinkyoung::blockchain::storage_value_unknown_array) {
+                        if (it2->second.after.type == lvm::blockchain::storage_value_unknown_table
+                                || it2->second.after.type == lvm::blockchain::storage_value_unknown_array) {
                             it2->second.after.type = storage_info_in_chain;
                         }
                         
-                    } else if (it2->second.after.type == thinkyoung::blockchain::StorageValueTypes::storage_value_number
-                               && storage_info_in_chain == thinkyoung::blockchain::StorageValueTypes::storage_value_int) {
-                        it2->second.after.type = thinkyoung::blockchain::StorageValueTypes::storage_value_int;
+                    } else if (it2->second.after.type == lvm::blockchain::StorageValueTypes::storage_value_number
+                               && storage_info_in_chain == lvm::blockchain::StorageValueTypes::storage_value_int) {
+                        it2->second.after.type = lvm::blockchain::StorageValueTypes::storage_value_int;
                         it2->second.after.value.int_value = (lua_Integer)it2->second.after.value.number_value;
                         
-                    } else if (it2->second.after.type == thinkyoung::blockchain::StorageValueTypes::storage_value_int
-                               && storage_info_in_chain == thinkyoung::blockchain::StorageValueTypes::storage_value_number) {
-                        it2->second.after.type = thinkyoung::blockchain::StorageValueTypes::storage_value_number;
+                    } else if (it2->second.after.type == lvm::blockchain::StorageValueTypes::storage_value_int
+                               && storage_info_in_chain == lvm::blockchain::StorageValueTypes::storage_value_number) {
+                        it2->second.after.type = lvm::blockchain::StorageValueTypes::storage_value_number;
                         it2->second.after.value.number_value = (lua_Number)it2->second.after.value.int_value;
                     }
                 }
@@ -561,7 +561,7 @@ bool luaL_commit_storage_changes(lua_State *L) {
             
             // map/array的值类型要是一致的并且是基本类型
             if (lua_storage_is_table(it2->second.after.type)) {
-                thinkyoung::blockchain::StorageValueTypes item_value_type;
+                lvm::blockchain::StorageValueTypes item_value_type;
                 bool is_first = true;
                 
                 for (const auto &p : *it2->second.after.value.table_value) {
@@ -581,33 +581,33 @@ bool luaL_commit_storage_changes(lua_State *L) {
             }
             
             if (it2->second.after.type == it2->second.before.type) {
-                if (it2->second.after.type == thinkyoung::blockchain::StorageValueTypes::storage_value_int
+                if (it2->second.after.type == lvm::blockchain::StorageValueTypes::storage_value_int
                         && it2->second.after.value.int_value == it2->second.before.value.int_value) {
                     it2 = it->second->erase(it2);
                     continue;
                     
-                } else if (it2->second.after.type == thinkyoung::blockchain::StorageValueTypes::storage_value_bool
+                } else if (it2->second.after.type == lvm::blockchain::StorageValueTypes::storage_value_bool
                            && it2->second.after.value.bool_value == it2->second.before.value.bool_value) {
                     it2 = it->second->erase(it2);
                     continue;
                     
-                } else if (it2->second.after.type == thinkyoung::blockchain::StorageValueTypes::storage_value_number
+                } else if (it2->second.after.type == lvm::blockchain::StorageValueTypes::storage_value_number
                            && abs(it2->second.after.value.number_value - it2->second.before.value.number_value) < 0.0000001) {
                     it2 = it->second->erase(it2);
                     continue;
                     
-                } else if (it2->second.after.type == thinkyoung::blockchain::StorageValueTypes::storage_value_string
+                } else if (it2->second.after.type == lvm::blockchain::StorageValueTypes::storage_value_string
                            && strcmp(it2->second.after.value.string_value, it2->second.before.value.string_value) == 0) {
                     it2 = it->second->erase(it2);
                     continue;
                     
-                } else if (it2->second.after.type == thinkyoung::blockchain::StorageValueTypes::storage_value_stream
-                           && ((thinkyoung::lua::lib::GluaByteStream*) it2->second.after.value.userdata_value)->equals((thinkyoung::lua::lib::GluaByteStream*) it2->second.before.value.userdata_value)) {
+                } else if (it2->second.after.type == lvm::blockchain::StorageValueTypes::storage_value_stream
+                    && ((lvm::lua::lib::GluaByteStream*) it2->second.after.value.userdata_value)->equals((lvm::lua::lib::GluaByteStream*) it2->second.before.value.userdata_value)) {
                     it2 = it->second->erase(it2);
                     continue;
                     
                 } else if (!lua_storage_is_table(it2->second.after.type)
-                           && it2->second.after.type != thinkyoung::blockchain::StorageValueTypes::storage_value_string
+                           && it2->second.after.type != lvm::blockchain::StorageValueTypes::storage_value_string
                            && memcmp(&it2->second.after.value, &it2->second.before.value, sizeof(GluaStorageValueUnion)) == 0) {
                     it2 = it->second->erase(it2);
                     continue;
@@ -627,7 +627,7 @@ bool luaL_commit_storage_changes(lua_State *L) {
     
     // commit changes to thinkyoung
     
-    if (thinkyoung::lua::lib::check_in_lua_sandbox(L)) {
+    if (lvm::lua::lib::check_in_lua_sandbox(L)) {
         printf("commit storage changes in sandbox\n");
         return false;
     }
@@ -646,25 +646,25 @@ bool luaL_commit_storage_changes(lua_State *L) {
 /*    获取操作合约代码的storage的代码直接出现在哪个合约，合约只能操作本身的storage，不能操作其他合约的storage */
 /************************************************************************/
 static const char *get_contract_id_in_storage_operation(lua_State *L) {
-    const auto &contract_id = thinkyoung::lua::lib::get_current_using_contract_id(L);
-    auto contract_id_str = thinkyoung::lua::lib::malloc_and_copy_string(L, contract_id.c_str());
+    const auto &contract_id = lvm::lua::lib::get_current_using_contract_id(L);
+    auto contract_id_str = lvm::lua::lib::malloc_and_copy_string(L, contract_id.c_str());
     return contract_id_str;
 }
 
 static std::string get_contract_id_string_in_storage_operation(lua_State *L) {
-    return thinkyoung::lua::lib::get_current_using_contract_id(L);
+    return lvm::lua::lib::get_current_using_contract_id(L);
 }
 
 namespace glua {
     namespace lib {
         int thinkyounglib_get_storage_impl(lua_State *L,
                                            const char *contract_id, const char *name) {
-            thinkyoung::lua::lib::increment_lvm_instructions_executed_count(L, CHAIN_GLUA_API_EACH_INSTRUCTIONS_COUNT - 1);
+            lvm::lua::lib::increment_lvm_instructions_executed_count(L, CHAIN_GLUA_API_EACH_INSTRUCTIONS_COUNT - 1);
             const auto &code_contract_id = get_contract_id_string_in_storage_operation(L);
             
             if (code_contract_id != contract_id) {
                 global_glua_chain_api->throw_exception(L, THINKYOUNG_API_SIMPLE_ERROR, "contract can only access its own storage directly");
-                thinkyoung::lua::lib::notify_lua_state_stop(L);
+                lvm::lua::lib::notify_lua_state_stop(L);
                 L->force_stopping = true;
                 return 0;
             }
@@ -679,7 +679,7 @@ namespace glua {
             
             lua_pop(L, 1);
             // printf("get storage %s:%s\n", contract_name, name);
-            const auto &state_value_node = thinkyoung::lua::lib::get_lua_state_value_node(L, LUA_STORAGE_CHANGELIST_KEY);
+            const auto &state_value_node = lvm::lua::lib::get_lua_state_value_node(L, LUA_STORAGE_CHANGELIST_KEY);
             int result;
             
             if (state_value_node.type != LUA_STATE_VALUE_POINTER || !state_value_node.value.pointer_value) {
@@ -689,12 +689,10 @@ namespace glua {
                 if (lua_storage_is_table(value.type)) {
                     lua_pushvalue(L, -1);
                     lua_setglobal(L, global_key.c_str());
-                    // thinkyoung::lua::lib::add_maybe_storage_changed_contract_id(L, contract_id);
+                    // lvm::lua::lib::add_maybe_storage_changed_contract_id(L, contract_id);
                 }
-                
                 result = 1;
-                
-            } else if (thinkyoung::lua::lib::check_in_lua_sandbox(L)) {
+            } else if (lvm::lua::lib::check_in_lua_sandbox(L)) {
                 printf("get storage in sandbox\n");
                 lua_pushnil(L);
                 result = 1;
@@ -722,11 +720,11 @@ namespace glua {
         * arg1 is contract, arg2 is storage property name
         */
         int thinkyounglib_get_storage(lua_State *L) {
-            thinkyoung::lua::lib::increment_lvm_instructions_executed_count(L, CHAIN_GLUA_API_EACH_INSTRUCTIONS_COUNT - 1);
+            lvm::lua::lib::increment_lvm_instructions_executed_count(L, CHAIN_GLUA_API_EACH_INSTRUCTIONS_COUNT - 1);
             
             if (lua_gettop(L) < 2) {
                 global_glua_chain_api->throw_exception(L, THINKYOUNG_API_SIMPLE_ERROR, "get_storage need 2 arguments");
-                thinkyoung::lua::lib::notify_lua_state_stop(L);
+                lvm::lua::lib::notify_lua_state_stop(L);
                 return 0;
             }
             
@@ -743,7 +741,7 @@ namespace glua {
                 
             if (!lua_isstring(L, 2) && !lua_isnumber(L, 2)) {
                 global_glua_chain_api->throw_exception(L, THINKYOUNG_API_SIMPLE_ERROR, "second argument of set_storage must be string or integer");
-                thinkyoung::lua::lib::notify_lua_state_stop(L);
+                lvm::lua::lib::notify_lua_state_stop(L);
                 L->force_stopping = true;
                 return 0;
             }
@@ -758,7 +756,7 @@ namespace glua {
             
             if (code_contract_id != contract_id && code_contract_id != contract_id) {
                 global_glua_chain_api->throw_exception(L, THINKYOUNG_API_SIMPLE_ERROR, "contract can only access its own storage directly");
-                thinkyoung::lua::lib::notify_lua_state_stop(L);
+                lvm::lua::lib::notify_lua_state_stop(L);
                 L->force_stopping = true;
                 return 0;
             }
@@ -809,7 +807,7 @@ namespace glua {
             }
             */
             // log the value before and the new value
-            GluaStateValueNode state_value_node = thinkyoung::lua::lib::get_lua_state_value_node(L, LUA_STORAGE_CHANGELIST_KEY);
+            GluaStateValueNode state_value_node = lvm::lua::lib::get_lua_state_value_node(L, LUA_STORAGE_CHANGELIST_KEY);
             GluaStorageChangeList *list;
             
             if (state_value_node.type != LUA_STATE_VALUE_POINTER || nullptr == state_value_node.value.pointer_value) {
@@ -817,13 +815,13 @@ namespace glua {
                 new (list)GluaStorageChangeList();
                 GluaStateValue value_to_store;
                 value_to_store.pointer_value = list;
-                thinkyoung::lua::lib::set_lua_state_value(L, LUA_STORAGE_CHANGELIST_KEY, value_to_store, LUA_STATE_VALUE_POINTER);
+                lvm::lua::lib::set_lua_state_value(L, LUA_STORAGE_CHANGELIST_KEY, value_to_store, LUA_STATE_VALUE_POINTER);
                 
             } else {
                 list = (GluaStorageChangeList*)state_value_node.value.pointer_value;
             }
             
-            if (thinkyoung::lua::lib::check_in_lua_sandbox(L)) {
+            if (lvm::lua::lib::check_in_lua_sandbox(L)) {
                 printf("set storage in sandbox\n");
                 return 0;
             }
@@ -832,25 +830,25 @@ namespace glua {
             auto before = get_last_storage_changed_value(L, contract_id, list, name_str);
             auto after = arg2;
             
-            if (after.type == thinkyoung::blockchain::StorageValueTypes::storage_value_null) {
+            if (after.type == lvm::blockchain::StorageValueTypes::storage_value_null) {
                 global_glua_chain_api->throw_exception(L, THINKYOUNG_API_SIMPLE_ERROR, (name_str + "storage can't change to nil").c_str());
-                thinkyoung::lua::lib::notify_lua_state_stop(L);
+                lvm::lua::lib::notify_lua_state_stop(L);
                 return 0;
             }
             
-            if (before.type != thinkyoung::blockchain::StorageValueTypes::storage_value_null
+            if (before.type != lvm::blockchain::StorageValueTypes::storage_value_null
                     && (before.type != after.type && !lua_storage_is_table(before.type))) {
                 global_glua_chain_api->throw_exception(L, THINKYOUNG_API_SIMPLE_ERROR, (std::string(name) + "storage can't change type").c_str());
-                thinkyoung::lua::lib::notify_lua_state_stop(L);
+                lvm::lua::lib::notify_lua_state_stop(L);
                 return 0;
             }
             
             // can't create new storage index outside init
-            if (!thinkyoung::lua::lib::is_calling_contract_init_api(L)
-                    && before.type == thinkyoung::blockchain::StorageValueTypes::storage_value_null) {
+            if (!lvm::lua::lib::is_calling_contract_init_api(L)
+                    && before.type == lvm::blockchain::StorageValueTypes::storage_value_null) {
                 // when not in init api
                 global_glua_chain_api->throw_exception(L, THINKYOUNG_API_SIMPLE_ERROR, (std::string(name) + "storage can't register storage after inited").c_str());
-                thinkyoung::lua::lib::notify_lua_state_stop(L);
+                lvm::lua::lib::notify_lua_state_stop(L);
                 return 0;
             }
             
@@ -862,7 +860,7 @@ namespace glua {
                     for (auto it = inner_table->begin(); it != inner_table->end(); ++it) {
                         if (lua_storage_is_table(it->second.type)) {
                             global_glua_chain_api->throw_exception(L, THINKYOUNG_API_SIMPLE_ERROR, "storage not support nested map");
-                            thinkyoung::lua::lib::notify_lua_state_stop(L);
+                            lvm::lua::lib::notify_lua_state_stop(L);
                             return 0;
                         }
                     }
@@ -878,14 +876,14 @@ namespace glua {
                     for (auto it = before.value.table_value->begin(); it != before.value.table_value->end(); ++it) {
                         auto found = after.value.table_value->find(it->first);
                         
-                        if (it->second.type != thinkyoung::blockchain::StorageValueTypes::storage_value_null) {
+                        if (it->second.type != lvm::blockchain::StorageValueTypes::storage_value_null) {
                             if (table_value_type < 0) {
                                 table_value_type = it->second.type;
                                 
                             } else {
                                 if (table_value_type != it->second.type) {
                                     global_glua_chain_api->throw_exception(L, THINKYOUNG_API_SIMPLE_ERROR, "storage table type must be same");
-                                    thinkyoung::lua::lib::notify_lua_state_stop(L);
+                                    lvm::lua::lib::notify_lua_state_stop(L);
                                     return 0;
                                 }
                             }
@@ -894,14 +892,14 @@ namespace glua {
                 }
                 
                 for (auto it = after.value.table_value->begin(); it != after.value.table_value->end(); ++it) {
-                    if (it->second.type != thinkyoung::blockchain::StorageValueTypes::storage_value_null) {
+                    if (it->second.type != lvm::blockchain::StorageValueTypes::storage_value_null) {
                         if (table_value_type < 0) {
                             table_value_type = it->second.type;
                             
                         } else {
                             if (table_value_type != it->second.type) {
                                 global_glua_chain_api->throw_exception(L, THINKYOUNG_API_SIMPLE_ERROR, "storage table type must be same");
-                                thinkyoung::lua::lib::notify_lua_state_stop(L);
+                                lvm::lua::lib::notify_lua_state_stop(L);
                                 return 0;
                             }
                         }
@@ -914,10 +912,10 @@ namespace glua {
                         if (it->contract_id == std::string(contract_id) && it->key == std::string(name)) {
                             if (lua_storage_is_table(it->after.type) && it->after.value.table_value->size() > 0) {
                                 for (auto it2 = it->after.value.table_value->begin(); it2 != it->after.value.table_value->end(); ++it2) {
-                                    if (it2->second.type != thinkyoung::blockchain::StorageValueTypes::storage_value_null) {
+                                    if (it2->second.type != lvm::blockchain::StorageValueTypes::storage_value_null) {
                                         if (it2->second.type != table_value_type) {
                                             global_glua_chain_api->throw_exception(L, THINKYOUNG_API_SIMPLE_ERROR, "storage table type must be same");
-                                            thinkyoung::lua::lib::notify_lua_state_stop(L);
+                                            lvm::lua::lib::notify_lua_state_stop(L);
                                             return 0;
                                         }
                                     }
@@ -946,11 +944,11 @@ namespace glua {
         * arg1 is contract, arg2 is storage property name, arg3 is storage property value
         */
         int thinkyounglib_set_storage(lua_State *L) {
-            thinkyoung::lua::lib::increment_lvm_instructions_executed_count(L, CHAIN_GLUA_API_EACH_INSTRUCTIONS_COUNT - 1);
+            lvm::lua::lib::increment_lvm_instructions_executed_count(L, CHAIN_GLUA_API_EACH_INSTRUCTIONS_COUNT - 1);
             
             if (lua_gettop(L) < 3) {
                 global_glua_chain_api->throw_exception(L, THINKYOUNG_API_SIMPLE_ERROR, "set_storage need 2 arguments");
-                thinkyoung::lua::lib::notify_lua_state_stop(L);
+                lvm::lua::lib::notify_lua_state_stop(L);
                 return 0;
             }
             
@@ -967,7 +965,7 @@ namespace glua {
                 
             if (!lua_isstring(L, 2) && !lua_isnumber(L, 2)) {
                 global_glua_chain_api->throw_exception(L, THINKYOUNG_API_SIMPLE_ERROR, "second argument of set_storage must be string or integer");
-                thinkyoung::lua::lib::notify_lua_state_stop(L);
+                lvm::lua::lib::notify_lua_state_stop(L);
                 L->force_stopping = true;
                 return 0;
             }
@@ -978,7 +976,7 @@ namespace glua {
     }
 }
 
-namespace thinkyoung {
+namespace lvm {
     namespace lua {
         namespace lib {
             GluaStorageValue lthinkyoung_get_storage(lua_State *L, const char *contract_id, const char *name) {
@@ -993,7 +991,7 @@ namespace thinkyoung {
                     
                 } else {
                     GluaStorageValue value;
-                    value.type = thinkyoung::blockchain::StorageValueTypes::storage_value_null;
+                    value.type = lvm::blockchain::StorageValueTypes::storage_value_null;
                     value.value.int_value = 0;
                     return value;
                 }
@@ -1017,7 +1015,7 @@ namespace thinkyoung {
 static int rollback_storage(lua_State *L) {
     if (lua_gettop(L) < 1) {
         global_glua_chain_api->throw_exception(L, THINKYOUNG_API_SIMPLE_ERROR, "rollback_storage need 1 arguments");
-        thinkyoung::lua::lib::notify_lua_state_stop(L);
+        lvm::lua::lib::notify_lua_state_stop(L);
         return 0;
     }
     

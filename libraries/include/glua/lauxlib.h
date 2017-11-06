@@ -3,24 +3,18 @@
 ** Auxiliary functions for building Lua libraries
 ** See Copyright Notice in lua.h
 */
-
-
 #ifndef lauxlib_h
 #define lauxlib_h
-
 
 #include <stddef.h>
 #include <stdio.h>
 #include <list>
 
 #include "glua/lua.h"
-#include "glua/thinkyoung_lua_api.h"
-
-
+#include "glua/lua_api.h"
 
 /* extra error code for 'luaL_load' */
 #define LUA_ERRFILE     (LUA_ERRERR+1)
-
 
 typedef struct luaL_Reg {
     const char *name;

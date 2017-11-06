@@ -2,12 +2,13 @@
 #define exceptions_h
 
 #include "glua/lprefix.h"
-#include <glua/thinkyoung_lua_api.h>
+#include <glua/lua_api.h>
 
-#include <string>
-#include <exception>
-#include <cstdint>
 #include <boost/preprocessor/stringize.hpp>
+
+#include <cstdint>
+#include <exception>
+#include <string>
 
 namespace glua
 {

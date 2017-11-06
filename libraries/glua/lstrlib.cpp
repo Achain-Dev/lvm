@@ -22,7 +22,7 @@
 #include "glua/lauxlib.h"
 #include "glua/lualib.h"
 
-using thinkyoung::lua::api::global_glua_chain_api;
+using lvm::lua::api::global_glua_chain_api;
 
 
 /*

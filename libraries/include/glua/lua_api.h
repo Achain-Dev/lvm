@@ -76,9 +76,8 @@ typedef enum GluaStorageValueType {
     , LVALUE_NOT_SUPPORT = 100
 } GluaStorageValueType;
 
-namespace thinkyoung {
+namespace lvm {
     namespace blockchain {
-    
         enum StorageValueTypes {
             storage_value_null = 0,
             storage_value_int = 1,
@@ -218,7 +217,7 @@ class GluaModuleByteStream {
     int  contract_level;
     int  contract_state;
     // 合约中storage的类型
-    std::map<std::string, thinkyoung::blockchain::StorageValueTypes> contract_storage_properties;
+    std::map<std::string, lvm::blockchain::StorageValueTypes> contract_storage_properties;
     
     // 合约中各API的API名称的参数类型列表
     std::map<std::string, std::vector<GluaTypeInfoEnum>> contract_api_arg_types;
@@ -251,9 +250,9 @@ class GluaContractInfo {
 
 #define GLUA_OUTSIDE_OBJECT_POOLS_KEY "__glua_outside_object_pools__"
 
-#define lua_storage_is_table(t) (thinkyoung::blockchain::is_any_table_storage_value_type(t)||thinkyoung::blockchain::is_any_array_storage_value_type(t))
-#define lua_storage_is_array(t) (thinkyoung::blockchain::is_any_array_storage_value_type(t))
-#define lua_storage_is_hashtable(t) (thinkyoung::blockchain::is_any_table_storage_value_type(t))
+#define lua_storage_is_table(t) (lvm::blockchain::is_any_table_storage_value_type(t)||lvm::blockchain::is_any_array_storage_value_type(t))
+#define lua_storage_is_array(t) (lvm::blockchain::is_any_array_storage_value_type(t))
+#define lua_storage_is_hashtable(t) (lvm::blockchain::is_any_table_storage_value_type(t))
 
 struct GluaStorageValue;
 
@@ -294,32 +293,32 @@ typedef union GluaStorageValueUnion {
 } GluaStorageValueUnion;
 
 typedef struct GluaStorageValue {
-    thinkyoung::blockchain::StorageValueTypes type;
+    lvm::blockchain::StorageValueTypes type;
     union GluaStorageValueUnion value;
     inline GluaStorageValue() {
-        type = thinkyoung::blockchain::StorageValueTypes::storage_value_null;
+        type = lvm::blockchain::StorageValueTypes::storage_value_null;
     }
     inline static GluaStorageValue from_int(int val) {
         GluaStorageValue sv;
-        sv.type = thinkyoung::blockchain::StorageValueTypes::storage_value_int;
+        sv.type = lvm::blockchain::StorageValueTypes::storage_value_int;
         sv.value.int_value = val;
         return sv;
     }
     inline static GluaStorageValue from_string(char *val) {
         GluaStorageValue sv;
-        sv.type = thinkyoung::blockchain::StorageValueTypes::storage_value_string;
+        sv.type = lvm::blockchain::StorageValueTypes::storage_value_string;
         sv.value.string_value = val;
         return sv;
     }
     
     // 尝试类型转换
-    inline void try_parse_type(thinkyoung::blockchain::StorageValueTypes new_type) {
+    inline void try_parse_type(lvm::blockchain::StorageValueTypes new_type) {
         switch(new_type) {
-            case thinkyoung::blockchain::StorageValueTypes::storage_value_int:
+            case lvm::blockchain::StorageValueTypes::storage_value_int:
                 try_parse_to_int_type();
                 break;
                 
-            case thinkyoung::blockchain::StorageValueTypes::storage_value_number:
+            case lvm::blockchain::StorageValueTypes::storage_value_number:
                 try_parse_to_number_type();
                 break;
                 
@@ -330,21 +329,21 @@ typedef struct GluaStorageValue {
     
     // 尝试当成int处理
     inline void try_parse_to_int_type() {
-        if(type == thinkyoung::blockchain::StorageValueTypes::storage_value_number) {
+        if(type == lvm::blockchain::StorageValueTypes::storage_value_number) {
             value.int_value = (lua_Integer)value.number_value;
-            type = thinkyoung::blockchain::StorageValueTypes::storage_value_int;
+            type = lvm::blockchain::StorageValueTypes::storage_value_int;
         }
     }
     
     // 尝试当成number处理
     inline void try_parse_to_number_type() {
-        if (type == thinkyoung::blockchain::StorageValueTypes::storage_value_int) {
+        if (type == lvm::blockchain::StorageValueTypes::storage_value_int) {
             value.number_value = (lua_Number)value.int_value;
-            type = thinkyoung::blockchain::StorageValueTypes::storage_value_number;
+            type = lvm::blockchain::StorageValueTypes::storage_value_number;
         }
     }
     
-    inline static bool is_same_base_type_with_type_parse(thinkyoung::blockchain::StorageValueTypes type1, thinkyoung::blockchain::StorageValueTypes type2) {
+    inline static bool is_same_base_type_with_type_parse(lvm::blockchain::StorageValueTypes type1, lvm::blockchain::StorageValueTypes type2) {
         return type1 == type2;
     }
     inline bool equals(GluaStorageValue &other) {
@@ -352,25 +351,25 @@ typedef struct GluaStorageValue {
             return false;
             
         switch (type) {
-            case thinkyoung::blockchain::StorageValueTypes::storage_value_string:
+            case lvm::blockchain::StorageValueTypes::storage_value_string:
                 return strcmp(value.string_value, other.value.string_value) == 0;
                 
-            case thinkyoung::blockchain::StorageValueTypes::storage_value_int:
+            case lvm::blockchain::StorageValueTypes::storage_value_int:
                 return value.int_value == other.value.int_value;
                 
-            case thinkyoung::blockchain::StorageValueTypes::storage_value_number:
+            case lvm::blockchain::StorageValueTypes::storage_value_number:
                 return value.number_value == other.value.number_value;
                 
-            case thinkyoung::blockchain::StorageValueTypes::storage_value_bool:
+            case lvm::blockchain::StorageValueTypes::storage_value_bool:
                 return value.bool_value == other.value.bool_value;
                 return value.userdata_value == other.value.userdata_value;
                 
-            case thinkyoung::blockchain::StorageValueTypes::storage_value_null:
+            case lvm::blockchain::StorageValueTypes::storage_value_null:
                 return true;
                 
             default: {
-                if (thinkyoung::blockchain::is_any_table_storage_value_type(type)
-                        || thinkyoung::blockchain::is_any_array_storage_value_type(type)) {
+                if (lvm::blockchain::is_any_table_storage_value_type(type)
+                        || lvm::blockchain::is_any_array_storage_value_type(type)) {
                     if (value.table_value->size() != other.value.table_value->size())
                         return false;
                         
@@ -422,7 +421,7 @@ typedef std::shared_ptr<ContractChangesMap> ContractChangesMapP;
 typedef std::unordered_map<std::string, ContractChangesMapP> AllContractsChangesMap;
 
 struct Code;
-namespace thinkyoung {
+namespace lvm {
     namespace lua {
         namespace api {
         

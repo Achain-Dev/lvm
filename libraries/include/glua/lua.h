@@ -4,17 +4,14 @@
 ** Lua.org, PUC-Rio, Brazil (http://www.lua.org)
 ** See Copyright Notice at the end of this file
 */
-
-
 #ifndef lua_h
 #define lua_h
 
-#include <stdarg.h>
-#include <stddef.h>
-
-
 #include "glua/luaconf.h"
 
+#include <stdarg.h>
+#include <stddef.h>
+#include <string>
 
 #define LUA_VERSION_MAJOR	"1"
 #define LUA_VERSION_MINOR	"0"

@@ -1,5 +1,5 @@
 #include <glua/glua_api_types.h>
-#include <glua/thinkyoung_lua_api.h>
+#include <glua/lua_api.h>
 
 GluaModuleByteStream::GluaModuleByteStream()
 {

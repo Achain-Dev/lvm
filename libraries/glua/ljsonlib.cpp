@@ -1,7 +1,12 @@
 ﻿#define ljsonlib_cpp
 
+#include <glua/glua_tokenparser.h>
+#include <glua/lauxlib.h>
 #include <glua/lprefix.h>
-
+#include <glua/lua.h>
+#include <glua/lua_api.h>
+#include <glua/lua_lib.h>
+#include <glua/lualib.h>
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -10,22 +15,14 @@
 #include <sstream>
 #include <cassert>
 
-#include <glua/lua.h>
-
-#include <glua/lauxlib.h>
-#include <glua/lualib.h>
-#include <glua/glua_tokenparser.h>
-#include <glua/thinkyoung_lua_api.h>
-#include <glua/thinkyoung_lua_lib.h>
-
-using thinkyoung::lua::api::global_glua_chain_api;
+using lvm::lua::api::global_glua_chain_api;
 
 using namespace glua::parser;
 
 static GluaStorageValue nil_storage_value()
 {
     GluaStorageValue value;
-    value.type = thinkyoung::blockchain::StorageValueTypes::storage_value_null;
+    value.type = lvm::blockchain::StorageValueTypes::storage_value_null;
     value.value.int_value = 0;
     return value;
 }
@@ -55,7 +52,7 @@ static GluaStorageValue tokens_to_lua_value(lua_State *L, GluaTokenParser *token
             lua_Integer token_int = 0;
             ss >> token_int;
             GluaStorageValue value;
-            value.type = thinkyoung::blockchain::StorageValueTypes::storage_value_int;
+            value.type = lvm::blockchain::StorageValueTypes::storage_value_int;
             value.value.int_value = token_int;
             if (nullptr != result)
                 *result = true;
@@ -69,7 +66,7 @@ static GluaStorageValue tokens_to_lua_value(lua_State *L, GluaTokenParser *token
             lua_Number token_num = 0;
             ss >> token_num;
             GluaStorageValue value;
-            value.type = thinkyoung::blockchain::StorageValueTypes::storage_value_number;
+            value.type = lvm::blockchain::StorageValueTypes::storage_value_number;
             value.value.number_value = token_num;
             if (nullptr != result)
                 *result = true;
@@ -83,7 +80,7 @@ static GluaStorageValue tokens_to_lua_value(lua_State *L, GluaTokenParser *token
             if (token_str == "true")
             {
                 GluaStorageValue value;
-                value.type = thinkyoung::blockchain::StorageValueTypes::storage_value_bool;
+                value.type = lvm::blockchain::StorageValueTypes::storage_value_bool;
                 value.value.bool_value = true;
                 if (nullptr != result)
                     *result = true;
@@ -92,7 +89,7 @@ static GluaStorageValue tokens_to_lua_value(lua_State *L, GluaTokenParser *token
             else if (token_str == "false")
             {
                 GluaStorageValue value;
-                value.type = thinkyoung::blockchain::StorageValueTypes::storage_value_bool;
+                value.type = lvm::blockchain::StorageValueTypes::storage_value_bool;
                 value.value.bool_value = false;
                 if (nullptr != result)
                     *result = true;
@@ -101,7 +98,7 @@ static GluaStorageValue tokens_to_lua_value(lua_State *L, GluaTokenParser *token
             else if (token_str == "null")
             {
                 GluaStorageValue value;
-                value.type = thinkyoung::blockchain::StorageValueTypes::storage_value_null;
+                value.type = lvm::blockchain::StorageValueTypes::storage_value_null;
                 value.value.int_value = 0;
                 if (nullptr != result)
                     *result = true;
@@ -118,9 +115,9 @@ static GluaStorageValue tokens_to_lua_value(lua_State *L, GluaTokenParser *token
         case TOKEN_RESERVED::LTK_STRING:
         {
             GluaStorageValue value;
-            value.type = thinkyoung::blockchain::StorageValueTypes::storage_value_string;
+            value.type = lvm::blockchain::StorageValueTypes::storage_value_string;
             auto token_str = token.token;
-            value.value.string_value = thinkyoung::lua::lib::malloc_managed_string(L, token_str.length() + 1);
+            value.value.string_value = lvm::lua::lib::malloc_managed_string(L, token_str.length() + 1);
             memset(value.value.string_value, 0x0, token_str.length() + 1);
             strncpy(value.value.string_value, token_str.c_str(), token_str.length());
             assert(nullptr != value.value.string_value);
@@ -152,16 +149,16 @@ static GluaStorageValue tokens_to_lua_value(lua_State *L, GluaTokenParser *token
         {
             token_parser->next();
             GluaStorageValue value;
-            value.type = thinkyoung::blockchain::StorageValueTypes::storage_value_unknown_table;
-            value.value.table_value = thinkyoung::lua::lib::create_managed_lua_table_map(L);
+            value.type = lvm::blockchain::StorageValueTypes::storage_value_unknown_table;
+            value.value.table_value = lvm::lua::lib::create_managed_lua_table_map(L);
             assert(nullptr != value.value.table_value);
             if (nullptr != result)
                 *result = true;
             return value;
         }
         GluaStorageValue table_value;
-        table_value.type = thinkyoung::blockchain::StorageValueTypes::storage_value_unknown_table; // FIXME: 根据子项类型修改
-        table_value.value.table_value = thinkyoung::lua::lib::create_managed_lua_table_map(L);
+        table_value.type = lvm::blockchain::StorageValueTypes::storage_value_unknown_table; // FIXME: 根据子项类型修改
+        table_value.value.table_value = lvm::lua::lib::create_managed_lua_table_map(L);
         assert(nullptr != table_value.value.table_value);
         do
         {
@@ -258,16 +255,16 @@ static GluaStorageValue tokens_to_lua_value(lua_State *L, GluaTokenParser *token
         {
             token_parser->next();
             GluaStorageValue value;
-            value.type = thinkyoung::blockchain::StorageValueTypes::storage_value_unknown_array;
-            value.value.table_value = thinkyoung::lua::lib::create_managed_lua_table_map(L);
+            value.type = lvm::blockchain::StorageValueTypes::storage_value_unknown_array;
+            value.value.table_value = lvm::lua::lib::create_managed_lua_table_map(L);
             assert(nullptr != value.value.table_value);
             if (nullptr != result)
                 *result = true;
             return value;
         }
         GluaStorageValue table_value;
-        table_value.type = thinkyoung::blockchain::StorageValueTypes::storage_value_unknown_array; // FIXME: 根据子项类型修改
-        table_value.value.table_value = thinkyoung::lua::lib::create_managed_lua_table_map(L);
+        table_value.type = lvm::blockchain::StorageValueTypes::storage_value_unknown_array; // FIXME: 根据子项类型修改
+        table_value.value.table_value = lvm::lua::lib::create_managed_lua_table_map(L);
         assert(nullptr != table_value.value.table_value);
         size_t count = 0;
         do
@@ -339,7 +336,7 @@ static int json_to_lua(lua_State *L)
     if (!lua_isstring(L, 1))
         return 0;
     auto json_str = luaL_checkstring(L, 1);
-    thinkyoung::lua::lib::GluaStateScope scope;
+    lvm::lua::lib::GluaStateScope scope;
     auto token_parser = std::make_shared<GluaTokenParser>(scope.L());
     token_parser->parse(std::string(json_str));
     token_parser->reset_position();

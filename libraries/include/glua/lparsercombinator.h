@@ -7,11 +7,11 @@
 #include <memory>
 #include <functional>
 
-#include <glua/llimits.h>		  
-#include <glua/lua.h>
-#include <glua/thinkyoung_lua_api.h>
-#include <glua/glua_tokenparser.h>
 #include <glua/glua_lutil.h>
+#include <glua/glua_tokenparser.h>
+#include <glua/llimits.h>
+#include <glua/lua.h>
+#include <glua/lua_api.h>
 
 namespace glua {
     namespace parser {

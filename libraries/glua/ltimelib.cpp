@@ -14,7 +14,7 @@
 #include "glua/lauxlib.h"
 #include "glua/lualib.h"
 
-using thinkyoung::lua::api::global_glua_chain_api;
+using lvm::lua::api::global_glua_chain_api;
 
 
 #define ARGS_ERROR()   { global_glua_chain_api->throw_exception(L, THINKYOUNG_API_SIMPLE_ERROR, "arguments wrong"); return 0; }

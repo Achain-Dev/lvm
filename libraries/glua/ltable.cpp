@@ -41,7 +41,7 @@
 #include <glua/ltable.h>
 #include <glua/lvm.h>
 #include <glua/glua_lutil.h>
-#include <glua/thinkyoung_lua_api.h>
+#include <glua/lua_api.h>
 
 
 /*

@@ -8,14 +8,7 @@
 #define LUA_CORE
 
 #include "glua/lprefix.h"
-
-
-#include <stddef.h>
-#include <string.h>
-#include <cstdint>
-
 #include "glua/lua.h"
-
 #include "glua/lapi.h"
 #include "glua/ldebug.h"
 #include "glua/ldo.h"
@@ -27,9 +20,12 @@
 #include "glua/lstring.h"
 #include "glua/ltable.h"
 #include "glua/ltm.h"
-#include "glua/thinkyoung_lua_api.h"
-#include "glua/thinkyoung_lua_lib.h"
+#include "glua/lua_api.h"
+#include "glua/lua_lib.h"
 
+#include <stddef.h>
+#include <string.h>
+#include <cstdint>
 
 #if !defined(LUAI_GCPAUSE)
 #define LUAI_GCPAUSE	200  /* 200% */
@@ -357,7 +353,7 @@ LUA_API lua_State *lua_newstate(lua_Alloc f, void *ud) {
 
 LUA_API void lua_close(lua_State *L) {
     L = G(L)->mainthread;  /* only the main thread can be closed */
-    thinkyoung::lua::lib::close_lua_state_values(L);
+    lvm::lua::lib::close_lua_state_values(L);
     delete L->malloced_buffers;
     free(L->malloc_buffer);
     lua_lock(L);
@@ -377,7 +373,7 @@ void *lua_malloc(lua_State *L, size_t size)
     size = align8(size);
     if (size > LUA_MALLOC_TOTAL_SIZE)
     {
-        thinkyoung::lua::lib::notify_lua_state_stop(L);
+        lvm::lua::lib::notify_lua_state_stop(L);
         return nullptr;
     }
     if (L->malloced_buffers->size() < 1)
@@ -416,7 +412,7 @@ void *lua_malloc(lua_State *L, size_t size)
     }
     if (L->malloc_pos + size > LUA_MALLOC_TOTAL_SIZE)
     {
-        thinkyoung::lua::lib::notify_lua_state_stop(L);
+        lvm::lua::lib::notify_lua_state_stop(L);
         return nullptr;
     }
     ptrdiff_t offset = L->malloc_pos;

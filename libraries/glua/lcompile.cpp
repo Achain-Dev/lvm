@@ -1,22 +1,22 @@
 ﻿#define lcompile_cpp
 #define LUA_CORE
 
+#include "glua/lauxlib.h"
+#include "glua/lcompile.h"
 #include "glua/lprefix.h"
+#include "glua/lobject.h"
+#include "glua/lstate.h"
+#include "glua/lua_lib.h"
+#include "glua/lundump.h"
+
 #include <ctype.h>
 #include <errno.h>
+#include <iostream>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <iostream>
 
-#include "glua/lcompile.h"
-#include "glua/lauxlib.h"
-#include "glua/lobject.h"
-#include "glua/lstate.h"
-#include "glua/lundump.h"
-#include "glua/thinkyoung_lua_lib.h"
-
-using thinkyoung::lua::api::global_glua_chain_api;
+using lvm::lua::api::global_glua_chain_api;
 
 static int listing = 1;			/* list bytecodes? */
 static int dumping = 1;			/* dump bytecodes? */
@@ -57,7 +57,7 @@ static void l_fatal(lua_State *L, const char *data)
 {
     const char *msg = lua_pushfstring(L, "fatal error %s", data);
     global_glua_chain_api->throw_exception(L, THINKYOUNG_API_COMPILE_ERROR, msg);
-    thinkyoung::lua::lib::notify_lua_state_stop(L);
+    lvm::lua::lib::notify_lua_state_stop(L);
 }
 
 static const Proto* combine(lua_State* L, int n)

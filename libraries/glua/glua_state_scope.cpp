@@ -1,4 +1,20 @@
-﻿#include <glua/lprefix.h>
+﻿#include <glua/glua_lutil.h>
+#include <glua/lapi.h>
+#include <glua/lauxlib.h>
+#include <glua/ldo.h>
+#include <glua/ldebug.h>
+#include <glua/lobject.h>
+#include <glua/lopcodes.h>
+#include <glua/lparser.h>
+#include <glua/lprefix.h>
+#include <glua/lstate.h>
+#include <glua/lua_api.h>
+#include <glua/lua_lib.h>
+#include <glua/lualib.h>
+#include <glua/lundump.h>
+#include <glua/lvm.h>
+#include <glua/lzio.h>
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdarg.h>
@@ -12,26 +28,9 @@
 #include <mutex>
 #include <thread>
 
-#include <glua/thinkyoung_lua_api.h>
-#include <glua/thinkyoung_lua_lib.h>
+using lvm::lua::api::global_glua_chain_api;
 
-#include <glua/glua_lutil.h>
-#include <glua/lobject.h>
-#include <glua/lzio.h>
-#include <glua/lundump.h>
-#include <glua/lvm.h>
-#include <glua/lapi.h>
-#include <glua/lopcodes.h>
-#include <glua/lparser.h>
-#include <glua/lstate.h>
-#include <glua/ldo.h>
-#include <glua/ldebug.h>
-#include <glua/lauxlib.h>
-#include <glua/lualib.h>
-
-using thinkyoung::lua::api::global_glua_chain_api;
-
-namespace thinkyoung {
+namespace lvm {
     namespace lua {
         namespace lib {
             GluaStateScope::GluaStateScope(bool use_contract)
@@ -61,38 +60,38 @@ namespace thinkyoung {
             }
             
             void GluaStateScope::add_global_c_function(const char *name, lua_CFunction func) {
-                thinkyoung::lua::lib::add_global_c_function(_L, name, func);
+                lvm::lua::lib::add_global_c_function(_L, name, func);
             }
             void GluaStateScope::add_global_string_variable(const char *name, const char *str) {
-                thinkyoung::lua::lib::add_global_string_variable(_L, name, str);
+                lvm::lua::lib::add_global_string_variable(_L, name, str);
             }
             void GluaStateScope::add_global_int_variable(const char *name, lua_Integer num) {
-                thinkyoung::lua::lib::add_global_int_variable(_L, name, num);
+                lvm::lua::lib::add_global_int_variable(_L, name, num);
             }
             void GluaStateScope::add_global_number_variable(const char *name, lua_Number num) {
-                thinkyoung::lua::lib::add_global_number_variable(_L, name, num);
+                lvm::lua::lib::add_global_number_variable(_L, name, num);
             }
             void GluaStateScope::add_global_bool_variable(const char *name, bool value) {
-                thinkyoung::lua::lib::add_global_bool_variable(_L, name, value);
+                lvm::lua::lib::add_global_bool_variable(_L, name, value);
             }
             void GluaStateScope::register_module(const char *name, lua_CFunction openmodule_func) {
-                thinkyoung::lua::lib::register_module(_L, name, openmodule_func);
+                lvm::lua::lib::register_module(_L, name, openmodule_func);
             }
             
             int GluaStateScope::execute_contract_api_by_address(const char *address, const char *api_name, const char *arg1, std::string *result_json_string) {
-                return thinkyoung::lua::lib::execute_contract_api_by_address(_L, address, api_name, arg1, result_json_string);
+                return lvm::lua::lib::execute_contract_api_by_address(_L, address, api_name, arg1, result_json_string);
             }
             
             bool GluaStateScope::execute_contract_init_by_address(const char *contract_address, const char *arg1, std::string *result_json_string) {
-                return thinkyoung::lua::lib::execute_contract_init_by_address(_L, contract_address, arg1, result_json_string);
+                return lvm::lua::lib::execute_contract_init_by_address(_L, contract_address, arg1, result_json_string);
             }
             
             bool GluaStateScope::check_contract_bytecode_stream(GluaModuleByteStream *stream) {
-                return thinkyoung::lua::lib::check_contract_bytecode_stream(_L, stream);
+                return lvm::lua::lib::check_contract_bytecode_stream(_L, stream);
             }
             
             int *GluaStateScope::get_repl_state() {
-                return thinkyoung::lua::lib::get_repl_state(_L);
+                return lvm::lua::lib::get_repl_state(_L);
             }
         }
     }
