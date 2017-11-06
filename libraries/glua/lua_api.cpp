@@ -3,6 +3,14 @@
  */
 
 #include "glua/lprefix.h"
+#include "glua/lua_api.h"
+#include "glua/lua_lib.h"
+#include "glua/glua_lutil.h"
+#include "glua/lstate.h"
+#include "glua/lobject.h"
+#include <glua/GluaChainApi.hpp>
+#include <glua/glua_contractentry.hpp>
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdarg.h>
@@ -14,16 +22,8 @@
 #include <unordered_map>
 #include <memory>
 #include <mutex>
-#include "glua/thinkyoung_lua_api.h"
-#include "glua/thinkyoung_lua_lib.h"
-#include "glua/glua_lutil.h"
-#include "glua/lstate.h"
-#include "glua/lobject.h"
 
-#include <glua/GluaChainApi.hpp>
-#include <glua/glua_contractentry.hpp>
-
-namespace thinkyoung {
+namespace lvm {
     namespace lua {
         namespace api {
             // TODO: all these apis need TODO
@@ -227,7 +227,7 @@ namespace thinkyoung {
                 free(filename);
                 return stream;
                 */
-                thinkyoung::lua::lib::increment_lvm_instructions_executed_count(L, CHAIN_GLUA_API_EACH_INSTRUCTIONS_COUNT - 1);
+                lvm::lua::lib::increment_lvm_instructions_executed_count(L, CHAIN_GLUA_API_EACH_INSTRUCTIONS_COUNT - 1);
                 //thinkyoung::blockchain::TransactionEvaluationState* eval_state_ptr =
                 //    (thinkyoung::blockchain::TransactionEvaluationState*)
                 //    (thinkyoung::lua::lib::get_lua_state_value(L, "evaluate_state").pointer_value);
@@ -244,7 +244,7 @@ namespace thinkyoung {
             }
             
             std::shared_ptr<GluaModuleByteStream> GluaChainApi::open_contract_by_address(lua_State *L, const char *address) {
-                thinkyoung::lua::lib::increment_lvm_instructions_executed_count(L, CHAIN_GLUA_API_EACH_INSTRUCTIONS_COUNT - 1);
+                lvm::lua::lib::increment_lvm_instructions_executed_count(L, CHAIN_GLUA_API_EACH_INSTRUCTIONS_COUNT - 1);
                 /*thinkyoung::blockchain::TransactionEvaluationState* eval_state_ptr =
                     (thinkyoung::blockchain::TransactionEvaluationState*)
                     (thinkyoung::lua::lib::get_lua_state_value(L, "evaluate_state").pointer_value);
@@ -263,7 +263,7 @@ namespace thinkyoung {
             
             GluaStorageValue GluaChainApi::get_storage_value_from_thinkyoung(lua_State *L, const char *contract_name, std::string name) {
                 GluaStorageValue null_storage;
-                null_storage.type = thinkyoung::blockchain::StorageValueTypes::storage_value_null;
+                null_storage.type = lvm::blockchain::StorageValueTypes::storage_value_null;
                 /*thinkyoung::blockchain::TransactionEvaluationState* eval_state_ptr =
                     (thinkyoung::blockchain::TransactionEvaluationState*)
                     (thinkyoung::lua::lib::get_lua_state_value(L, "evaluate_state").pointer_value);
@@ -283,7 +283,7 @@ namespace thinkyoung {
             
             GluaStorageValue GluaChainApi::get_storage_value_from_thinkyoung_by_address(lua_State *L, const char *contract_address, std::string name) {
                 GluaStorageValue null_storage;
-                null_storage.type = thinkyoung::blockchain::StorageValueTypes::storage_value_null;
+                null_storage.type = lvm::blockchain::StorageValueTypes::storage_value_null;
                 /*thinkyoung::blockchain::TransactionEvaluationState* eval_state_ptr =
                     (thinkyoung::blockchain::TransactionEvaluationState*)
                     (thinkyoung::lua::lib::get_lua_state_value(L, "evaluate_state").pointer_value);
@@ -341,7 +341,7 @@ namespace thinkyoung {
             }
             
             intptr_t GluaChainApi::register_object_in_pool(lua_State *L, intptr_t object_addr, GluaOutsideObjectTypes type) {
-                auto node = thinkyoung::lua::lib::get_lua_state_value_node(L, GLUA_OUTSIDE_OBJECT_POOLS_KEY);
+                auto node = lvm::lua::lib::get_lua_state_value_node(L, GLUA_OUTSIDE_OBJECT_POOLS_KEY);
                 // Map<type, Map<object_key, object_addr>>
                 std::map<GluaOutsideObjectTypes, std::shared_ptr<std::map<intptr_t, intptr_t>>> *object_pools = nullptr;
                 
@@ -349,7 +349,7 @@ namespace thinkyoung {
                     node.type = GluaStateValueType::LUA_STATE_VALUE_POINTER;
                     object_pools = new std::map<GluaOutsideObjectTypes, std::shared_ptr<std::map<intptr_t, intptr_t>>>();
                     node.value.pointer_value = (void*)object_pools;
-                    thinkyoung::lua::lib::set_lua_state_value(L, GLUA_OUTSIDE_OBJECT_POOLS_KEY, node.value, node.type);
+                    lvm::lua::lib::set_lua_state_value(L, GLUA_OUTSIDE_OBJECT_POOLS_KEY, node.value, node.type);
                     
                 } else {
                     object_pools = (std::map<GluaOutsideObjectTypes, std::shared_ptr<std::map<intptr_t, intptr_t>>> *) node.value.pointer_value;
@@ -366,7 +366,7 @@ namespace thinkyoung {
             }
             
             intptr_t GluaChainApi::is_object_in_pool(lua_State *L, intptr_t object_key, GluaOutsideObjectTypes type) {
-                auto node = thinkyoung::lua::lib::get_lua_state_value_node(L, GLUA_OUTSIDE_OBJECT_POOLS_KEY);
+                auto node = lvm::lua::lib::get_lua_state_value_node(L, GLUA_OUTSIDE_OBJECT_POOLS_KEY);
                 // Map<type, Map<object_key, object_addr>>
                 std::map<GluaOutsideObjectTypes, std::shared_ptr<std::map<intptr_t, intptr_t>>> *object_pools = nullptr;
                 
@@ -386,7 +386,7 @@ namespace thinkyoung {
             }
             
             void GluaChainApi::release_objects_in_pool(lua_State *L) {
-                auto node = thinkyoung::lua::lib::get_lua_state_value_node(L, GLUA_OUTSIDE_OBJECT_POOLS_KEY);
+                auto node = lvm::lua::lib::get_lua_state_value_node(L, GLUA_OUTSIDE_OBJECT_POOLS_KEY);
                 // Map<type, Map<object_key, object_addr>>
                 std::map<GluaOutsideObjectTypes, std::shared_ptr<std::map<intptr_t, intptr_t>>> *object_pools = nullptr;
                 
@@ -410,7 +410,7 @@ namespace thinkyoung {
                             
                         switch (type) {
                             case GluaOutsideObjectTypes::OUTSIDE_STREAM_STORAGE_TYPE: {
-                                auto stream = (thinkyoung::lua::lib::GluaByteStream*) object_addr;
+                                auto stream = (lvm::lua::lib::GluaByteStream*) object_addr;
                                 delete stream;
                             }
                             break;
@@ -425,12 +425,12 @@ namespace thinkyoung {
                 delete object_pools;
                 GluaStateValue null_state_value;
                 null_state_value.int_value = 0;
-                thinkyoung::lua::lib::set_lua_state_value(L, GLUA_OUTSIDE_OBJECT_POOLS_KEY, null_state_value, GluaStateValueType::LUA_STATE_VALUE_nullptr);
+                lvm::lua::lib::set_lua_state_value(L, GLUA_OUTSIDE_OBJECT_POOLS_KEY, null_state_value, GluaStateValueType::LUA_STATE_VALUE_nullptr);
             }
             
             lua_Integer GluaChainApi::transfer_from_contract_to_address(lua_State *L, const char *contract_address, const char *to_address,
                     const char *asset_type, int64_t amount) {
-                thinkyoung::lua::lib::increment_lvm_instructions_executed_count(L, CHAIN_GLUA_API_EACH_INSTRUCTIONS_COUNT - 1);
+                lvm::lua::lib::increment_lvm_instructions_executed_count(L, CHAIN_GLUA_API_EACH_INSTRUCTIONS_COUNT - 1);
                 //printf("contract transfer from %s to %s, asset[%s] amount %ld\n", contract_address, to_address, asset_type, amount_str);
                 //return true;
                 
@@ -498,7 +498,7 @@ namespace thinkyoung {
             }
             
             int64_t GluaChainApi::get_contract_balance_amount(lua_State *L, const char *contract_address, const char* asset_symbol) {
-                thinkyoung::lua::lib::increment_lvm_instructions_executed_count(L, CHAIN_GLUA_API_EACH_INSTRUCTIONS_COUNT - 1);
+                lvm::lua::lib::increment_lvm_instructions_executed_count(L, CHAIN_GLUA_API_EACH_INSTRUCTIONS_COUNT - 1);
                 //try {
                 //    thinkyoung::blockchain::TransactionEvaluationState* eval_state_ptr =
                 //        (thinkyoung::blockchain::TransactionEvaluationState*)
@@ -541,7 +541,7 @@ namespace thinkyoung {
             }
             
             int64_t GluaChainApi::get_transaction_fee(lua_State *L) {
-                thinkyoung::lua::lib::increment_lvm_instructions_executed_count(L, CHAIN_GLUA_API_EACH_INSTRUCTIONS_COUNT - 1);
+                lvm::lua::lib::increment_lvm_instructions_executed_count(L, CHAIN_GLUA_API_EACH_INSTRUCTIONS_COUNT - 1);
                 /* try {
                      thinkyoung::blockchain::TransactionEvaluationState* eval_state_ptr =
                      (thinkyoung::blockchain::TransactionEvaluationState*)
@@ -568,7 +568,7 @@ namespace thinkyoung {
             }
             
             uint32_t GluaChainApi::get_chain_now(lua_State *L) {
-                thinkyoung::lua::lib::increment_lvm_instructions_executed_count(L, CHAIN_GLUA_API_EACH_INSTRUCTIONS_COUNT - 1);
+                lvm::lua::lib::increment_lvm_instructions_executed_count(L, CHAIN_GLUA_API_EACH_INSTRUCTIONS_COUNT - 1);
                 /* try {
                      thinkyoung::blockchain::TransactionEvaluationState* eval_state_ptr =
                      (thinkyoung::blockchain::TransactionEvaluationState*)
@@ -589,7 +589,7 @@ namespace thinkyoung {
                 return -2;
             }
             uint32_t GluaChainApi::get_chain_random(lua_State *L) {
-                thinkyoung::lua::lib::increment_lvm_instructions_executed_count(L, CHAIN_GLUA_API_EACH_INSTRUCTIONS_COUNT - 1);
+                lvm::lua::lib::increment_lvm_instructions_executed_count(L, CHAIN_GLUA_API_EACH_INSTRUCTIONS_COUNT - 1);
                 /*try {
                     thinkyoung::blockchain::TransactionEvaluationState* eval_state_ptr =
                     (thinkyoung::blockchain::TransactionEvaluationState*)
@@ -610,7 +610,7 @@ namespace thinkyoung {
             }
             
             std::string GluaChainApi::get_transaction_id(lua_State *L) {
-                thinkyoung::lua::lib::increment_lvm_instructions_executed_count(L, CHAIN_GLUA_API_EACH_INSTRUCTIONS_COUNT - 1);
+                lvm::lua::lib::increment_lvm_instructions_executed_count(L, CHAIN_GLUA_API_EACH_INSTRUCTIONS_COUNT - 1);
                 /* try {
                      thinkyoung::blockchain::TransactionEvaluationState* eval_state_ptr =
                      (thinkyoung::blockchain::TransactionEvaluationState*)
@@ -629,7 +629,7 @@ namespace thinkyoung {
             }
             
             uint32_t GluaChainApi::get_header_block_num(lua_State *L) {
-                thinkyoung::lua::lib::increment_lvm_instructions_executed_count(L, CHAIN_GLUA_API_EACH_INSTRUCTIONS_COUNT - 1);
+                lvm::lua::lib::increment_lvm_instructions_executed_count(L, CHAIN_GLUA_API_EACH_INSTRUCTIONS_COUNT - 1);
                 /*try {
                     thinkyoung::blockchain::TransactionEvaluationState* eval_state_ptr =
                     (thinkyoung::blockchain::TransactionEvaluationState*)
@@ -648,7 +648,7 @@ namespace thinkyoung {
             }
             
             uint32_t GluaChainApi::wait_for_future_random(lua_State *L, int next) {
-                thinkyoung::lua::lib::increment_lvm_instructions_executed_count(L, CHAIN_GLUA_API_EACH_INSTRUCTIONS_COUNT - 1);
+                lvm::lua::lib::increment_lvm_instructions_executed_count(L, CHAIN_GLUA_API_EACH_INSTRUCTIONS_COUNT - 1);
                 /*try {
                     thinkyoung::blockchain::TransactionEvaluationState* eval_state_ptr =
                     (thinkyoung::blockchain::TransactionEvaluationState*)
@@ -674,7 +674,7 @@ namespace thinkyoung {
             //如果希望使用该值作为随机值，以随机值作为其他数据的选取依据时，需要在目标块被产出前确定要被筛选的数据
             //如投注彩票，只允许在目标块被产出前投注
             int32_t GluaChainApi::get_waited(lua_State *L, uint32_t num) {
-                thinkyoung::lua::lib::increment_lvm_instructions_executed_count(L, CHAIN_GLUA_API_EACH_INSTRUCTIONS_COUNT - 1);
+                lvm::lua::lib::increment_lvm_instructions_executed_count(L, CHAIN_GLUA_API_EACH_INSTRUCTIONS_COUNT - 1);
                 /* try {
                      if (num <= 1)
                      return -2;
@@ -714,7 +714,7 @@ namespace thinkyoung {
             }
             
             void GluaChainApi::emit(lua_State *L, const char* contract_id, const char* event_name, const char* event_param) {
-                thinkyoung::lua::lib::increment_lvm_instructions_executed_count(L, CHAIN_GLUA_API_EACH_INSTRUCTIONS_COUNT - 1);
+                lvm::lua::lib::increment_lvm_instructions_executed_count(L, CHAIN_GLUA_API_EACH_INSTRUCTIONS_COUNT - 1);
                 /*try {
                     thinkyoung::blockchain::TransactionEvaluationState* eval_state_ptr =
                     (thinkyoung::blockchain::TransactionEvaluationState*)

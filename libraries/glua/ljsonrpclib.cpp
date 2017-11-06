@@ -1,7 +1,13 @@
 #define ljsonrpclib_cpp
 
+#include "glua/lauxlib.h"
 #include "glua/lprefix.h"
+#include "glua/lua.h"
+#include "glua/lua_api.h"
+#include "glua/lualib.h"
 
+#include <boost/asio.hpp>
+#include <boost/asio/ip/tcp.hpp>
 
 #include <errno.h>
 #include <locale.h>
@@ -10,14 +16,6 @@
 #include <time.h>
 #include <memory>
 #include <mutex>
-#include <boost/asio.hpp>
-#include <boost/asio/ip/tcp.hpp>
-
-#include "glua/lua.h"
-
-#include "glua/lauxlib.h"
-#include "glua/lualib.h"
-#include "glua/thinkyoung_lua_api.h"
 
 #undef LUA_JSONRPC_VERSION
 #define LUA_JSONRPC_VERSION "1.0"

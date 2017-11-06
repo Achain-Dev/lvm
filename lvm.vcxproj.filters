@@ -240,12 +240,6 @@
     <ClCompile Include="libraries\glua\lzio.cpp">
       <Filter>libraries\glua</Filter>
     </ClCompile>
-    <ClCompile Include="libraries\glua\thinkyoung_lua_api.cpp">
-      <Filter>libraries\glua</Filter>
-    </ClCompile>
-    <ClCompile Include="libraries\glua\thinkyoung_lua_lib.cpp">
-      <Filter>libraries\glua</Filter>
-    </ClCompile>
     <ClCompile Include="libraries\client\client.cpp">
       <Filter>libraries\client</Filter>
     </ClCompile>
@@ -271,9 +265,6 @@
     <ClCompile Include="libraries\glua\glua_compile_op.cpp">
       <Filter>libraries\glua</Filter>
     </ClCompile>
-    <ClCompile Include="libraries\base\CommonApi.cpp">
-      <Filter>libraries\base</Filter>
-    </ClCompile>
     <ClCompile Include="libraries\rpc\stcp_socket.cpp">
       <Filter>libraries\rpc</Filter>
     </ClCompile>
@@ -291,6 +282,15 @@
     </ClCompile>
     <ClCompile Include="libraries\glua\glua_contractoperations.cpp">
       <Filter>libraries\glua</Filter>
+    </ClCompile>
+    <ClCompile Include="libraries\glua\lua_api.cpp">
+      <Filter>libraries\glua</Filter>
+    </ClCompile>
+    <ClCompile Include="libraries\glua\lua_lib.cpp">
+      <Filter>libraries\glua</Filter>
+    </ClCompile>
+    <ClCompile Include="libraries\base\common_api.cpp">
+      <Filter>libraries\base</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -447,12 +447,6 @@
     <ClInclude Include="libraries\include\glua\lzio.h">
       <Filter>libraries\include\glua</Filter>
     </ClInclude>
-    <ClInclude Include="libraries\include\glua\thinkyoung_lua_api.h">
-      <Filter>libraries\include\glua</Filter>
-    </ClInclude>
-    <ClInclude Include="libraries\include\glua\thinkyoung_lua_lib.h">
-      <Filter>libraries\include\glua</Filter>
-    </ClInclude>
     <ClInclude Include="libraries\include\client\client.hpp">
       <Filter>libraries\include\client</Filter>
     </ClInclude>
@@ -515,6 +509,15 @@
     </ClInclude>
     <ClInclude Include="libraries\include\glua\lua.hpp">
       <Filter>libraries\include\glua</Filter>
+    </ClInclude>
+    <ClInclude Include="libraries\include\glua\lua_lib.h">
+      <Filter>libraries\include\glua</Filter>
+    </ClInclude>
+    <ClInclude Include="libraries\include\glua\lua_api.h">
+      <Filter>libraries\include\glua</Filter>
+    </ClInclude>
+    <ClInclude Include="libraries\include\base\common_api.hpp">
+      <Filter>libraries\include\base</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

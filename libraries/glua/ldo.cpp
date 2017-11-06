@@ -32,9 +32,9 @@
 #include "glua/lundump.h"
 #include "glua/lvm.h"
 #include "glua/lzio.h"
-#include "glua/thinkyoung_lua_lib.h"
+#include "glua/lua_lib.h"
 
-using thinkyoung::lua::api::global_glua_chain_api;
+using lvm::lua::api::global_glua_chain_api;
 
 
 #define errorstatus(s)	((s) > LUA_YIELD)
@@ -154,7 +154,7 @@ void luaD_throw(lua_State *L, int errcode) {
             }
             // abort();
             global_glua_chain_api->throw_exception(L, THINKYOUNG_API_SIMPLE_ERROR, errmsg.c_str());
-            thinkyoung::lua::lib::notify_lua_state_stop(L);
+            lvm::lua::lib::notify_lua_state_stop(L);
             L->force_stopping = true;
         }
     }

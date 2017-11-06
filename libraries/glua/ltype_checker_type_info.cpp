@@ -255,23 +255,23 @@ namespace glua {
 				const auto &prop_type = p.second;
 				if(prop_type->etype == GluaTypeInfoEnum::LTI_INT)
 				{
-					stream->contract_storage_properties[p.first] = thinkyoung::blockchain::StorageValueTypes::storage_value_int;
+					stream->contract_storage_properties[p.first] = lvm::blockchain::StorageValueTypes::storage_value_int;
 				}
 				else if(prop_type->etype == GluaTypeInfoEnum::LTI_NUMBER)
 				{
-					stream->contract_storage_properties[p.first] = thinkyoung::blockchain::StorageValueTypes::storage_value_number;
+					stream->contract_storage_properties[p.first] = lvm::blockchain::StorageValueTypes::storage_value_number;
 				}
 				else if(prop_type->is_bool())
 				{
-					stream->contract_storage_properties[p.first] = thinkyoung::blockchain::StorageValueTypes::storage_value_bool;
+					stream->contract_storage_properties[p.first] = lvm::blockchain::StorageValueTypes::storage_value_bool;
 				}
 				else if(prop_type->is_string())
 				{
-					stream->contract_storage_properties[p.first] = thinkyoung::blockchain::StorageValueTypes::storage_value_string;
+					stream->contract_storage_properties[p.first] = lvm::blockchain::StorageValueTypes::storage_value_string;
 				}
 				else if (prop_type->is_stream_type)
 				{
-					stream->contract_storage_properties[p.first] = thinkyoung::blockchain::StorageValueTypes::storage_value_stream;
+					stream->contract_storage_properties[p.first] = lvm::blockchain::StorageValueTypes::storage_value_stream;
 				}
 				else if(prop_type->is_narrow_table())
 				{
@@ -279,31 +279,31 @@ namespace glua {
 					error_ss << "Can't use type " << prop_type->str() << " in contract storage";
 					const auto &error_str = error_ss.str();
 					throw glua::core::GluaException(error_str.c_str());
-					// stream->contract_storage_properties[p.first] = thinkyoung::blockchain::StorageValueTypes::storage_value_unkown_table;
+					// stream->contract_storage_properties[p.first] = lvm::blockchain::StorageValueTypes::storage_value_unkown_table;
 				}
 				else if(prop_type->is_map())
 				{
 					switch(prop_type->map_item_type->etype)
 					{
 					case GluaTypeInfoEnum::LTI_INT: {
-						stream->contract_storage_properties[p.first] = thinkyoung::blockchain::StorageValueTypes::storage_value_int_table;
+						stream->contract_storage_properties[p.first] = lvm::blockchain::StorageValueTypes::storage_value_int_table;
 					} break;
 					case GluaTypeInfoEnum::LTI_NUMBER: {
-						stream->contract_storage_properties[p.first] = thinkyoung::blockchain::StorageValueTypes::storage_value_number_table;
+						stream->contract_storage_properties[p.first] = lvm::blockchain::StorageValueTypes::storage_value_number_table;
 					} break;
 					case GluaTypeInfoEnum::LTI_BOOL: {
-						stream->contract_storage_properties[p.first] = thinkyoung::blockchain::StorageValueTypes::storage_value_bool_table;
+						stream->contract_storage_properties[p.first] = lvm::blockchain::StorageValueTypes::storage_value_bool_table;
 					} break;
 					case GluaTypeInfoEnum::LTI_STRING: {
-						stream->contract_storage_properties[p.first] = thinkyoung::blockchain::StorageValueTypes::storage_value_string_table;
+						stream->contract_storage_properties[p.first] = lvm::blockchain::StorageValueTypes::storage_value_string_table;
 					} break;
 					case GluaTypeInfoEnum::LTI_STREAM: {
-						stream->contract_storage_properties[p.first] = thinkyoung::blockchain::StorageValueTypes::storage_value_stream_table;
+						stream->contract_storage_properties[p.first] = lvm::blockchain::StorageValueTypes::storage_value_stream_table;
 					} break;
 					default: {
 						if(prop_type->map_item_type->is_stream_type)
 						{
-							stream->contract_storage_properties[p.first] = thinkyoung::blockchain::StorageValueTypes::storage_value_stream_table;
+							stream->contract_storage_properties[p.first] = lvm::blockchain::StorageValueTypes::storage_value_stream_table;
 						}
 						else
 						{
@@ -320,25 +320,25 @@ namespace glua {
 					switch (prop_type->array_item_type->etype)
 					{
 					case GluaTypeInfoEnum::LTI_INT: {
-						stream->contract_storage_properties[p.first] = thinkyoung::blockchain::StorageValueTypes::storage_value_int_array;
+						stream->contract_storage_properties[p.first] = lvm::blockchain::StorageValueTypes::storage_value_int_array;
 					} break;
 					case GluaTypeInfoEnum::LTI_NUMBER: {
-						stream->contract_storage_properties[p.first] = thinkyoung::blockchain::StorageValueTypes::storage_value_number_array;
+						stream->contract_storage_properties[p.first] = lvm::blockchain::StorageValueTypes::storage_value_number_array;
 					} break;
 					case GluaTypeInfoEnum::LTI_BOOL: {
-						stream->contract_storage_properties[p.first] = thinkyoung::blockchain::StorageValueTypes::storage_value_bool_array;
+						stream->contract_storage_properties[p.first] = lvm::blockchain::StorageValueTypes::storage_value_bool_array;
 					} break;
 					case GluaTypeInfoEnum::LTI_STRING: {
-						stream->contract_storage_properties[p.first] = thinkyoung::blockchain::StorageValueTypes::storage_value_string_array;
+						stream->contract_storage_properties[p.first] = lvm::blockchain::StorageValueTypes::storage_value_string_array;
 					} break;
 					case GluaTypeInfoEnum::LTI_STREAM: {
-						stream->contract_storage_properties[p.first] = thinkyoung::blockchain::StorageValueTypes::storage_value_stream_array;
+						stream->contract_storage_properties[p.first] = lvm::blockchain::StorageValueTypes::storage_value_stream_array;
 					} break;
 					default: 
 					{
 						if(prop_type->array_item_type->is_stream_type)
 						{
-							stream->contract_storage_properties[p.first] = thinkyoung::blockchain::StorageValueTypes::storage_value_stream_array;
+							stream->contract_storage_properties[p.first] = lvm::blockchain::StorageValueTypes::storage_value_stream_array;
 
 						}
 						else

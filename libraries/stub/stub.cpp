@@ -15,7 +15,7 @@ Stub::~Stub() {
 
 void Stub::start() {
     // TODO: please start glua here for testing.
-    thinkyoung::lua::api::global_glua_chain_api = new thinkyoung::lua::api::GluaChainApi();
+    lvm::lua::api::global_glua_chain_api = new lvm::lua::api::GluaChainApi();
     CompileOp op;
     op.compile_contract(CONTRACT_PATH CONTRACT_NAME);
 }

@@ -2,7 +2,7 @@
 #include <glua/GluaChainApi.hpp>
 #include <glua/glua_complie_op.h>
 #include <glua/glua_task_mgr.h>
-#include <glua/thinkyoung_lua_api.h>
+#include <glua/lua_api.h>
 #include <task/task.hpp>
 
 #include <fc/exception/exception.hpp>
@@ -26,16 +26,16 @@ void GluaTaskMgr::delete_glua_task_mgr() {
 }
 
 GluaTaskMgr::GluaTaskMgr() {
-    if (!thinkyoung::lua::api::global_glua_chain_api) {
-        thinkyoung::lua::api::global_glua_chain_api =
-            new thinkyoung::lua::api::GluaChainApi;
+    if (!lvm::lua::api::global_glua_chain_api) {
+        lvm::lua::api::global_glua_chain_api =
+            new lvm::lua::api::GluaChainApi;
     }
 }
 
 GluaTaskMgr::~GluaTaskMgr() {
-    if (thinkyoung::lua::api::global_glua_chain_api) {
-        delete thinkyoung::lua::api::global_glua_chain_api;
-        thinkyoung::lua::api::global_glua_chain_api = nullptr;
+    if (lvm::lua::api::global_glua_chain_api) {
+        delete lvm::lua::api::global_glua_chain_api;
+        lvm::lua::api::global_glua_chain_api = nullptr;
     }
 }
 

@@ -1,16 +1,18 @@
 #ifndef _GLUA_CONTRACTENTRY_H
 #define _GLUA_CONTRACTENTRY_H
 
-#include <glua/thinkyoung_lua_api.h>
-#include <fc/filesystem.hpp>
-#include <fc/optional.hpp>
-#include <fc/reflect/reflect.hpp>
-#include <fc/io/enum_type.hpp>
+#include <glua/lua_api.h>
+
 #include <boost/uuid/sha1.hpp>
 
+#include <fc/filesystem.hpp>
+#include <fc/io/enum_type.hpp>
+#include <fc/optional.hpp>
+#include <fc/reflect/reflect.hpp>
+
+#include <set>
 #include <string>
 #include <vector>
-#include <set>
 
 #define PRINTABLE_CHAR(chr) \
 if (chr >= 0 && chr <= 9)  \
@@ -114,7 +116,7 @@ struct Code {
     std::set<std::string> abi;
     std::set<std::string> offline_abi;
     std::set<std::string> events;
-    std::map<std::string, fc::enum_type<fc::unsigned_int, thinkyoung::blockchain::StorageValueTypes>> storage_properties;
+    std::map<std::string, fc::enum_type<fc::unsigned_int, lvm::blockchain::StorageValueTypes>> storage_properties;
     std::vector<ContractChar> byte_code;
     std::string code_hash;
     Code(const fc::path&);

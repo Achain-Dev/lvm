@@ -1,6 +1,12 @@
 ﻿#pragma once
 
 #include <glua/lprefix.h>
+#include <glua/lua_api.h>
+#include <glua/lua_lib.h>
+#include <glua/glua_lutil.h>
+#include <glua/lobject.h>
+#include <glua/lstate.h>
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdarg.h>
@@ -12,14 +18,8 @@
 #include <unordered_map>
 #include <memory>
 #include <mutex>
-#include <glua/thinkyoung_lua_api.h>
-#include <glua/thinkyoung_lua_lib.h>
-#include <glua/glua_lutil.h>
-#include <glua/lobject.h>
-#include <glua/lstate.h>
 
-
-namespace thinkyoung {
+namespace lvm {
     namespace lua {
         namespace api {
             // 这里是demo实现，需要具体重新实现这里所有API

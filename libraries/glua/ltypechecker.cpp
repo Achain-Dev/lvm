@@ -1,16 +1,16 @@
-﻿#include <glua/ltypechecker.h>
-#include <cassert>
-#include <glua/thinkyoung_lua_lib.h>
+﻿#include <glua/glua_astparser.h>
 #include <glua/glua_lutil.h>
-#include <glua/glua_astparser.h>
+#include <glua/ltypechecker.h>
+#include <glua/lua_lib.h>
+
 #include <boost/exception/diagnostic_information.hpp> 
 #include <boost/exception_ptr.hpp> 
 
+#include <cassert>
+
 namespace glua {
     namespace parser {
-
-
-		static std::vector<std::string> exclude_function_names = { "emit" };
+        static std::vector<std::string> exclude_function_names = { "emit" };
 
         std::string lua_type_info_to_str(const GluaTypeInfoEnum etype)
         {
@@ -1750,7 +1750,7 @@ namespace glua {
 						{
 							if (obj_type_info != find_info_by_varname(mr, "self"))
 							{
-								if (glua::util::vector_contains(thinkyoung::lua::lib::contract_special_api_names, prop_name)
+                                if (glua::util::vector_contains(lvm::lua::lib::contract_special_api_names, prop_name)
 									|| prop_name == "storage")
 								{
 									set_error(error_in_match_result(mr, std::string("Can't access contract's ") + prop_name + " property", GluaTypeCheckerErrors::ACCESS_CONTRACT_PROPERTY_DISABLE));
@@ -1759,7 +1759,7 @@ namespace glua {
 							}
 							else
 							{
-								if (glua::util::vector_contains(thinkyoung::lua::lib::contract_special_api_names, prop_name))
+                                if (glua::util::vector_contains(lvm::lua::lib::contract_special_api_names, prop_name))
 								{
 									set_error(error_in_match_result(mr, std::string("Can't access contract's ") + prop_name + " property", GluaTypeCheckerErrors::ACCESS_CONTRACT_PROPERTY_DISABLE));
 									result = false;
@@ -2706,7 +2706,7 @@ namespace glua {
 
         void GluaTypeChecker::init_global_variables_to_proto(LuaProtoSTreeP proto)
         {
-            auto *global_var_infos = thinkyoung::lua::lib::get_globalvar_type_infos();
+            auto *global_var_infos = lvm::lua::lib::get_globalvar_type_infos();
 			auto extra = std::make_shared<GluaExtraBindingsType>();
             for (auto i = global_var_infos->begin(); i != global_var_infos->end(); ++i)
             {
@@ -2808,8 +2808,8 @@ namespace glua {
 				{
 					continue;
 				}
-				else if(glua::util::vector_contains(thinkyoung::lua::lib::contract_special_api_names, api_prop_name)
-					&& !glua::util::vector_contains(thinkyoung::lua::lib::contract_int_argument_special_api_names, api_prop_name))
+                else if (glua::util::vector_contains(lvm::lua::lib::contract_special_api_names, api_prop_name)
+                    && !glua::util::vector_contains(lvm::lua::lib::contract_int_argument_special_api_names, api_prop_name))
 				{
 					if (api_type.second->arg_types.size()>1)
 					{
@@ -2817,7 +2817,7 @@ namespace glua {
 							std::string("contract api ") + api_type.first + " expect no arguments except self");
 					}
 				}
-				else if(glua::util::vector_contains(thinkyoung::lua::lib::contract_int_argument_special_api_names, api_prop_name))
+                else if (glua::util::vector_contains(lvm::lua::lib::contract_int_argument_special_api_names, api_prop_name))
 				{
 					if (api_type.second->arg_types.size()==2 && !api_type.second->arg_types[1]->is_int())
 					{
@@ -4252,7 +4252,7 @@ namespace glua {
 							auto obj_to_find_func_type = guess_exp_type(item1);
 							if(obj_to_find_func_type->is_contract_type())
 							{
-								if(glua::util::vector_contains(thinkyoung::lua::lib::contract_special_api_names, funcname_token.token))
+                                if (glua::util::vector_contains(lvm::lua::lib::contract_special_api_names, funcname_token.token))
 								{
 									set_error(error_in_match_result(mr, std::string("Can't call ") + funcname_token.token + " api of contract", GluaTypeCheckerErrors::ACCESS_CONTRACT_PROPERTY_DISABLE));
 									return create_lua_type_info();

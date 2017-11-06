@@ -16,8 +16,8 @@
 #include <thread>
 #include <fstream>
 
-#include <glua/thinkyoung_lua_api.h>
-#include <glua/thinkyoung_lua_lib.h>
+#include <glua/lua_api.h>
+#include <glua/lua_lib.h>
 #include <glua/glua_tokenparser.h>
 #include <glua/lparsercombinator.h>
 #include <glua/ltypechecker.h>
@@ -38,13 +38,13 @@
 #include <glua/glua_decompile.h>
 #include <glua/glua_disassemble.h>
 
-namespace thinkyoung {
+namespace lvm {
     namespace lua {
         namespace api {
             IGluaChainApi *global_glua_chain_api = nullptr;
         }
         
-        using thinkyoung::lua::api::global_glua_chain_api;
+        using lvm::lua::api::global_glua_chain_api;
         
         namespace lib {
             std::vector<std::string> contract_special_api_names = { "init", "on_deposit", "on_destroy", "on_upgrade" };
@@ -366,14 +366,14 @@ next: (table) => bool
             // 从当前合约总转账到
             static int transfer_from_contract_to_public_account(lua_State *L) {
                 if (lua_gettop(L) < 3) {
-                    thinkyoung::lua::api::global_glua_chain_api->throw_exception(L, THINKYOUNG_API_SIMPLE_ERROR, "transfer_from_contract_to_public_account need 3 arguments");
+                    lvm::lua::api::global_glua_chain_api->throw_exception(L, THINKYOUNG_API_SIMPLE_ERROR, "transfer_from_contract_to_public_account need 3 arguments");
                     return 0;
                 }
                 
                 const char *contract_id = get_contract_id_in_api(L);
                 
                 if (nullptr == contract_id) {
-                    thinkyoung::lua::api::global_glua_chain_api->throw_exception(L, THINKYOUNG_API_SIMPLE_ERROR, "contract transfer must be called in contract api");
+                    lvm::lua::api::global_glua_chain_api->throw_exception(L, THINKYOUNG_API_SIMPLE_ERROR, "contract transfer must be called in contract api");
                     return 0;
                 }
                 
@@ -382,11 +382,11 @@ next: (table) => bool
                 auto amount_str = luaL_checkinteger(L, 3);
                 
                 if (amount_str <= 0) {
-                    thinkyoung::lua::api::global_glua_chain_api->throw_exception(L, THINKYOUNG_API_SIMPLE_ERROR, "amount must be positive");
+                    lvm::lua::api::global_glua_chain_api->throw_exception(L, THINKYOUNG_API_SIMPLE_ERROR, "amount must be positive");
                     return 0;
                 }
                 
-                lua_Integer transfer_result = thinkyoung::lua::api::global_glua_chain_api->transfer_from_contract_to_public_account(L, contract_id, to_account_name, asset_type, amount_str);
+                lua_Integer transfer_result = lvm::lua::api::global_glua_chain_api->transfer_from_contract_to_public_account(L, contract_id, to_account_name, asset_type, amount_str);
                 lua_pushinteger(L, transfer_result);
                 return 1;
             }
@@ -396,14 +396,14 @@ next: (table) => bool
             /************************************************************************/
             static int transfer_from_contract_to_address(lua_State *L) {
                 if (lua_gettop(L) < 3) {
-                    thinkyoung::lua::api::global_glua_chain_api->throw_exception(L, THINKYOUNG_API_SIMPLE_ERROR, "transfer_from_contract_to_address need 3 arguments");
+                    lvm::lua::api::global_glua_chain_api->throw_exception(L, THINKYOUNG_API_SIMPLE_ERROR, "transfer_from_contract_to_address need 3 arguments");
                     return 0;
                 }
                 
                 const char *contract_id = get_contract_id_in_api(L);
                 
                 if (!contract_id) {
-                    thinkyoung::lua::api::global_glua_chain_api->throw_exception(L, THINKYOUNG_API_SIMPLE_ERROR, "contract transfer must be called in contract api");
+                    lvm::lua::api::global_glua_chain_api->throw_exception(L, THINKYOUNG_API_SIMPLE_ERROR, "contract transfer must be called in contract api");
                     return 0;
                 }
                 
@@ -412,11 +412,11 @@ next: (table) => bool
                 auto amount_str = luaL_checkinteger(L, 3);
                 
                 if (amount_str <= 0) {
-                    thinkyoung::lua::api::global_glua_chain_api->throw_exception(L, THINKYOUNG_API_SIMPLE_ERROR, "amount must be positive");
+                    lvm::lua::api::global_glua_chain_api->throw_exception(L, THINKYOUNG_API_SIMPLE_ERROR, "amount must be positive");
                     return 0;
                 }
                 
-                lua_Integer transfer_result = thinkyoung::lua::api::global_glua_chain_api->transfer_from_contract_to_address(L, contract_id, to_address, asset_type, amount_str);
+                lua_Integer transfer_result = lvm::lua::api::global_glua_chain_api->transfer_from_contract_to_address(L, contract_id, to_address, asset_type, amount_str);
                 lua_pushinteger(L, transfer_result);
                 return 1;
             }
@@ -425,7 +425,7 @@ next: (table) => bool
                 const char *cur_contract_id = get_contract_id_in_api(L);
                 
                 if (!cur_contract_id) {
-                    thinkyoung::lua::api::global_glua_chain_api->throw_exception(L, THINKYOUNG_API_SIMPLE_ERROR, "can't get current contract address");
+                    lvm::lua::api::global_glua_chain_api->throw_exception(L, THINKYOUNG_API_SIMPLE_ERROR, "can't get current contract address");
                     return 0;
                 }
                 
@@ -435,7 +435,7 @@ next: (table) => bool
             
             static int get_contract_balance_amount(lua_State *L) {
                 if (lua_gettop(L) > 0 && !lua_isstring(L, 1)) {
-                    thinkyoung::lua::api::global_glua_chain_api->throw_exception(L, THINKYOUNG_API_SIMPLE_ERROR,
+                    lvm::lua::api::global_glua_chain_api->throw_exception(L, THINKYOUNG_API_SIMPLE_ERROR,
                             "get_contract_balance_amount need 1 string argument of contract address");
                     return 0;
                 }
@@ -443,18 +443,18 @@ next: (table) => bool
                 auto contract_address = luaL_checkstring(L, 1);
                 
                 if (strlen(contract_address) < 1) {
-                    thinkyoung::lua::api::global_glua_chain_api->throw_exception(L, THINKYOUNG_API_SIMPLE_ERROR,
+                    lvm::lua::api::global_glua_chain_api->throw_exception(L, THINKYOUNG_API_SIMPLE_ERROR,
                             "contract address can't be empty");
                     return 0;
                 }
                 
                 if (lua_gettop(L) < 2 || !lua_isstring(L, 2)) {
-                    thinkyoung::lua::api::global_glua_chain_api->throw_exception(L, THINKYOUNG_API_SIMPLE_ERROR, "get balance amount need asset symbol");
+                    lvm::lua::api::global_glua_chain_api->throw_exception(L, THINKYOUNG_API_SIMPLE_ERROR, "get balance amount need asset symbol");
                     return 0;
                 }
                 
                 auto assert_symbol = luaL_checkstring(L, 2);
-                auto result = thinkyoung::lua::api::global_glua_chain_api->get_contract_balance_amount(L, contract_address, assert_symbol);
+                auto result = lvm::lua::api::global_glua_chain_api->get_contract_balance_amount(L, contract_address, assert_symbol);
                 lua_pushinteger(L, result);
                 return 1;
             }
@@ -570,52 +570,52 @@ next: (table) => bool
                 auto msg = luaL_checkstring(L, -1);
                 
                 if (nullptr != msg)
-                    thinkyoung::lua::api::global_glua_chain_api->throw_exception(L, THINKYOUNG_API_SIMPLE_ERROR, msg);
+                    lvm::lua::api::global_glua_chain_api->throw_exception(L, THINKYOUNG_API_SIMPLE_ERROR, msg);
                     
                 return 0;
             }
             
             static int get_chain_now(lua_State *L) {
-                auto time = thinkyoung::lua::api::global_glua_chain_api->get_chain_now(L);
+                auto time = lvm::lua::api::global_glua_chain_api->get_chain_now(L);
                 lua_pushinteger(L, time);
                 return 1;
             }
             
             static int get_chain_random(lua_State *L) {
-                auto rand = thinkyoung::lua::api::global_glua_chain_api->get_chain_random(L);
+                auto rand = lvm::lua::api::global_glua_chain_api->get_chain_random(L);
                 lua_pushinteger(L, rand);
                 return 1;
             }
             static int get_transaction_id(lua_State *L) {
-                std::string tid = thinkyoung::lua::api::global_glua_chain_api->get_transaction_id(L);
+                std::string tid = lvm::lua::api::global_glua_chain_api->get_transaction_id(L);
                 lua_pushstring(L, tid.c_str());
                 return 1;
             }
             static int get_transaction_fee(lua_State *L) {
-                int64_t res = thinkyoung::lua::api::global_glua_chain_api->get_transaction_fee(L);
+                int64_t res = lvm::lua::api::global_glua_chain_api->get_transaction_fee(L);
                 lua_pushinteger(L, res);
                 return 1;
             }
             static int get_header_block_num(lua_State *L) {
-                auto result = thinkyoung::lua::api::global_glua_chain_api->get_header_block_num(L);
+                auto result = lvm::lua::api::global_glua_chain_api->get_header_block_num(L);
                 lua_pushinteger(L, result);
                 return 1;
             }
             
             static int wait_for_future_random(lua_State *L) {
                 if (lua_gettop(L) < 1 || !lua_isinteger(L, 1)) {
-                    thinkyoung::lua::api::global_glua_chain_api->throw_exception(L, THINKYOUNG_API_SIMPLE_ERROR, "wait_for_future_random need a integer param");
+                    lvm::lua::api::global_glua_chain_api->throw_exception(L, THINKYOUNG_API_SIMPLE_ERROR, "wait_for_future_random need a integer param");
                     return 0;
                 }
                 
                 auto next = luaL_checkinteger(L, 1);
                 
                 if (next <= 0) {
-                    thinkyoung::lua::api::global_glua_chain_api->throw_exception(L, THINKYOUNG_API_SIMPLE_ERROR, "wait_for_future_random first param must be positive number");
+                    lvm::lua::api::global_glua_chain_api->throw_exception(L, THINKYOUNG_API_SIMPLE_ERROR, "wait_for_future_random first param must be positive number");
                     return 0;
                 }
                 
-                auto result = thinkyoung::lua::api::global_glua_chain_api->wait_for_future_random(L, (int)next);
+                auto result = lvm::lua::api::global_glua_chain_api->wait_for_future_random(L, (int)next);
                 lua_pushinteger(L, result);
                 return 1;
             }
@@ -625,19 +625,19 @@ next: (table) => bool
             /************************************************************************/
             static int get_waited_block_random(lua_State *L) {
                 if (lua_gettop(L) < 1 || !lua_isinteger(L, 1)) {
-                    thinkyoung::lua::api::global_glua_chain_api->throw_exception(L, THINKYOUNG_API_SIMPLE_ERROR, "get_waited need a integer param");
+                    lvm::lua::api::global_glua_chain_api->throw_exception(L, THINKYOUNG_API_SIMPLE_ERROR, "get_waited need a integer param");
                     return 0;
                 }
                 
                 auto num = luaL_checkinteger(L, 1);
-                auto result = thinkyoung::lua::api::global_glua_chain_api->get_waited(L, (uint32_t)num);
+                auto result = lvm::lua::api::global_glua_chain_api->get_waited(L, (uint32_t)num);
                 lua_pushinteger(L, result);
                 return 1;
             }
             
             static int emit_thinkyoung_event(lua_State *L) {
                 if (lua_gettop(L) < 2 && (!lua_isstring(L, 1) || !lua_isstring(L, 2))) {
-                    thinkyoung::lua::api::global_glua_chain_api->throw_exception(L, THINKYOUNG_API_SIMPLE_ERROR, "emit need 2 string params");
+                    lvm::lua::api::global_glua_chain_api->throw_exception(L, THINKYOUNG_API_SIMPLE_ERROR, "emit need 2 string params");
                     return 0;
                 }
                 
@@ -648,14 +648,14 @@ next: (table) => bool
                 if (!contract_id || strlen(contract_id) < 1)
                     return 0;
                     
-                thinkyoung::lua::api::global_glua_chain_api->emit(L, contract_id, event_name, event_param);
+                lvm::lua::api::global_glua_chain_api->emit(L, contract_id, event_name, event_param);
                 return 0;
             }
             
             static int glua_core_lib_Stream_size(lua_State *L) {
                 auto stream = (GluaByteStream*)luaL_checkudata(L, 1, "GluaByteStream_metatable");
                 
-                if (thinkyoung::lua::api::global_glua_chain_api->is_object_in_pool(L, (intptr_t)stream,
+                if (lvm::lua::api::global_glua_chain_api->is_object_in_pool(L, (intptr_t)stream,
                         GluaOutsideObjectTypes::OUTSIDE_STREAM_STORAGE_TYPE) > 0) {
                     auto stream_size = stream->size();
                     lua_pushinteger(L, stream_size);
@@ -670,7 +670,7 @@ next: (table) => bool
             static int glua_core_lib_Stream_eof(lua_State *L) {
                 auto stream = (GluaByteStream*)luaL_checkudata(L, 1, "GluaByteStream_metatable");
                 
-                if (thinkyoung::lua::api::global_glua_chain_api->is_object_in_pool(L, (intptr_t)stream,
+                if (lvm::lua::api::global_glua_chain_api->is_object_in_pool(L, (intptr_t)stream,
                         GluaOutsideObjectTypes::OUTSIDE_STREAM_STORAGE_TYPE) > 0) {
                     lua_pushboolean(L, stream->eof());
                     return 1;
@@ -684,7 +684,7 @@ next: (table) => bool
             static int glua_core_lib_Stream_current(lua_State *L) {
                 auto stream = (GluaByteStream*)luaL_checkudata(L, 1, "GluaByteStream_metatable");
                 
-                if (thinkyoung::lua::api::global_glua_chain_api->is_object_in_pool(L, (intptr_t)stream,
+                if (lvm::lua::api::global_glua_chain_api->is_object_in_pool(L, (intptr_t)stream,
                         GluaOutsideObjectTypes::OUTSIDE_STREAM_STORAGE_TYPE) > 0) {
                     lua_pushinteger(L, stream->current());
                     return 1;
@@ -698,7 +698,7 @@ next: (table) => bool
             static int glua_core_lib_Stream_next(lua_State *L) {
                 auto stream = (GluaByteStream*)luaL_checkudata(L, 1, "GluaByteStream_metatable");
                 
-                if (thinkyoung::lua::api::global_glua_chain_api->is_object_in_pool(L, (intptr_t)stream,
+                if (lvm::lua::api::global_glua_chain_api->is_object_in_pool(L, (intptr_t)stream,
                         GluaOutsideObjectTypes::OUTSIDE_STREAM_STORAGE_TYPE) > 0) {
                     lua_pushboolean(L, stream->next());
                     return 1;
@@ -712,7 +712,7 @@ next: (table) => bool
             static int glua_core_lib_Stream_pos(lua_State *L) {
                 auto stream = (GluaByteStream*)luaL_checkudata(L, 1, "GluaByteStream_metatable");
                 
-                if (thinkyoung::lua::api::global_glua_chain_api->is_object_in_pool(L, (intptr_t)stream,
+                if (lvm::lua::api::global_glua_chain_api->is_object_in_pool(L, (intptr_t)stream,
                         GluaOutsideObjectTypes::OUTSIDE_STREAM_STORAGE_TYPE) > 0) {
                     lua_pushinteger(L, stream->pos());
                     return 1;
@@ -726,7 +726,7 @@ next: (table) => bool
             static int glua_core_lib_Stream_reset_pos(lua_State *L) {
                 auto stream = (GluaByteStream*)luaL_checkudata(L, 1, "GluaByteStream_metatable");
                 
-                if (thinkyoung::lua::api::global_glua_chain_api->is_object_in_pool(L, (intptr_t)stream,
+                if (lvm::lua::api::global_glua_chain_api->is_object_in_pool(L, (intptr_t)stream,
                         GluaOutsideObjectTypes::OUTSIDE_STREAM_STORAGE_TYPE) > 0) {
                     stream->reset_pos();
                     return 0;
@@ -741,7 +741,7 @@ next: (table) => bool
                 auto stream = (GluaByteStream*)luaL_checkudata(L, 1, "GluaByteStream_metatable");
                 auto c = luaL_checkinteger(L, 2);
                 
-                if (thinkyoung::lua::api::global_glua_chain_api->is_object_in_pool(L, (intptr_t)stream,
+                if (lvm::lua::api::global_glua_chain_api->is_object_in_pool(L, (intptr_t)stream,
                         GluaOutsideObjectTypes::OUTSIDE_STREAM_STORAGE_TYPE) > 0) {
                     stream->push((char)c);
                     return 0;
@@ -756,7 +756,7 @@ next: (table) => bool
                 auto stream = (GluaByteStream*)luaL_checkudata(L, 1, "GluaByteStream_metatable");
                 auto argstr = luaL_checkstring(L, 2);
                 
-                if (thinkyoung::lua::api::global_glua_chain_api->is_object_in_pool(L, (intptr_t)stream,
+                if (lvm::lua::api::global_glua_chain_api->is_object_in_pool(L, (intptr_t)stream,
                         GluaOutsideObjectTypes::OUTSIDE_STREAM_STORAGE_TYPE) > 0) {
                     for (size_t i = 0; i < strlen(argstr); ++i) {
                         stream->push(argstr[i]);
@@ -775,7 +775,7 @@ next: (table) => bool
             // 调用函数的时候
             static int glua_core_lib_Stream(lua_State *L) {
                 auto stream = new GluaByteStream();
-                thinkyoung::lua::api::global_glua_chain_api->register_object_in_pool(L, (intptr_t)stream, GluaOutsideObjectTypes::OUTSIDE_STREAM_STORAGE_TYPE);
+                lvm::lua::api::global_glua_chain_api->register_object_in_pool(L, (intptr_t)stream, GluaOutsideObjectTypes::OUTSIDE_STREAM_STORAGE_TYPE);
                 lua_pushlightuserdata(L, (void*)stream);
                 luaL_getmetatable(L, "GluaByteStream_metatable");
                 lua_setmetatable(L, -2);
@@ -854,7 +854,7 @@ next: (table) => bool
                         return 0;
                     }
                     
-                    thinkyoung::lua::api::global_glua_chain_api->throw_exception(L, THINKYOUNG_API_SIMPLE_ERROR, "attempt to update a read-only table!");
+                    lvm::lua::api::global_glua_chain_api->throw_exception(L, THINKYOUNG_API_SIMPLE_ERROR, "attempt to update a read-only table!");
                     lua_pop(L, 2); // stack: t, k, v
                     return 0;
                     
@@ -876,7 +876,7 @@ next: (table) => bool
             //    end
             static int glua_core_lib_storage_metatable_index(lua_State *L) {
                 if (!lua_isstring(L, 2)) {
-                    thinkyoung::lua::api::global_glua_chain_api->throw_exception(L, THINKYOUNG_API_SIMPLE_ERROR, "only string can be storage key");
+                    lvm::lua::api::global_glua_chain_api->throw_exception(L, THINKYOUNG_API_SIMPLE_ERROR, "only string can be storage key");
                     L->force_stopping = true;
                     lua_pushnil(L);
                     return 1;
@@ -915,7 +915,7 @@ next: (table) => bool
             //  end
             static int glua_core_lib_storage_metatable_new_index(lua_State *L) {
                 if (!lua_isstring(L, 2)) {
-                    thinkyoung::lua::api::global_glua_chain_api->throw_exception(L, THINKYOUNG_API_SIMPLE_ERROR, "only string can be storage key");
+                    lvm::lua::api::global_glua_chain_api->throw_exception(L, THINKYOUNG_API_SIMPLE_ERROR, "only string can be storage key");
                     L->force_stopping = true;
                     lua_pushnil(L);
                     return 1;
@@ -1079,7 +1079,7 @@ end
 
             void close_lua_state(lua_State *L) {
                 luaL_commit_storage_changes(L);
-                thinkyoung::lua::api::global_glua_chain_api->release_objects_in_pool(L);
+                lvm::lua::api::global_glua_chain_api->release_objects_in_pool(L);
                 LStatesMap *states_map = get_lua_states_value_hashmap();
 
                 if (nullptr != states_map) {
@@ -1150,7 +1150,7 @@ end
                         lua_free(L, insts_executed_count);
                     }
 
-                    int *stopped_pointer = thinkyoung::lua::lib::get_lua_state_value(L, LUA_STATE_STOP_TO_RUN_IN_LVM_STATE_MAP_KEY).int_pointer_value;
+                    int *stopped_pointer = lvm::lua::lib::get_lua_state_value(L, LUA_STATE_STOP_TO_RUN_IN_LVM_STATE_MAP_KEY).int_pointer_value;
 
                     if (nullptr != stopped_pointer) {
                         lua_free(L, stopped_pointer);
@@ -1294,7 +1294,7 @@ end
                 node_v.value = value;
 
                 if (node_v.type == LUA_STATE_VALUE_STRING)
-                    node_v.value.string_value = thinkyoung::lua::lib::malloc_and_copy_string(L, value.string_value);
+                    node_v.value.string_value = lvm::lua::lib::malloc_and_copy_string(L, value.string_value);
 
                 std::string key_str(key);
                 map->erase(key_str);
@@ -1456,7 +1456,7 @@ end
                     {
                         for (const auto &p : type_checker.get_imported_contracts())
                         {
-                            if (!thinkyoung::lua::api::global_glua_chain_api->check_contract_exist(L, p.first.c_str()))
+                            if (!lvm::lua::api::global_glua_chain_api->check_contract_exist(L, p.first.c_str()))
                             {
                                 has_contract_import_error = true;
                                 ss << "import_contract error in line " << p.second << ", contract " << p.first << " not found\n";
@@ -1468,7 +1468,7 @@ end
                         for (const auto & item : type_checker.errors())
                             ss << item.second << "\n";
                         if (throw_exception)
-                            thinkyoung::lua::api::global_glua_chain_api->throw_exception(L, THINKYOUNG_API_COMPILE_ERROR, ss.str().c_str());
+                            lvm::lua::api::global_glua_chain_api->throw_exception(L, THINKYOUNG_API_COMPILE_ERROR, ss.str().c_str());
                         if (error && throw_exception)
                         {
                             lcompile_error_set(L, error, ss.str().c_str());
@@ -1507,7 +1507,7 @@ end
                             catch (glua::core::GluaException const &e)
                             {
                                 if (throw_exception)
-                                    thinkyoung::lua::api::global_glua_chain_api->throw_exception(L, THINKYOUNG_API_COMPILE_ERROR, e.what());
+                                    lvm::lua::api::global_glua_chain_api->throw_exception(L, THINKYOUNG_API_COMPILE_ERROR, e.what());
                                 if (error && throw_exception)
                                 {
                                     lcompile_error_set(L, error, e.what());
@@ -1726,7 +1726,7 @@ end
                 }
                 catch (std::exception e)
                 {
-                    thinkyoung::lua::api::global_glua_chain_api->throw_exception(L, THINKYOUNG_API_PARSER_ERROR, e.what());
+                    lvm::lua::api::global_glua_chain_api->throw_exception(L, THINKYOUNG_API_PARSER_ERROR, e.what());
                     if (changed)
                         *changed = false;
                     return origin_code;
@@ -1919,7 +1919,7 @@ end
                             if (idx_in_kst >= 0 && idx_in_kst < proto->sizek)
                             {
                                 const char *contract_name = getstr(tsvalue(&proto->k[idx_in_kst]));
-                                if (contract_name && !thinkyoung::lua::api::global_glua_chain_api->check_contract_exist(L, contract_name))
+                                if (contract_name && !lvm::lua::api::global_glua_chain_api->check_contract_exist(L, contract_name))
                                 {
                                     lcompile_error_set(L, error, "Can't find contract %s", contract_name);
                                     return false;
@@ -1938,7 +1938,7 @@ end
                             if (idx_in_kst >= 0 && idx_in_kst < proto->sizek)
                             {
                                 const char *contract_address = getstr(tsvalue(&proto->k[idx_in_kst]));
-                                if (contract_address && !thinkyoung::lua::api::global_glua_chain_api->check_contract_exist_by_address(L, contract_address))
+                                if (contract_address && !lvm::lua::api::global_glua_chain_api->check_contract_exist_by_address(L, contract_address))
                                 {
                                     lcompile_error_set(L, error, "Can't find contract address %s", contract_address);
                                     return false;
@@ -2123,8 +2123,8 @@ end
                 if (nullptr != preprocessor)
                     (*preprocessor)(L);
 
-                if (thinkyoung::lua::api::global_glua_chain_api->has_exception(L))
-                    thinkyoung::lua::api::global_glua_chain_api->clear_exceptions(L);
+                if (lvm::lua::api::global_glua_chain_api->has_exception(L))
+                    lvm::lua::api::global_glua_chain_api->clear_exceptions(L);
 
                 struct _saved_out_release_t
                 {
@@ -2151,18 +2151,18 @@ end
                     if (error && strlen(error) > 0)
                     {
                         lua_set_compile_error(L, error);
-                        thinkyoung::lua::api::global_glua_chain_api->throw_exception(L, THINKYOUNG_API_COMPILE_ERROR, error);
+                        lvm::lua::api::global_glua_chain_api->throw_exception(L, THINKYOUNG_API_COMPILE_ERROR, error);
                     }
                     else
-                        thinkyoung::lua::api::global_glua_chain_api->throw_exception(L, THINKYOUNG_API_COMPILE_ERROR, "compile error");
+                        lvm::lua::api::global_glua_chain_api->throw_exception(L, THINKYOUNG_API_COMPILE_ERROR, "compile error");
                     return false;
                 }
-                if (thinkyoung::lua::api::global_glua_chain_api->has_exception(L))
-                    thinkyoung::lua::api::global_glua_chain_api->clear_exceptions(L);
+                if (lvm::lua::api::global_glua_chain_api->has_exception(L))
+                    lvm::lua::api::global_glua_chain_api->clear_exceptions(L);
                 if (!luaL_get_contract_apis(L, stream, error))
                 {
                     lcompile_error_get(L, error);
-                    thinkyoung::lua::api::global_glua_chain_api->throw_exception(L, THINKYOUNG_API_COMPILE_ERROR, "compile error");
+                    lvm::lua::api::global_glua_chain_api->throw_exception(L, THINKYOUNG_API_COMPILE_ERROR, "compile error");
                     return false;
                 }
                 lcompile_error_get(L, error);
@@ -2175,7 +2175,7 @@ end
                     {
                         lua_set_compile_error(L, "contract's id/name/storage property can't be api name");
                         lcompile_error_get(L, error);
-                        thinkyoung::lua::api::global_glua_chain_api->throw_exception(L, THINKYOUNG_API_COMPILE_ERROR, error);
+                        lvm::lua::api::global_glua_chain_api->throw_exception(L, THINKYOUNG_API_COMPILE_ERROR, error);
                         return false;
                     }
                 }
@@ -2185,13 +2185,13 @@ end
                 {
                     lcompile_error_get(L, error);
                 }
-                if (thinkyoung::lua::api::global_glua_chain_api->has_exception(L))
+                if (lvm::lua::api::global_glua_chain_api->has_exception(L))
                     return false;
 
                 // check contract bytecode
                 if (!check_contract_bytecode_stream(L, stream, error))
                 {
-                    thinkyoung::lua::api::global_glua_chain_api->throw_exception(L, THINKYOUNG_API_COMPILE_ERROR, "compile error when check contract bytecode");
+                    lvm::lua::api::global_glua_chain_api->throw_exception(L, THINKYOUNG_API_COMPILE_ERROR, "compile error when check contract bytecode");
                     return false;
                 }
                 lua_getglobal(L, "last_return");
@@ -2201,7 +2201,7 @@ end
                     const char *error_str = "contract code must end with return a module/table";
                     if (error)
                         strcpy(error, error_str);
-                    thinkyoung::lua::api::global_glua_chain_api->throw_exception(L, THINKYOUNG_API_SIMPLE_ERROR, error_str);
+                    lvm::lua::api::global_glua_chain_api->throw_exception(L, THINKYOUNG_API_SIMPLE_ERROR, error_str);
                     return false;
                 }
                 else
@@ -2214,7 +2214,7 @@ end
                         const char *error_str = "contract must have init function";
                         if (error)
                             strcpy(error, error_str);
-                        thinkyoung::lua::api::global_glua_chain_api->throw_exception(L, THINKYOUNG_API_SIMPLE_ERROR, error_str);
+                        lvm::lua::api::global_glua_chain_api->throw_exception(L, THINKYOUNG_API_SIMPLE_ERROR, error_str);
                         return false;
                     }
                     lua_pop(L, 1); // pop init
@@ -2226,7 +2226,7 @@ end
             std::stack<std::string> *get_using_contract_id_stack(lua_State *L, bool init_if_not_exist)
             {
                 std::stack<std::string> *contract_id_stack = nullptr;
-                auto contract_id_stack_value_in_state_map = thinkyoung::lua::lib::get_lua_state_value(L, GLUA_CONTRACT_API_CALL_STACK_STATE_MAP_KEY);
+                auto contract_id_stack_value_in_state_map = lvm::lua::lib::get_lua_state_value(L, GLUA_CONTRACT_API_CALL_STACK_STATE_MAP_KEY);
                 if (!contract_id_stack_value_in_state_map.pointer_value)
                 {
                     if (!init_if_not_exist)
@@ -2238,7 +2238,7 @@ end
                         return nullptr;
                     }
                     contract_id_stack_value_in_state_map.pointer_value = (void*)contract_id_stack;
-                    thinkyoung::lua::lib::set_lua_state_value(L, GLUA_CONTRACT_API_CALL_STACK_STATE_MAP_KEY, contract_id_stack_value_in_state_map, GluaStateValueType::LUA_STATE_VALUE_POINTER);
+                    lvm::lua::lib::set_lua_state_value(L, GLUA_CONTRACT_API_CALL_STACK_STATE_MAP_KEY, contract_id_stack_value_in_state_map, GluaStateValueType::LUA_STATE_VALUE_POINTER);
                 }
                 else
                     contract_id_stack = (std::stack<std::string>*) (contract_id_stack_value_in_state_map.pointer_value);
@@ -2377,7 +2377,7 @@ end
                 auto contract_address = malloc_managed_string(L, CONTRACT_ID_MAX_LENGTH + 1);
                 memset(contract_address, 0x0, CONTRACT_ID_MAX_LENGTH + 1);
                 size_t address_size = 0;
-                thinkyoung::lua::api::global_glua_chain_api->get_contract_address_by_name(L, contract_name, contract_address, &address_size);
+                lvm::lua::api::global_glua_chain_api->get_contract_address_by_name(L, contract_name, contract_address, &address_size);
                 if (address_size > 0)
                 {
                     GluaStateValue value;
@@ -2413,7 +2413,7 @@ end
 
             std::string get_starting_contract_address(lua_State *L)
             {
-                auto starting_contract_address_node = thinkyoung::lua::lib::get_lua_state_value_node(L, STARTING_CONTRACT_ADDRESS);
+                auto starting_contract_address_node = lvm::lua::lib::get_lua_state_value_node(L, STARTING_CONTRACT_ADDRESS);
                 if (starting_contract_address_node.type == GluaStateValueType::LUA_STATE_VALUE_STRING)
                 {
                     return starting_contract_address_node.value.string_value;

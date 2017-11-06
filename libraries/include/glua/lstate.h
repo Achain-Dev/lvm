@@ -16,7 +16,7 @@
 #include "glua/lobject.h"
 #include "glua/ltm.h"
 #include "glua/lzio.h"
-#include <glua/thinkyoung_lua_api.h>
+#include <glua/lua_api.h>
 
 #define LUA_MALLOC_TOTAL_SIZE	(50*1024*1024)
 

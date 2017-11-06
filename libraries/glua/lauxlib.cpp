@@ -6,53 +6,40 @@
 
 #define lauxlib_cpp
 
-#include <glua/lprefix.h>
-
-#include <errno.h>
-#include <stdarg.h>
-#include <cstdint>
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <signal.h>
-#include <cstdint>
-#include <string>
-#include <sstream>
-#include <iostream>
-#include <functional>
-#include <vector>
-#include <stack>
-#include <algorithm>
-
-
-/* This file uses only the official API of Lua.
-** Any function declared here could be written as an application function.
-*/
-
-#include <glua/lua.h>
-
+#include <glua/exceptions.h>
+#include <glua/glua_lutil.h>
+#include <glua/lapi.h>
 #include <glua/lauxlib.h>
 #include <glua/lobject.h>
-#include <glua/lapi.h>
-#include <glua/thinkyoung_lua_api.h>
-#include <glua/thinkyoung_lua_lib.h>
-#include <glua/glua_lutil.h>
-#include <glua/exceptions.h>
+#include <glua/lprefix.h>
+#include <glua/lua.h>
+#include <glua/lua_api.h>
+#include <glua/lua_lib.h>
 
-using thinkyoung::lua::api::global_glua_chain_api;
+#include <algorithm>
+#include <cstdint>
+#include <errno.h>
+#include <functional>
+#include <iostream>
+#include <signal.h>
+#include <sstream>
+#include <stack>
+#include <stdarg.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string>
+#include <string.h>
+#include <vector>
 
+using lvm::lua::api::global_glua_chain_api;
 
 /*
 ** {======================================================
 ** Traceback
 ** =======================================================
 */
-
-
 #define LEVELS1	10	/* size of the first part of the stack */
 #define LEVELS2	11	/* size of the second part of the stack */
-
-
 
 /*
 ** search for 'objidx' in table at index -1.
@@ -1105,12 +1092,11 @@ struct GluaStorageValue;
 struct GluaStorageValue lua_type_to_storage_value_type(lua_State *L, int index, size_t len);
 
 // 包装后的合约的api函数
-static int contract_api_wrapper_func(lua_State *L)
-{
+static int contract_api_wrapper_func(lua_State *L) {
 	int api_func_index = lua_upvalueindex(1); // api func
 	const char *contract_id = lua_tostring(L, lua_upvalueindex(2));
 	// contract_id压栈
-	auto contract_id_stack = thinkyoung::lua::lib::get_using_contract_id_stack(L, true);
+	auto contract_id_stack = lvm::lua::lib::get_using_contract_id_stack(L, true);
 	if (!contract_id_stack)
 		return 0;
 	contract_id_stack->push(contract_id);
@@ -1158,9 +1144,8 @@ static bool contract_table_traverser_to_wrap_api(lua_State *L, void *ud)
 	return true;
 }
 
-static bool lua_get_contract_apis_direct(lua_State *L, GluaModuleByteStream *stream, char *error)
-{
-    int *stopped_pointer = thinkyoung::lua::lib::get_lua_state_value(L, LUA_STATE_STOP_TO_RUN_IN_LVM_STATE_MAP_KEY).int_pointer_value;
+static bool lua_get_contract_apis_direct(lua_State *L, GluaModuleByteStream *stream, char *error) {
+    int *stopped_pointer = lvm::lua::lib::get_lua_state_value(L, LUA_STATE_STOP_TO_RUN_IN_LVM_STATE_MAP_KEY).int_pointer_value;
     if (nullptr != stopped_pointer && (*stopped_pointer) > 0)
         return false;
     intptr_t stream_p = (intptr_t)stream;
@@ -1287,7 +1272,7 @@ static bool lua_get_contract_apis_direct(lua_State *L, GluaModuleByteStream *str
         lua_setfield(L, -2, "name");
 		char contract_id[CONTRACT_ID_MAX_LENGTH] = "\0";
 		size_t contract_id_size = 0;
-        global_glua_chain_api->get_contract_address_by_name(L, thinkyoung::lua::lib::unwrap_any_contract_name(name.c_str()).c_str(), contract_id, &contract_id_size);
+        global_glua_chain_api->get_contract_address_by_name(L, lvm::lua::lib::unwrap_any_contract_name(name.c_str()).c_str(), contract_id, &contract_id_size);
 		contract_id[CONTRACT_ID_MAX_LENGTH - 1] = '\0';
         // lua_pushstring(L, CURRENT_CONTRACT_NAME);
 		lua_pushstring(L, contract_id);
@@ -1389,7 +1374,7 @@ static std::string get_contract_name_using_in_lua(std::string namestr)
 {
     bool use_self_name = glua::util::starts_with(namestr, ADDRESS_CONTRACT_PREFIX)
         || glua::util::starts_with(namestr, STREAM_CONTRACT_PREFIX);
-    return use_self_name ? CURRENT_CONTRACT_NAME : thinkyoung::lua::lib::unwrap_any_contract_name(namestr.c_str());
+    return use_self_name ? CURRENT_CONTRACT_NAME : lvm::lua::lib::unwrap_any_contract_name(namestr.c_str());
 }
 
 static std::string get_contract_id_using_in_lua(lua_State *L, std::string namestr, bool is_pointer, bool is_stream)
@@ -1405,17 +1390,17 @@ static std::string get_contract_id_using_in_lua(lua_State *L, std::string namest
         char address[CONTRACT_ID_MAX_LENGTH];
         memset(address, 0x0, sizeof(char) * CONTRACT_ID_MAX_LENGTH);
         size_t address_len = 0;
-        global_glua_chain_api->get_contract_address_by_name(L, thinkyoung::lua::lib::unwrap_any_contract_name(namestr.c_str()).c_str(), address, &address_len);
+        global_glua_chain_api->get_contract_address_by_name(L, lvm::lua::lib::unwrap_any_contract_name(namestr.c_str()).c_str(), address, &address_len);
         address[CONTRACT_ID_MAX_LENGTH-1] = '\0';
         return address;
     }
     else
     {
-		auto name = thinkyoung::lua::lib::unwrap_any_contract_name(namestr.c_str());
+		auto name = lvm::lua::lib::unwrap_any_contract_name(namestr.c_str());
 		char address[CONTRACT_ID_MAX_LENGTH];
 		memset(address, 0x0, sizeof(char) * CONTRACT_ID_MAX_LENGTH);
 		size_t address_len = 0;
-        global_glua_chain_api->get_contract_address_by_name(L, thinkyoung::lua::lib::unwrap_any_contract_name(name.c_str()).c_str(), address, &address_len);
+        global_glua_chain_api->get_contract_address_by_name(L, lvm::lua::lib::unwrap_any_contract_name(name.c_str()).c_str(), address, &address_len);
 		address[CONTRACT_ID_MAX_LENGTH - 1] = '\0';
 		return address;
         // return CURRENT_CONTRACT_NAME;
@@ -1442,9 +1427,9 @@ int luaL_import_contract_module_from_address(lua_State *L)
         return 0;
     }
     std::string name_str;
-    name_str = std::string(ADDRESS_CONTRACT_PREFIX) + thinkyoung::lua::lib::unwrap_any_contract_name(contract_id);
+    name_str = std::string(ADDRESS_CONTRACT_PREFIX) + lvm::lua::lib::unwrap_any_contract_name(contract_id);
     name = name_str.c_str();
-    auto unwrap_name = thinkyoung::lua::lib::unwrap_any_contract_name(contract_id);
+    auto unwrap_name = lvm::lua::lib::unwrap_any_contract_name(contract_id);
     const char *filename = name;
     lua_settop(L, 1);  /* _LOADED table will be at index 2 */
     lua_getfield(L, LUA_REGISTRYINDEX, "_LOADED");
@@ -1513,7 +1498,7 @@ int luaL_import_contract_module_from_address(lua_State *L)
                 // store module info into thinkyoung, limit not too many apis
                 if (strlen(key) > THINKYOUNG_CONTRACT_API_NAME_MAX_LENGTH) {
                     global_glua_chain_api->throw_exception(L, THINKYOUNG_API_SIMPLE_ERROR, "contract module api name must be less than %d characters", THINKYOUNG_CONTRACT_API_NAME_MAX_LENGTH);
-                    thinkyoung::lua::lib::notify_lua_state_stop(L);
+                    lvm::lua::lib::notify_lua_state_stop(L);
                     return 0;
                 }
                 if (strcmp(key, "locals") == 0)
@@ -1523,7 +1508,7 @@ int luaL_import_contract_module_from_address(lua_State *L)
                 if (!contract_apis[apis_count])
                 {
                     lmalloc_error(L);
-                    thinkyoung::lua::lib::notify_lua_state_stop(L);
+                    lvm::lua::lib::notify_lua_state_stop(L);
                     return 0;
                 }
                 memcpy(contract_apis[apis_count], key, sizeof(char) * (strlen(key) + 1));
@@ -1555,7 +1540,7 @@ int luaL_import_contract_module_from_address(lua_State *L)
                     if (strlen(L->compile_error) < 1)
                         memcpy(L->compile_error, error_msg, LUA_COMPILE_ERROR_MAX_LENGTH);
                     global_glua_chain_api->throw_exception(L, THINKYOUNG_API_SIMPLE_ERROR, error_msg);
-                    thinkyoung::lua::lib::notify_lua_state_stop(L);
+                    lvm::lua::lib::notify_lua_state_stop(L);
                     return 0;
                 }
                 for (auto i = 0; i < apis_count; ++i)
@@ -1587,7 +1572,7 @@ int luaL_import_contract_module_from_address(lua_State *L)
                         if (strlen(L->compile_error) < 1)
                             memcpy(L->compile_error, error_msg, LUA_COMPILE_ERROR_MAX_LENGTH);
                         global_glua_chain_api->throw_exception(L, THINKYOUNG_API_SIMPLE_ERROR, error_msg);
-                        thinkyoung::lua::lib::notify_lua_state_stop(L);
+                        lvm::lua::lib::notify_lua_state_stop(L);
                         return 0;
                     }
                 }
@@ -1606,7 +1591,7 @@ int luaL_import_contract_module_from_address(lua_State *L)
                     global_glua_chain_api->throw_exception(L, THINKYOUNG_API_SIMPLE_ERROR, error_msg);
                     */
                     lcompile_error_set(L, error_msg, "contract can't use global variables");
-                    thinkyoung::lua::lib::notify_lua_state_stop(L);
+                    lvm::lua::lib::notify_lua_state_stop(L);
                     return 0;
                 }
             }
@@ -1620,7 +1605,7 @@ int luaL_import_contract_module_from_address(lua_State *L)
                 global_glua_chain_api->throw_exception(L, THINKYOUNG_API_SIMPLE_ERROR, error_msg);
                 */
                 lcompile_error_set(L, error_msg, "contract info not stored before");
-                thinkyoung::lua::lib::notify_lua_state_stop(L);
+                lvm::lua::lib::notify_lua_state_stop(L);
                 return 0;
             }
         }
@@ -1644,7 +1629,7 @@ int luaL_import_contract_module_from_address(lua_State *L)
         lua_pushstring(L, contract_id);
         lua_setfield(L, -2, "id");
 
-		auto starting_contract_address = thinkyoung::lua::lib::get_starting_contract_address(L);
+        auto starting_contract_address = lvm::lua::lib::get_starting_contract_address(L);
         bool is_starting_contract = false;
         if (starting_contract_address.length()>0)
         {
@@ -1660,7 +1645,7 @@ int luaL_import_contract_module_from_address(lua_State *L)
 
         if (!is_starting_contract)
         {
-			for(const auto &special_api_name : thinkyoung::lua::lib::contract_special_api_names)
+            for (const auto &special_api_name : lvm::lua::lib::contract_special_api_names)
 			{
 				lua_pushnil(L);
 				lua_setfield(L, -2, special_api_name.c_str());
@@ -1707,10 +1692,10 @@ int luaL_import_contract_module(lua_State *L)
     std::string name_str;
     if (!is_pointer && !is_stream)
     {
-        name_str = thinkyoung::lua::lib::wrap_contract_name(origin_contract_name);
+        name_str = lvm::lua::lib::wrap_contract_name(origin_contract_name);
         name = name_str.c_str();
     }
-    auto unwrap_name = thinkyoung::lua::lib::unwrap_any_contract_name(origin_contract_name);
+    auto unwrap_name = lvm::lua::lib::unwrap_any_contract_name(origin_contract_name);
     const char *filename = name;
     lua_settop(L, 1);  /* _LOADED table will be at index 2 */
     lua_getfield(L, LUA_REGISTRYINDEX, "_LOADED");
@@ -1798,7 +1783,7 @@ int luaL_import_contract_module(lua_State *L)
                 // store module info into thinkyoung, limit not too many apis
                 if (strlen(key) > THINKYOUNG_CONTRACT_API_NAME_MAX_LENGTH) {
                     global_glua_chain_api->throw_exception(L, THINKYOUNG_API_SIMPLE_ERROR, "contract module api name must be less than 1024 characters\n");
-                    thinkyoung::lua::lib::notify_lua_state_stop(L);
+                    lvm::lua::lib::notify_lua_state_stop(L);
                     return 0;
                 }
                 contract_apis[apis_count] = (char*)malloc((strlen(key) + 1) * sizeof(char));
@@ -1837,7 +1822,7 @@ int luaL_import_contract_module(lua_State *L)
                 if (stored_contract_info->contract_apis.size() != apis_count)
                 {
                     global_glua_chain_api->throw_exception(L, THINKYOUNG_API_SIMPLE_ERROR, "this contract byte stream not matched with the info stored in thinkyoung api");
-                    thinkyoung::lua::lib::notify_lua_state_stop(L);
+                    lvm::lua::lib::notify_lua_state_stop(L);
                     return 0;
                 }
                 for (auto i = 0; i < apis_count; ++i)
@@ -1861,7 +1846,7 @@ int luaL_import_contract_module(lua_State *L)
                     if (!matched)
                     {
                         global_glua_chain_api->throw_exception(L, THINKYOUNG_API_SIMPLE_ERROR, "the contract api not match info stored in thinkyoung");
-                        thinkyoung::lua::lib::notify_lua_state_stop(L);
+                        lvm::lua::lib::notify_lua_state_stop(L);
                         return 0;
                     }
                 }
@@ -1873,14 +1858,14 @@ int luaL_import_contract_module(lua_State *L)
                 {
                     // check all global variables not changed, don't call code eg. ```_G['abc'] = nil; abc = 1;```
                     global_glua_chain_api->throw_exception(L, THINKYOUNG_API_SIMPLE_ERROR, "contract can't use global variables");
-                    thinkyoung::lua::lib::notify_lua_state_stop(L);
+                    lvm::lua::lib::notify_lua_state_stop(L);
                     return 0;
                 }
             }
             else
             {
                 global_glua_chain_api->throw_exception(L, THINKYOUNG_API_SIMPLE_ERROR, "contract info not stored before");
-                thinkyoung::lua::lib::notify_lua_state_stop(L);
+                lvm::lua::lib::notify_lua_state_stop(L);
                 return 0;
             }
         }
@@ -1899,7 +1884,7 @@ int luaL_import_contract_module(lua_State *L)
         lua_setfield(L, -2, "id");
         // 只有源头合约保留合约的特殊API方法，引用其他合约不能调用这几个函数，import时去除
 
-        auto starting_contract_address = thinkyoung::lua::lib::get_starting_contract_address(L);
+        auto starting_contract_address = lvm::lua::lib::get_starting_contract_address(L);
         bool is_starting_contract = false;
         if (starting_contract_address.length() > 0)
         {
@@ -1910,7 +1895,7 @@ int luaL_import_contract_module(lua_State *L)
 
         if (!is_starting_contract)
         {
-			for(const auto &api_name : thinkyoung::lua::lib::contract_special_api_names)
+            for (const auto &api_name : lvm::lua::lib::contract_special_api_names)
 			{
 				lua_pushnil(L);
 				lua_setfield(L, -2, api_name.c_str());
@@ -1968,8 +1953,8 @@ static int lua_real_execute_contract_api(lua_State *L
     bool is_address = glua::util::starts_with(contract_name, ADDRESS_CONTRACT_PREFIX);
     char address[CONTRACT_ID_MAX_LENGTH + 1] = "\0";
     size_t address_size = 0;
-    std::string wrapper_contract_name_str = thinkyoung::lua::lib::wrap_contract_name(contract_name);
-    std::string unwrapper_name = thinkyoung::lua::lib::unwrap_any_contract_name(contract_name);
+    std::string wrapper_contract_name_str = lvm::lua::lib::wrap_contract_name(contract_name);
+    std::string unwrapper_name = lvm::lua::lib::unwrap_any_contract_name(contract_name);
     if (!is_address)
         global_glua_chain_api->get_contract_address_by_name(L, unwrapper_name.c_str(), address, &address_size);
     else
@@ -2021,7 +2006,7 @@ static int lua_real_execute_contract_api(lua_State *L
     lua_pushstring(L, address);
     lua_setfield(L, -2, "id");
 
-	for (const auto &special_api_name : thinkyoung::lua::lib::contract_special_api_names)
+    for (const auto &special_api_name : lvm::lua::lib::contract_special_api_names)
 	{
 		if (special_api_name != api_name_str) 
 		{
@@ -2036,7 +2021,7 @@ static int lua_real_execute_contract_api(lua_State *L
         lua_pushvalue(L, -2); // push self		 
         //if (nullptr != arg1)
         //    lua_pushstring(L, arg1);
-		if (glua::util::vector_contains(thinkyoung::lua::lib::contract_int_argument_special_api_names, api_name_str))
+        if (glua::util::vector_contains(lvm::lua::lib::contract_int_argument_special_api_names, api_name_str))
 		{
 			std::stringstream arg_ss;
 			arg_ss << arg1_str;
@@ -2069,7 +2054,7 @@ static int lua_real_execute_contract_api(lua_State *L
 LUA_API int lua_execute_contract_api(lua_State *L, const char *contract_name,
 	const char *api_name, const char *arg1, std::string *result_json_string)
 {
-	auto contract_address = thinkyoung::lua::lib::malloc_managed_string(L, CONTRACT_ID_MAX_LENGTH + 1);
+    auto contract_address = lvm::lua::lib::malloc_managed_string(L, CONTRACT_ID_MAX_LENGTH + 1);
 	memset(contract_address, 0x0, CONTRACT_ID_MAX_LENGTH + 1);
 	size_t address_size = 0;
 	global_glua_chain_api->get_contract_address_by_name(L, contract_name, contract_address, &address_size);
@@ -2077,7 +2062,7 @@ LUA_API int lua_execute_contract_api(lua_State *L, const char *contract_name,
 	{
 		GluaStateValue value;
 		value.string_value = contract_address;
-		thinkyoung::lua::lib::set_lua_state_value(L, STARTING_CONTRACT_ADDRESS, value, LUA_STATE_VALUE_STRING);
+        lvm::lua::lib::set_lua_state_value(L, STARTING_CONTRACT_ADDRESS, value, LUA_STATE_VALUE_STRING);
 	}
 
 	lua_createtable(L, 0, 0);
@@ -2138,7 +2123,7 @@ std::shared_ptr<GluaModuleByteStream> lua_common_open_contract(lua_State *L, con
         auto stream = global_glua_chain_api->open_contract_by_address(L, address.c_str());
         if (stream && stream->contract_level != CONTRACT_LEVEL_FOREVER && (stream->contract_name.length() < 1 || stream->contract_state == CONTRACT_STATE_DELETED))
         {
-            auto start_contract_address = thinkyoung::lua::lib::get_starting_contract_address(L);
+            auto start_contract_address = lvm::lua::lib::get_starting_contract_address(L);
             if (start_contract_address.length()>0 && stream->contract_name.length() < 1 && std::string(address) == start_contract_address)
             {
                 return stream;
@@ -2248,7 +2233,7 @@ static int lua_compilefile_preload(lua_State *L, LoadF &lf, const char *filename
     int fnameindex = lua_gettop(L) + 1;
     auto using_filename = filename;
     global_glua_chain_api->clear_exceptions(L);
-	auto code = thinkyoung::lua::lib::pre_modify_lua_source_code(L, filename, error, nullptr, use_type_check, stream, is_contract);
+    auto code = lvm::lua::lib::pre_modify_lua_source_code(L, filename, error, nullptr, use_type_check, stream, is_contract);
 	if (global_glua_chain_api->has_exception(L))
     {
         lcompile_error_set(L, error, "compile error");
@@ -2316,7 +2301,7 @@ static int lua_compilefile_preload(lua_State *L, LoadF &lf, const char *filename
 
 LUA_API int luaL_compilefilex(const char *filename, FILE *out_file, char *error, bool is_contract)
 {
-    thinkyoung::lua::lib::GluaStateScope scope;
+    lvm::lua::lib::GluaStateScope scope;
     lua_State* L = scope.L();
     LoadF lf;
     struct LuaCompileFilePreloadResult pre_result;
@@ -2332,7 +2317,7 @@ LUA_API int luaL_compilefilex(const char *filename, FILE *out_file, char *error,
  */
 LUA_API int luaL_compilefile(const char *filename, const char *out_filename, char *error, bool use_type_check, bool is_contract)
 {
-    thinkyoung::lua::lib::GluaStateScope scope;
+    lvm::lua::lib::GluaStateScope scope;
     lua_State* L = scope.L();
     LoadF lf;
     struct LuaCompileFilePreloadResult pre_result;
@@ -2488,7 +2473,7 @@ void free_lua_table_map(lua_State *L, GluaTableMapP map)
 
 GluaTableMapP luaL_create_lua_table_map_in_memory_pool(lua_State *L)
 {
-    auto lua_table_map_list_p = thinkyoung::lua::lib::get_lua_state_value(L, LUA_TABLE_MAP_LIST_STATE_MAP_KEY).pointer_value;
+    auto lua_table_map_list_p = lvm::lua::lib::get_lua_state_value(L, LUA_TABLE_MAP_LIST_STATE_MAP_KEY).pointer_value;
     if (nullptr == lua_table_map_list_p)
     {
         lua_table_map_list_p = (void*)new std::list<GluaTableMapP>();
@@ -2498,14 +2483,14 @@ GluaTableMapP luaL_create_lua_table_map_in_memory_pool(lua_State *L)
         }
         GluaStateValue value;
         value.pointer_value = lua_table_map_list_p;
-        thinkyoung::lua::lib::set_lua_state_value(L, LUA_TABLE_MAP_LIST_STATE_MAP_KEY, value, LUA_STATE_VALUE_POINTER);
+        lvm::lua::lib::set_lua_state_value(L, LUA_TABLE_MAP_LIST_STATE_MAP_KEY, value, LUA_STATE_VALUE_POINTER);
     }
     //auto p = (GluaTableMapP)lua_malloc(L, sizeof(GluaTableMap));
     auto p = new GluaTableMap();
     if (nullptr == p)
     {
         global_glua_chain_api->throw_exception(L, THINKYOUNG_API_SIMPLE_ERROR, "out of memory");
-        thinkyoung::lua::lib::notify_lua_state_stop(L);
+        lvm::lua::lib::notify_lua_state_stop(L);
         return nullptr;
     }
     // new(p)GluaTableMap();
@@ -2533,38 +2518,38 @@ struct GluaStorageValue lua_type_to_storage_value_type_with_nested(lua_State *L,
     struct GluaStorageValue storage_value;
     if (index > lua_gettop(L))
     {
-        storage_value.type = thinkyoung::blockchain::StorageValueTypes::storage_value_not_support;
+        storage_value.type = lvm::blockchain::StorageValueTypes::storage_value_not_support;
         storage_value.value.int_value = 0;
         return storage_value;
     }
 	if(recur_depth>LUA_MAP_TRAVERSER_MAX_DEPTH)
 	{
-		storage_value.type = thinkyoung::blockchain::StorageValueTypes::storage_value_null;
+		storage_value.type = lvm::blockchain::StorageValueTypes::storage_value_null;
 		storage_value.value.int_value = 0;
 		return storage_value;
 	}
     switch (lua_type(L, index))
     {
     case LUA_TNIL:
-        storage_value.type = thinkyoung::blockchain::StorageValueTypes::storage_value_null;
+        storage_value.type = lvm::blockchain::StorageValueTypes::storage_value_null;
         storage_value.value.int_value = 0;
         return storage_value;
     case LUA_TBOOLEAN:
-        storage_value.type = thinkyoung::blockchain::StorageValueTypes::storage_value_bool;
+        storage_value.type = lvm::blockchain::StorageValueTypes::storage_value_bool;
         storage_value.value.bool_value = BOOL_VAL(lua_toboolean(L, index));
         return storage_value;
     case LUA_TNUMBER:
         if (lua_isinteger(L, index))
         {
-            storage_value.type = thinkyoung::blockchain::StorageValueTypes::storage_value_int;
+            storage_value.type = lvm::blockchain::StorageValueTypes::storage_value_int;
             storage_value.value.int_value = (lua_Integer)lua_tointeger(L, index);
             return storage_value;
         }
-        storage_value.type = thinkyoung::blockchain::StorageValueTypes::storage_value_number;
+        storage_value.type = lvm::blockchain::StorageValueTypes::storage_value_number;
         storage_value.value.number_value = lua_tonumber(L, index);
         return storage_value;
     case LUA_TSTRING:
-        storage_value.type = thinkyoung::blockchain::StorageValueTypes::storage_value_string;
+        storage_value.type = lvm::blockchain::StorageValueTypes::storage_value_string;
         storage_value.value.string_value = const_cast<char*>(lua_tostring(L, index));
         return storage_value;
     case LUA_TTABLE:
@@ -2573,7 +2558,7 @@ struct GluaStorageValue lua_type_to_storage_value_type_with_nested(lua_State *L,
         }
         catch (...)
         {
-            storage_value.type = thinkyoung::blockchain::StorageValueTypes::storage_value_null;
+            storage_value.type = lvm::blockchain::StorageValueTypes::storage_value_null;
             storage_value.value.int_value = 0;
             return storage_value;
         }
@@ -2582,14 +2567,14 @@ struct GluaStorageValue lua_type_to_storage_value_type_with_nested(lua_State *L,
 		if(len < 0 || len > INT32_MAX)
 		{
 			// too big table
-			storage_value.type = thinkyoung::blockchain::StorageValueTypes::storage_value_null;
+			storage_value.type = lvm::blockchain::StorageValueTypes::storage_value_null;
 			storage_value.value.int_value = 0;
 			return storage_value;
 		}
 		// FIXME: 根据子项类型修改
-        storage_value.type = thinkyoung::blockchain::StorageValueTypes::storage_value_unknown_table;
+        storage_value.type = lvm::blockchain::StorageValueTypes::storage_value_unknown_table;
         if (len > 0)
-            storage_value.type = thinkyoung::blockchain::StorageValueTypes::storage_value_unknown_array;
+            storage_value.type = lvm::blockchain::StorageValueTypes::storage_value_unknown_array;
         storage_value.value.table_value = lua_table_to_map_with_nested(L, index, jsons, recur_depth+1);
         return storage_value;
     case LUA_TUSERDATA:
@@ -2598,22 +2583,22 @@ struct GluaStorageValue lua_type_to_storage_value_type_with_nested(lua_State *L,
 		auto addr = lua_touserdata(L, index);
 		if (global_glua_chain_api->is_object_in_pool(L, (intptr_t)addr, GluaOutsideObjectTypes::OUTSIDE_STREAM_STORAGE_TYPE))
 		{
-			storage_value.type = thinkyoung::blockchain::StorageValueTypes::storage_value_stream;
+			storage_value.type = lvm::blockchain::StorageValueTypes::storage_value_stream;
 			storage_value.value.userdata_value = addr;
 		}
 		else
 		{
-			storage_value.type = thinkyoung::blockchain::StorageValueTypes::storage_value_userdata;
+			storage_value.type = lvm::blockchain::StorageValueTypes::storage_value_userdata;
 			storage_value.value.userdata_value = (void *)0; // lua_touserdata(L, index);
 		}
 		return storage_value;
 	}
     case LUA_TFUNCTION:
-        storage_value.type = thinkyoung::blockchain::StorageValueTypes::storage_value_not_support;
+        storage_value.type = lvm::blockchain::StorageValueTypes::storage_value_not_support;
 		storage_value.value.pointer_value = (void *)0; // (void*)lua_tocfunction(L, index); // 这里用0是为了让不同节点执行结果一致，用内存地址可能会每次执行结果不一样
         return storage_value;
     default:
-        storage_value.type = thinkyoung::blockchain::StorageValueTypes::storage_value_not_support;
+        storage_value.type = lvm::blockchain::StorageValueTypes::storage_value_not_support;
         storage_value.value.int_value = 0;
         return storage_value;
     }
@@ -2662,7 +2647,7 @@ bool lua_table_to_map_traverser_with_nested(lua_State *L, void *ud, size_t len, 
     }
     if (nullptr != addr && lua_istable(L, -1) && json_found)
     {
-        value.type = thinkyoung::blockchain::StorageValueTypes::storage_value_string;
+        value.type = lvm::blockchain::StorageValueTypes::storage_value_string;
         std::string addr_str = std::to_string((intptr_t) addr);
 		addr_str = "address";
 		char *addr_s = (char*)lua_malloc(L, (1 + addr_str.length()) * sizeof(char));
@@ -2753,30 +2738,30 @@ static void luatablemap_to_json_stream(GluaTableMapP map, std::stringstream &ss,
 		}
         switch (value.type)
         {
-		case thinkyoung::blockchain::StorageValueTypes::storage_value_null:
+		case lvm::blockchain::StorageValueTypes::storage_value_null:
             ss << "null";
             break;
-		case thinkyoung::blockchain::StorageValueTypes::storage_value_bool:
+		case lvm::blockchain::StorageValueTypes::storage_value_bool:
             ss << (value.value.bool_value ? "true" : "false");
             break;
-		case thinkyoung::blockchain::StorageValueTypes::storage_value_int:
+		case lvm::blockchain::StorageValueTypes::storage_value_int:
             ss << value.value.int_value;
             break;
-		case thinkyoung::blockchain::StorageValueTypes::storage_value_number:
+		case lvm::blockchain::StorageValueTypes::storage_value_number:
             ss << value.value.number_value;
             break;
-		case thinkyoung::blockchain::StorageValueTypes::storage_value_string:
+		case lvm::blockchain::StorageValueTypes::storage_value_string:
         {
             auto str=std::string(value.value.string_value);
             ss << "\"" << glua::util::escape_string(str) << "\"";
             break;
         }
-		case thinkyoung::blockchain::StorageValueTypes::storage_value_userdata:
+		case lvm::blockchain::StorageValueTypes::storage_value_userdata:
             ss << "\"userdata\"";
 		default: 
 		{
-			if (thinkyoung::blockchain::is_any_table_storage_value_type(value.type)
-				|| thinkyoung::blockchain::is_any_array_storage_value_type(value.type))
+			if (lvm::blockchain::is_any_table_storage_value_type(value.type)
+				|| lvm::blockchain::is_any_array_storage_value_type(value.type))
 			{
 				luatablemap_to_json_stream(value.value.table_value, ss);
 				break;
