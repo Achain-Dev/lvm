@@ -1,6 +1,7 @@
 #include <base/exceptions.hpp>
 #include <glua/GluaChainApi.hpp>
 #include <glua/glua_complie_op.h>
+#include <glua/glua_contractoperations.hpp>
 #include <glua/glua_task_mgr.h>
 #include <glua/thinkyoung_lua_api.h>
 #include <task/task.hpp>
@@ -69,9 +70,40 @@ void GluaTaskMgr::execute_task(TaskAndCallback task) {
     // TODO @xiaoming
     // after execute task , gen the callback task then call back
     TaskImplResult* result = nullptr;
+    ContractOperation* _contractop_ptr = nullptr;
     
-    if (task.task_base->task_type == COMPILE_TASK) {
-        result = execute_compile_glua_file(task.task_base);
+    switch (task.task_base->task_type) {
+        case COMPILE_TASK:
+            result = execute_compile_glua_file(task.task_base);
+            break;
+            
+        case REGISTER_TASK:
+            _contractop_ptr = new RegisterContractOperation();
+            break;
+            
+        case UPGRADE_TASK:
+            _contractop_ptr = new UpgradeContractOperation();
+            break;
+            
+        case CALL_TASK:
+            _contractop_ptr = new CallContractOperation();
+            break;
+            
+        case TRANSFER_TASK:
+            _contractop_ptr = new TransferContractOperation();
+            break;
+            
+        case DESTROY_TASK:
+            _contractop_ptr = new DestroyContractOperation();
+            break;
+            
+        case TASK_COUNT:
+        default:
+            break;
+    }
+    
+    if (_contractop_ptr) {
+        _contractop_ptr->evaluate(task, result);
     }
     
     if (!result) {
