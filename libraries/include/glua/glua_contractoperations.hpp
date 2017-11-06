@@ -10,39 +10,39 @@
 #include <string>
 
 struct ContractOperation {
-    virtual  void evaluate(TaskAndCallback& _inst_taskandcallback) const=0;
+    virtual  void evaluate(TaskAndCallback& _inst_taskandcallback, TaskImplResult* result) const = 0;
 };
 
 struct RegisterContractOperation : ContractOperation {
     static const OperationTypeEnum type;
     RegisterContractOperation() {}
-    virtual void evaluate(TaskAndCallback& _inst_taskandcallback) const;
+    virtual void evaluate(TaskAndCallback& _inst_taskandcallback, TaskImplResult* result) const;
 };
 
 struct UpgradeContractOperation: ContractOperation {
     static const OperationTypeEnum type;
     
     UpgradeContractOperation() {}
-    virtual void evaluate(TaskAndCallback& _inst_taskandcallback) const;
+    virtual void evaluate(TaskAndCallback& _inst_taskandcallback, TaskImplResult* result) const;
 };
 
 struct DestroyContractOperation: ContractOperation {
     static const OperationTypeEnum type;
     DestroyContractOperation() {}
-    virtual void evaluate(TaskAndCallback& _inst_taskandcallback) const;
+    virtual void evaluate(TaskAndCallback& _inst_taskandcallback, TaskImplResult* result) const;
 };
 
 
 struct CallContractOperation : ContractOperation  {
     static const OperationTypeEnum type;
     CallContractOperation() {}
-    virtual void evaluate(TaskAndCallback& _inst_taskandcallback) const;
+    virtual void evaluate(TaskAndCallback& _inst_taskandcallback, TaskImplResult* result) const;
 };
 
 struct TransferContractOperation  : ContractOperation {
     static const OperationTypeEnum type;
     TransferContractOperation() {}
-    virtual void evaluate(TaskAndCallback& _inst_taskandcallback) const;
+    virtual void evaluate(TaskAndCallback& _inst_taskandcallback, TaskImplResult* result) const;
 };
 
 static void setGluaStateScopeValue(thinkyoung::lua::lib::GluaStateScope& scope,
