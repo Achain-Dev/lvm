@@ -28,6 +28,22 @@ CompileTaskResult::CompileTaskResult(TaskBase* task) {
     init_task_base(task);
 }
 
+CallTaskResult::CallTaskResult(TaskBase* task) {
+    init_task_base(task);
+}
+
+UpgradeTaskResult::UpgradeTaskResult(TaskBase* task) {
+    init_task_base(task);
+}
+
+DestroyTaskResult::DestroyTaskResult(TaskBase* task) {
+    init_task_base(task);
+}
+
+TransferTaskResult::TransferTaskResult(TaskBase* task) {
+    init_task_base(task);
+}
+
 std::string TaskImplResult::get_result_string() {
     std::stringstream stream_result;
     stream_result << "\n";
