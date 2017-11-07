@@ -330,7 +330,6 @@
     <ClInclude Include="libraries\include\glua\lzio.h" />
     <ClInclude Include="libraries\include\glua\lua_api.h" />
     <ClInclude Include="libraries\include\glua\lua_lib.h" />
-    <ClInclude Include="libraries\include\lua\exceptions.h" />
     <ClInclude Include="libraries\include\rpc\rpc_mgr.hpp" />
     <ClInclude Include="libraries\include\rpc\rpc_msg.hpp" />
     <ClInclude Include="libraries\include\rpc\rpc_task_handler.hpp" />
@@ -343,4 +342,4 @@
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>
-</Project>
+  </Project>
