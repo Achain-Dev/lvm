@@ -28,6 +28,10 @@ CompileTaskResult::CompileTaskResult(TaskBase* task) {
     init_task_base(task);
 }
 
+RegisterTaskResult::RegisterTaskResult(TaskBase* task) {
+    init_task_base(task);
+}
+
 CallTaskResult::CallTaskResult(TaskBase* task) {
     init_task_base(task);
 }
