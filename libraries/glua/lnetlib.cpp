@@ -111,7 +111,7 @@ int lualib_net_listen(lua_State *L)
 {
 	if(lua_gettop(L)<2 || !lua_isstring(L, 1) || !lua_isnumber(L, 2))
 	{
-		global_glua_chain_api->throw_exception(L, THINKYOUNG_API_SIMPLE_ERROR, "net.listen need arguments (host: string, port: integer)");
+		global_glua_chain_api->throw_exception(L, LVM_API_SIMPLE_ERROR, "net.listen need arguments (host: string, port: integer)");
 		return 0;
 	}
 	auto host = luaL_checkstring(L, 1);
@@ -156,7 +156,7 @@ int lualib_net_connect(lua_State *L)
 {
 	if (lua_gettop(L)<2 || !lua_isstring(L, 1) || !lua_isnumber(L, 2))
 	{
-		global_glua_chain_api->throw_exception(L, THINKYOUNG_API_SIMPLE_ERROR, "net.connect need arguments (host: string, port: integer)");
+		global_glua_chain_api->throw_exception(L, LVM_API_SIMPLE_ERROR, "net.connect need arguments (host: string, port: integer)");
 		return 0;
 	}
 	auto host = luaL_checkstring(L, 1);
@@ -168,7 +168,7 @@ int lualib_net_accept(lua_State *L)
 {
 	if(lua_gettop(L) < 1 || !lua_islightuserdata(L, 1))
 	{
-		global_glua_chain_api->throw_exception(L, THINKYOUNG_API_SIMPLE_ERROR, "net.accept need arguments (server: TcpSocketServer)");
+		global_glua_chain_api->throw_exception(L, LVM_API_SIMPLE_ERROR, "net.accept need arguments (server: TcpSocketServer)");
 		return 0;
 	}
 	NetServerInfo *server = (NetServerInfo*) lua_touserdata(L, 1);
@@ -223,7 +223,7 @@ int lualib_net_accept_async(lua_State *L)
 {
 	if (lua_gettop(L) < 2 || !lua_islightuserdata(L, 1) || !lua_isfunction(L, 2))
 	{
-		global_glua_chain_api->throw_exception(L, THINKYOUNG_API_SIMPLE_ERROR,
+		global_glua_chain_api->throw_exception(L, LVM_API_SIMPLE_ERROR,
 			"net.accept_async need arguments (server: TcpSocketServer, handler: Function)");
 		return 0;
 	}
@@ -237,7 +237,7 @@ int lualib_net_start_io_loop(lua_State *L)
 {
 	if (lua_gettop(L) < 1 || !lua_islightuserdata(L, 1))
 	{
-		global_glua_chain_api->throw_exception(L, THINKYOUNG_API_SIMPLE_ERROR,
+		global_glua_chain_api->throw_exception(L, LVM_API_SIMPLE_ERROR,
 			"net.start_io_loop need arguments (server: TcpSocketServer)");
 		return 0;
 	}
@@ -279,7 +279,7 @@ int lualib_net_write(lua_State *L)
 {
 	if (lua_gettop(L)<2)
 	{
-		global_glua_chain_api->throw_exception(L, THINKYOUNG_API_SIMPLE_ERROR, "net.write need arguments (socket: TcpSocket, data: string)");
+		global_glua_chain_api->throw_exception(L, LVM_API_SIMPLE_ERROR, "net.write need arguments (socket: TcpSocket, data: string)");
 		return 0;
 	}
 	TcpSocket *socket = (TcpSocket*)lua_touserdata(L, 1);
@@ -307,7 +307,7 @@ int lualib_net_read(lua_State *L)
 {
 	if (lua_gettop(L)<2)
 	{
-		global_glua_chain_api->throw_exception(L, THINKYOUNG_API_SIMPLE_ERROR, "net.read need arguments (socket: TcpSocket, count: integer)");
+		global_glua_chain_api->throw_exception(L, LVM_API_SIMPLE_ERROR, "net.read need arguments (socket: TcpSocket, count: integer)");
 		return 0;
 	}
 	TcpSocket *socket = (TcpSocket*)lua_touserdata(L, 1);
@@ -327,7 +327,7 @@ int lualib_net_read_until_impl(lua_State *L, TcpSocket *socket, std::vector<char
 {
 	if (end.size() < 1)
 	{
-		global_glua_chain_api->throw_exception(L, THINKYOUNG_API_SIMPLE_ERROR, "net.read_until second argument can't be empty string");
+		global_glua_chain_api->throw_exception(L, LVM_API_SIMPLE_ERROR, "net.read_until second argument can't be empty string");
 		return 0;
 	}
 	boost::system::error_code ignored_error;
@@ -372,7 +372,7 @@ int lualib_net_read_until(lua_State *L)
 {
 	if (lua_gettop(L) < 2 || !lua_isstring(L, 2))
 	{
-		global_glua_chain_api->throw_exception(L, THINKYOUNG_API_SIMPLE_ERROR, "net.read_until need arguments (socket: TcpSocket, end: string)");
+		global_glua_chain_api->throw_exception(L, LVM_API_SIMPLE_ERROR, "net.read_until need arguments (socket: TcpSocket, end: string)");
 		return 0;
 	}
 	TCP::socket *socket = (TCP::socket*)lua_touserdata(L, 1);
@@ -384,7 +384,7 @@ int lualib_net_close_server(lua_State *L)
 {
 	if (lua_gettop(L)<1)
 	{
-		global_glua_chain_api->throw_exception(L, THINKYOUNG_API_SIMPLE_ERROR, "net.close_server need arguments (server: TcpSocketServer)");
+		global_glua_chain_api->throw_exception(L, LVM_API_SIMPLE_ERROR, "net.close_server need arguments (server: TcpSocketServer)");
 		return 0;
 	}
 	NetServerInfo *server = (NetServerInfo*)lua_touserdata(L, 1);
@@ -403,7 +403,7 @@ int lualib_net_close_socket(lua_State *L)
 {
 	if(lua_gettop(L)<1)
 	{
-		global_glua_chain_api->throw_exception(L, THINKYOUNG_API_SIMPLE_ERROR, "net.close_socket need arguments (socket: TcpSocket)");
+		global_glua_chain_api->throw_exception(L, LVM_API_SIMPLE_ERROR, "net.close_socket need arguments (socket: TcpSocket)");
 		return 0;
 	}
 	TcpSocket *socket = (TcpSocket*)lua_touserdata(L, 1);

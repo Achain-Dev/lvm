@@ -8,7 +8,7 @@
 #include <vector>
 
 
-namespace thinkyoung {
+namespace lvm {
 	namespace lua {
 		namespace core {
 

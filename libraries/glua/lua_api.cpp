@@ -1,5 +1,5 @@
 /**
- * lua module injector header in thinkyoung
+ * lua module injector header in lvm
  */
 
 #include "glua/lprefix.h"
@@ -32,7 +32,7 @@ namespace lvm {
             
             static std::string get_file_name_str_from_contract_module_name(std::string name) {
                 std::stringstream ss;
-                ss << "thinkyoung_contract_" << name;
+                ss << "lvm_contract_" << name;
                 return ss.str();
             }
             
@@ -51,7 +51,7 @@ namespace lvm {
             }
             
             /**
-            * when exception happened, use this api to tell thinkyoung
+            * when exception happened, use this api to tell lvm
             * @param L the lua stack
             * @param code error code, 0 is OK, other is different error
             * @param error_format error info string, will be released by lua
@@ -81,8 +81,8 @@ namespace lvm {
                 //只有调用clear清理后，才能继续记录异常
                 int last_code = lua::lib::get_lua_state_value(L, "exception_code").int_value;
                 
-                if (last_code == THINKYOUNG_API_LVM_LIMIT_OVER_ERROR
-                        && code != THINKYOUNG_API_LVM_LIMIT_OVER_ERROR) {
+                if (last_code == LVM_API_LVM_LIMIT_OVER_ERROR
+                        && code != LVM_API_LVM_LIMIT_OVER_ERROR) {
                     return;
                 }
                 

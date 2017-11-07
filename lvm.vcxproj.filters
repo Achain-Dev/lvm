@@ -69,9 +69,6 @@
     <ClCompile Include="libraries\glua\glua_disassemble.cpp">
       <Filter>libraries\glua</Filter>
     </ClCompile>
-    <ClCompile Include="libraries\glua\glua_loader.cpp">
-      <Filter>libraries\glua</Filter>
-    </ClCompile>
     <ClCompile Include="libraries\glua\glua_lutil.cpp">
       <Filter>libraries\glua</Filter>
     </ClCompile>
@@ -318,9 +315,6 @@
     <ClInclude Include="libraries\include\glua\glua_disassemble.h">
       <Filter>libraries\include\glua</Filter>
     </ClInclude>
-    <ClInclude Include="libraries\include\glua\glua_loader.h">
-      <Filter>libraries\include\glua</Filter>
-    </ClInclude>
     <ClInclude Include="libraries\include\glua\glua_lutil.h">
       <Filter>libraries\include\glua</Filter>
     </ClInclude>
@@ -517,4 +511,4 @@
       <Filter>libraries\include\glua</Filter>
     </ClInclude>
   </ItemGroup>
-</Project>
+  </Project>
