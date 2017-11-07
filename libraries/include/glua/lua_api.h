@@ -3,8 +3,8 @@
  * @author zoowii@thinkyoung
  */
 
-#ifndef thinkyoung_lua_api_h
-#define thinkyoung_lua_api_h
+#ifndef _LUA_API_H
+#define _LUA_API_H
 
 #include <glua/lprefix.h>
 

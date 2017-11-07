@@ -20,9 +20,53 @@ static void setGluaStateScopeValue(lvm::lua::lib::GluaStateScope& scope,
 }
 
 void RegisterContractOperation::evaluate(TaskAndCallback& _inst_taskandcallback, TaskImplResult* result) const  {
+    TaskBase* _taskbase_ptr = _inst_taskandcallback.task_base;
+    
+    if (!_taskbase_ptr) {
+        return;
+    }
+    
+    RegisterTask* _registertask_ptr = (RegisterTask*)_taskbase_ptr;
+    
+    if (!_registertask_ptr) {
+        return;
+    }
+    
+    if (!result) {
+        result = new RegisterTaskResult(_taskbase_ptr);
+    }
+    
     try {
         //
+        using namespace lvm::lua::lib;
+        GluaStateScope scope;
+        GluaStateValue statevalue;
+        size_t limit = _registertask_ptr->num_limit;
+        statevalue = _registertask_ptr->statevalue;
+        std::string str_tmp_caller = _registertask_ptr->str_caller;
+        std::string str_tmp_caller_address = _registertask_ptr->str_caller_address;
+        std::string str_tmp_contract_address = _registertask_ptr->str_contract_address;
+        std::string str_tmp_args = "";
+        std::string str_exception_msg = "";
+        statevalue.pointer_value = nullptr;
+        lvm::lua::api::global_glua_chain_api->clear_exceptions(scope.L());
+        setGluaStateScopeValue(scope, str_tmp_caller, str_tmp_caller_address, statevalue, limit);
+        scope.execute_contract_init_by_address(str_tmp_contract_address.c_str(), nullptr, nullptr);
         //
+        int exception_code = lvm::lua::lib::get_lua_state_value(scope.L(), "exception_code").int_value;
+        
+        if (exception_code > 0) {
+            str_exception_msg = lvm::lua::lib::get_lua_state_value(scope.L(), "exception_msg").string_value;
+            
+            if (exception_code == LVM_API_LVM_LIMIT_OVER_ERROR) {
+                FC_CAPTURE_AND_THROW(lvm::global_exception::contract_run_out_of_money);
+                
+            } else {
+                lvm::global_exception::contract_error con_err(32000, "exception", str_exception_msg);
+                throw con_err;
+            }
+        }
+        
     } catch (lvm::global_exception::contract_run_out_of_money& e) {
         result->error_msg = e.to_detail_string();
         result->error_code = e.code();
