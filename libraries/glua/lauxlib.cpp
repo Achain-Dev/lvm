@@ -1,4 +1,4 @@
-﻿/*
+/*
 ** $Id: lauxlib.c,v 1.284 2015/11/19 19:16:22 roberto Exp $
 ** Auxiliary functions for building Lua libraries
 ** See Copyright Notice in lua.h
@@ -225,7 +225,7 @@ static int typeerror(lua_State *L, int arg, const char *tname) {
         typearg = luaL_typename(L, arg);  /* standard name */
         
     msg = lua_pushfstring(L, "%s expected, got %s", tname, typearg);
-    global_glua_chain_api->throw_exception(L, THINKYOUNG_API_SIMPLE_ERROR, msg);
+    global_glua_chain_api->throw_exception(L, LVM_API_SIMPLE_ERROR, msg);
     return luaL_argerror(L, arg, msg);
 }
 
@@ -736,7 +736,7 @@ static int errfile(lua_State *L, const char *what, int fnameindex) {
     const char *serr = strerror(errno);
     const char *filename = lua_tostring(L, fnameindex) + 1;
     lua_pushfstring(L, "cannot %s %s: %s", what, filename, serr);
-    global_glua_chain_api->throw_exception(L, THINKYOUNG_API_SIMPLE_ERROR, luaL_checkstring(L, -1));
+    global_glua_chain_api->throw_exception(L, LVM_API_SIMPLE_ERROR, luaL_checkstring(L, -1));
     lua_remove(L, fnameindex);
     return LUA_ERRFILE;
 }
@@ -1140,7 +1140,7 @@ LUA_API int lua_docompiledfile(lua_State *L, const char *filename) {
         return LUA_OK;
         
     } catch(const std::exception &e) {
-        global_glua_chain_api->throw_exception(L, THINKYOUNG_API_SIMPLE_ERROR, "error in load bytecode file, %s", e.what());
+        global_glua_chain_api->throw_exception(L, LVM_API_SIMPLE_ERROR, "error in load bytecode file, %s", e.what());
         return LUA_ERRRUN;
     }
 }
@@ -1207,7 +1207,7 @@ static bool findloader_for_import_contract(lua_State *L, const char *name) {
 
 int luaL_require_module(lua_State *L) {
     if (lua_gettop(L) < 1) {
-        global_glua_chain_api->throw_exception(L, THINKYOUNG_API_SIMPLE_ERROR, "require need 1 argument of contract name");
+        global_glua_chain_api->throw_exception(L, LVM_API_SIMPLE_ERROR, "require need 1 argument of contract name");
         return 0;
     }
     
@@ -1326,7 +1326,7 @@ static bool lua_get_contract_apis_direct(lua_State *L, GluaModuleByteStream *str
             int it = lua_gettop(L);
             lua_pushnil(L);
             int apis_count = 0;
-            char *contract_apis[THINKYOUNG_CONTRACT_APIS_LIMIT];
+            char *contract_apis[LVM_CONTRACT_APIS_LIMIT];
             memset(contract_apis, 0x0, sizeof(contract_apis));
             std::set<std::string> contract_apis_set; // 用来记录有序的contract_apis集合
             std::set<std::string> offline_contract_apis_set; // 用来记录有序的offline_contract_apis集合
@@ -1384,8 +1384,8 @@ static bool lua_get_contract_apis_direct(lua_State *L, GluaModuleByteStream *str
                 lua_pop(L, 1);
                 
                 // store module info into thinkyoung, limit not too many apis
-                if (strlen(key) > THINKYOUNG_CONTRACT_API_NAME_MAX_LENGTH) {
-                    global_glua_chain_api->throw_exception(L, THINKYOUNG_API_SIMPLE_ERROR, "contract module api name must be less than 1024 characters\n");
+                if (strlen(key) > LVM_CONTRACT_API_NAME_MAX_LENGTH) {
+                    global_glua_chain_api->throw_exception(L, LVM_API_SIMPLE_ERROR, "contract module api name must be less than 1024 characters\n");
                     return false;
                 }
                 
@@ -1401,7 +1401,7 @@ static bool lua_get_contract_apis_direct(lua_State *L, GluaModuleByteStream *str
             }
             
             // if the contract info stored in thinkyoung before, fetch and check whether the apis are the same. if not the same, error
-            /*char *stored_contract_apis[THINKYOUNG_CONTRACT_APIS_LIMIT];
+            /*char *stored_contract_apis[LVM_CONTRACT_APIS_LIMIT];
             int stored_contract_apis_count;*/
             stream->contract_apis.clear();
             
@@ -1412,7 +1412,7 @@ static bool lua_get_contract_apis_direct(lua_State *L, GluaModuleByteStream *str
         } else {
             const char *msg = "this thinkyoung contract not return a table";
             lua_set_compile_error(L, msg);
-            global_glua_chain_api->throw_exception(L, THINKYOUNG_API_SIMPLE_ERROR, msg);
+            global_glua_chain_api->throw_exception(L, LVM_API_SIMPLE_ERROR, msg);
             return false;
         }
         
@@ -1433,7 +1433,7 @@ static bool lua_get_contract_apis_direct(lua_State *L, GluaModuleByteStream *str
     } else {
         const char *msg = "this thinkyoung contract not return a table";
         lua_set_compile_error(L, msg);
-        global_glua_chain_api->throw_exception(L, THINKYOUNG_API_SIMPLE_ERROR, msg);
+        global_glua_chain_api->throw_exception(L, LVM_API_SIMPLE_ERROR, msg);
         return false;
     }
     
@@ -1553,7 +1553,7 @@ static std::string get_contract_id_using_in_lua(lua_State *L, std::string namest
 /************************************************************************/
 int luaL_import_contract_module_from_address(lua_State *L) {
     if (lua_gettop(L) < 1) {
-        global_glua_chain_api->throw_exception(L, THINKYOUNG_API_SIMPLE_ERROR, "import_contract_from_address need 1 argument of contract name");
+        global_glua_chain_api->throw_exception(L, LVM_API_SIMPLE_ERROR, "import_contract_from_address need 1 argument of contract name");
         return 0;
     }
     
@@ -1566,7 +1566,7 @@ int luaL_import_contract_module_from_address(lua_State *L) {
     
     if (glua::util::ends_with(std::string(name), std::string(".lua"))
             || glua::util::ends_with(std::string(name), std::string(GLUA_SOURCE_FILE_EXTENTION_NAME))) {
-        global_glua_chain_api->throw_exception(L, THINKYOUNG_API_SIMPLE_ERROR, "this contract byte stream not matched with the info stored in thinkyoung api");
+        global_glua_chain_api->throw_exception(L, LVM_API_SIMPLE_ERROR, "this contract byte stream not matched with the info stored in thinkyoung api");
         return 0;
     }
     
@@ -1593,7 +1593,7 @@ int luaL_import_contract_module_from_address(lua_State *L) {
     exists = global_glua_chain_api->check_contract_exist_by_address(L, contract_id);
     
     if (!exists) {
-        global_glua_chain_api->throw_exception(L, THINKYOUNG_API_SIMPLE_ERROR, "this contract not found");
+        global_glua_chain_api->throw_exception(L, LVM_API_SIMPLE_ERROR, "this contract not found");
         return 0;
     }
     
@@ -1621,11 +1621,11 @@ int luaL_import_contract_module_from_address(lua_State *L) {
             int it = lua_gettop(L);
             lua_pushnil(L);
             int apis_count = 0;
-            char *contract_apis[THINKYOUNG_CONTRACT_APIS_LIMIT];
-            memset(contract_apis, 0x0, THINKYOUNG_CONTRACT_APIS_LIMIT*sizeof(char*));
+            char *contract_apis[LVM_CONTRACT_APIS_LIMIT];
+            memset(contract_apis, 0x0, LVM_CONTRACT_APIS_LIMIT*sizeof(char*));
             
             while (lua_next(L, it)) {
-                if (apis_count >= THINKYOUNG_CONTRACT_APIS_LIMIT) {
+                if (apis_count >= LVM_CONTRACT_APIS_LIMIT) {
                     lua_pop(L, 1);
                     break;
                 }
@@ -1639,8 +1639,8 @@ int luaL_import_contract_module_from_address(lua_State *L) {
                 lua_pop(L, 1);
                 
                 // store module info into thinkyoung, limit not too many apis
-                if (strlen(key) > THINKYOUNG_CONTRACT_API_NAME_MAX_LENGTH) {
-                    global_glua_chain_api->throw_exception(L, THINKYOUNG_API_SIMPLE_ERROR, "contract module api name must be less than %d characters", THINKYOUNG_CONTRACT_API_NAME_MAX_LENGTH);
+                if (strlen(key) > LVM_CONTRACT_API_NAME_MAX_LENGTH) {
+                    global_glua_chain_api->throw_exception(L, LVM_API_SIMPLE_ERROR, "contract module api name must be less than %d characters", LVM_CONTRACT_API_NAME_MAX_LENGTH);
                     lvm::lua::lib::notify_lua_state_stop(L);
                     return 0;
                 }
@@ -1687,7 +1687,7 @@ int luaL_import_contract_module_from_address(lua_State *L) {
                     if (strlen(L->compile_error) < 1)
                         memcpy(L->compile_error, error_msg, LUA_COMPILE_ERROR_MAX_LENGTH);
                         
-                    global_glua_chain_api->throw_exception(L, THINKYOUNG_API_SIMPLE_ERROR, error_msg);
+                    global_glua_chain_api->throw_exception(L, LVM_API_SIMPLE_ERROR, error_msg);
                     lvm::lua::lib::notify_lua_state_stop(L);
                     return 0;
                 }
@@ -1706,7 +1706,7 @@ int luaL_import_contract_module_from_address(lua_State *L) {
                             if (strlen(L->compile_error) < 1)
                                 memcpy(L->compile_error, error_msg, LUA_COMPILE_ERROR_MAX_LENGTH);
                                 
-                            global_glua_chain_api->throw_exception(L, THINKYOUNG_API_SIMPLE_ERROR, error_msg);
+                            global_glua_chain_api->throw_exception(L, LVM_API_SIMPLE_ERROR, error_msg);
                             return 0;
                         }
                         
@@ -1723,7 +1723,7 @@ int luaL_import_contract_module_from_address(lua_State *L) {
                         if (strlen(L->compile_error) < 1)
                             memcpy(L->compile_error, error_msg, LUA_COMPILE_ERROR_MAX_LENGTH);
                             
-                        global_glua_chain_api->throw_exception(L, THINKYOUNG_API_SIMPLE_ERROR, error_msg);
+                        global_glua_chain_api->throw_exception(L, LVM_API_SIMPLE_ERROR, error_msg);
                         lvm::lua::lib::notify_lua_state_stop(L);
                         return 0;
                     }
@@ -1741,7 +1741,7 @@ int luaL_import_contract_module_from_address(lua_State *L) {
                     snprintf(error_msg, LUA_COMPILE_ERROR_MAX_LENGTH - 1, "contract can't use global variables");
                     if (strlen(L->compile_error) < 1)
                     memcpy(L->compile_error, error_msg, LUA_COMPILE_ERROR_MAX_LENGTH);
-                    global_glua_chain_api->throw_exception(L, THINKYOUNG_API_SIMPLE_ERROR, error_msg);
+                    global_glua_chain_api->throw_exception(L, LVM_API_SIMPLE_ERROR, error_msg);
                     */
                     lcompile_error_set(L, error_msg, "contract can't use global variables");
                     lvm::lua::lib::notify_lua_state_stop(L);
@@ -1754,7 +1754,7 @@ int luaL_import_contract_module_from_address(lua_State *L) {
                 snprintf(error_msg, LUA_COMPILE_ERROR_MAX_LENGTH - 1, "contract info not stored before");
                 if (strlen(L->compile_error) < 1)
                 memcpy(L->compile_error, error_msg, LUA_COMPILE_ERROR_MAX_LENGTH);
-                global_glua_chain_api->throw_exception(L, THINKYOUNG_API_SIMPLE_ERROR, error_msg);
+                global_glua_chain_api->throw_exception(L, LVM_API_SIMPLE_ERROR, error_msg);
                 */
                 lcompile_error_set(L, error_msg, "contract info not stored before");
                 lvm::lua::lib::notify_lua_state_stop(L);
@@ -1767,7 +1767,7 @@ int luaL_import_contract_module_from_address(lua_State *L) {
             snprintf(error_msg, LUA_COMPILE_ERROR_MAX_LENGTH - 1, "this thinkyoung contract not return a table");
             if (strlen(L->compile_error) < 1)
             memcpy(L->compile_error, error_msg, LUA_COMPILE_ERROR_MAX_LENGTH);
-            global_glua_chain_api->throw_exception(L, THINKYOUNG_API_SIMPLE_ERROR, error_msg);
+            global_glua_chain_api->throw_exception(L, LVM_API_SIMPLE_ERROR, error_msg);
             */
             lcompile_error_set(L, error_msg, "this thinkyoung contract not return a table");
             return 0;
@@ -1801,7 +1801,7 @@ int luaL_import_contract_module_from_address(lua_State *L) {
         lua_setfield(L, 2, filename);  /* _LOADED[name] = returned value */
         
     } else {
-        global_glua_chain_api->throw_exception(L, THINKYOUNG_API_SIMPLE_ERROR, "this thinkyoung contract not return a table");
+        global_glua_chain_api->throw_exception(L, LVM_API_SIMPLE_ERROR, "this thinkyoung contract not return a table");
         return 0;
     }
     
@@ -1815,7 +1815,7 @@ int luaL_import_contract_module_from_address(lua_State *L) {
  */
 int luaL_import_contract_module(lua_State *L) {
     if (lua_gettop(L) < 1 || !lua_isstring(L, 1)) {
-        global_glua_chain_api->throw_exception(L, THINKYOUNG_API_SIMPLE_ERROR, "import_contract need 1 string argument of contract name");
+        global_glua_chain_api->throw_exception(L, LVM_API_SIMPLE_ERROR, "import_contract need 1 string argument of contract name");
         return 0;
     }
     
@@ -1823,7 +1823,7 @@ int luaL_import_contract_module(lua_State *L) {
     const char *name = origin_contract_name;
     
     if (glua::util::ends_with(name, ".lua"), glua::util::ends_with(name, GLUA_SOURCE_FILE_EXTENTION_NAME)) {
-        global_glua_chain_api->throw_exception(L, THINKYOUNG_API_SIMPLE_ERROR, "this contract byte stream not matched with the info stored in thinkyoung api");
+        global_glua_chain_api->throw_exception(L, LVM_API_SIMPLE_ERROR, "this contract byte stream not matched with the info stored in thinkyoung api");
         return 0;
     }
     
@@ -1867,7 +1867,7 @@ int luaL_import_contract_module(lua_State *L) {
     }
     
     if (!exists) {
-        global_glua_chain_api->throw_exception(L, THINKYOUNG_API_SIMPLE_ERROR, "this contract not found");
+        global_glua_chain_api->throw_exception(L, LVM_API_SIMPLE_ERROR, "this contract not found");
         return 0;
     }
     
@@ -1900,10 +1900,10 @@ int luaL_import_contract_module(lua_State *L) {
             int it = lua_gettop(L);
             lua_pushnil(L);
             int apis_count = 0;
-            char *contract_apis[THINKYOUNG_CONTRACT_APIS_LIMIT];
+            char *contract_apis[LVM_CONTRACT_APIS_LIMIT];
             
             while (lua_next(L, it)) {
-                if (apis_count >= THINKYOUNG_CONTRACT_APIS_LIMIT) {
+                if (apis_count >= LVM_CONTRACT_APIS_LIMIT) {
                     lua_pop(L, 1);
                     break;
                 }
@@ -1923,8 +1923,8 @@ int luaL_import_contract_module(lua_State *L) {
                 lua_pop(L, 1);
                 
                 // store module info into thinkyoung, limit not too many apis
-                if (strlen(key) > THINKYOUNG_CONTRACT_API_NAME_MAX_LENGTH) {
-                    global_glua_chain_api->throw_exception(L, THINKYOUNG_API_SIMPLE_ERROR, "contract module api name must be less than 1024 characters\n");
+                if (strlen(key) > LVM_CONTRACT_API_NAME_MAX_LENGTH) {
+                    global_glua_chain_api->throw_exception(L, LVM_API_SIMPLE_ERROR, "contract module api name must be less than 1024 characters\n");
                     lvm::lua::lib::notify_lua_state_stop(L);
                     return 0;
                 }
@@ -1965,7 +1965,7 @@ int luaL_import_contract_module(lua_State *L) {
                 
                 // found this contract stored in the thinkyoung api before
                 if (stored_contract_info->contract_apis.size() != apis_count) {
-                    global_glua_chain_api->throw_exception(L, THINKYOUNG_API_SIMPLE_ERROR, "this contract byte stream not matched with the info stored in thinkyoung api");
+                    global_glua_chain_api->throw_exception(L, LVM_API_SIMPLE_ERROR, "this contract byte stream not matched with the info stored in thinkyoung api");
                     lvm::lua::lib::notify_lua_state_stop(L);
                     return 0;
                 }
@@ -1978,7 +1978,7 @@ int luaL_import_contract_module(lua_State *L) {
                         char *b = contract_apis[j];
                         
                         if (nullptr == a || nullptr == b) {
-                            global_glua_chain_api->throw_exception(L, THINKYOUNG_API_SIMPLE_ERROR, "empty contract api name");
+                            global_glua_chain_api->throw_exception(L, LVM_API_SIMPLE_ERROR, "empty contract api name");
                             return 0;
                         }
                         
@@ -1989,7 +1989,7 @@ int luaL_import_contract_module(lua_State *L) {
                     }
                     
                     if (!matched) {
-                        global_glua_chain_api->throw_exception(L, THINKYOUNG_API_SIMPLE_ERROR, "the contract api not match info stored in thinkyoung");
+                        global_glua_chain_api->throw_exception(L, LVM_API_SIMPLE_ERROR, "the contract api not match info stored in thinkyoung");
                         lvm::lua::lib::notify_lua_state_stop(L);
                         return 0;
                     }
@@ -2002,19 +2002,19 @@ int luaL_import_contract_module(lua_State *L) {
                 
                 if (global_size_before != global_size_after || !glua::util::compare_string_list(global_vars_before, global_vars_after)) {
                     // check all global variables not changed, don't call code eg. ```_G['abc'] = nil; abc = 1;```
-                    global_glua_chain_api->throw_exception(L, THINKYOUNG_API_SIMPLE_ERROR, "contract can't use global variables");
+                    global_glua_chain_api->throw_exception(L, LVM_API_SIMPLE_ERROR, "contract can't use global variables");
                     lvm::lua::lib::notify_lua_state_stop(L);
                     return 0;
                 }
                 
             } else {
-                global_glua_chain_api->throw_exception(L, THINKYOUNG_API_SIMPLE_ERROR, "contract info not stored before");
+                global_glua_chain_api->throw_exception(L, LVM_API_SIMPLE_ERROR, "contract info not stored before");
                 lvm::lua::lib::notify_lua_state_stop(L);
                 return 0;
             }
             
         } else {
-            global_glua_chain_api->throw_exception(L, THINKYOUNG_API_SIMPLE_ERROR, "this thinkyoung contract not return a table");
+            global_glua_chain_api->throw_exception(L, LVM_API_SIMPLE_ERROR, "this thinkyoung contract not return a table");
             return 0;
         }
         
@@ -2051,7 +2051,7 @@ int luaL_import_contract_module(lua_State *L) {
         lua_setfield(L, 2, filename);  /* _LOADED[name] = returned value */
         
     } else {
-        global_glua_chain_api->throw_exception(L, THINKYOUNG_API_SIMPLE_ERROR, "this thinkyoung contract not return a table");
+        global_glua_chain_api->throw_exception(L, LVM_API_SIMPLE_ERROR, "this thinkyoung contract not return a table");
         return 0;
     }
     
@@ -2081,7 +2081,7 @@ static int lua_real_execute_contract_api(lua_State *L
     if (!(glua::util::starts_with(contract_name, STREAM_CONTRACT_PREFIX)
             || glua::util::starts_with(contract_name, ADDRESS_CONTRACT_PREFIX))
             && !global_glua_chain_api->check_contract_exist(L, contract_name)) {
-        global_glua_chain_api->throw_exception(L, THINKYOUNG_API_SIMPLE_ERROR, "can't find this contract");
+        global_glua_chain_api->throw_exception(L, LVM_API_SIMPLE_ERROR, "can't find this contract");
         lua_pushinteger(L, LUA_ERRRUN);
         return 1;
     }
@@ -2118,7 +2118,7 @@ static int lua_real_execute_contract_api(lua_State *L
     L->err = saved_err;
     
     if (!lua_toboolean(L, -1)) { /* is it there? */
-        global_glua_chain_api->throw_exception(L, THINKYOUNG_API_SIMPLE_ERROR, "need load contract before execute contract api");
+        global_glua_chain_api->throw_exception(L, LVM_API_SIMPLE_ERROR, "need load contract before execute contract api");
         lua_pushinteger(L, LUA_ERRRUN);
         return 1;
     }
@@ -2169,7 +2169,7 @@ static int lua_real_execute_contract_api(lua_State *L
         lua_pop(L, 1); // pop self
         
     } else {
-        global_glua_chain_api->throw_exception(L, THINKYOUNG_API_SIMPLE_ERROR, "Can't find api %s in this contract", api_name_str.c_str());
+        global_glua_chain_api->throw_exception(L, LVM_API_SIMPLE_ERROR, "Can't find api %s in this contract", api_name_str.c_str());
         lua_pop(L, 1);
         return 0;
     }
@@ -2435,7 +2435,7 @@ static int lua_compilefile_preload(lua_State *L, LoadF &lf, const char *filename
         if (error)
             strncpy(error, error_str, LUA_COMPILE_ERROR_MAX_LENGTH);
             
-        global_glua_chain_api->throw_exception(L, THINKYOUNG_API_PARSER_ERROR, error_str);
+        global_glua_chain_api->throw_exception(L, LVM_API_PARSER_ERROR, error_str);
         // lcompile_error_set(L, error, "parse thinkyoung lua code error");
         return LUA_ERRFILE;
     }
@@ -2662,7 +2662,7 @@ GluaTableMapP luaL_create_lua_table_map_in_memory_pool(lua_State *L) {
     auto p = new GluaTableMap();
     
     if (nullptr == p) {
-        global_glua_chain_api->throw_exception(L, THINKYOUNG_API_SIMPLE_ERROR, "out of memory");
+        global_glua_chain_api->throw_exception(L, LVM_API_SIMPLE_ERROR, "out of memory");
         lvm::lua::lib::notify_lua_state_stop(L);
         return nullptr;
     }
@@ -3236,7 +3236,7 @@ static void *l_alloc(void *ud, void *ptr, size_t osize, size_t nsize) {
 }
 
 
-static int panic(lua_State *L) {g
+static int panic(lua_State *L) {
     lua_writestringerror("PANIC: unprotected error in call to Lua API (%s)\n",
                          lua_tostring(L, -1));
     return 0;  /* return to Lua to abort */
@@ -3265,4 +3265,3 @@ LUALIB_API void luaL_checkversion_(lua_State *L, lua_Number ver, size_t sz) {
         luaL_error(L, "version mismatch: app. needs %f, Lua core provides %f",
                    ver, *v);
 }
-
