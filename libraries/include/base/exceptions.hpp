@@ -192,12 +192,13 @@ namespace lvm {
         FC_DECLARE_DERIVED_EXCEPTION(store_and_index_a_seen_block, lvm::global_exception::chaindatabasee_error, 42001, "store_and_index_a_seen_block");
 
         FC_DECLARE_EXCEPTION(contract_exception, 43000, "contract Error");
-        FC_DECLARE_EXCEPTION(rpc_exception, 44000, "RPC Error");
+		FC_DECLARE_EXCEPTION(rpc_exception, 44000, "RPC Error");
         FC_DECLARE_EXCEPTION(missing_parameter, 45000, "Missing Parameter");
         FC_DECLARE_EXCEPTION(unknown_method, 46000, "Unknown Method");
         FC_DECLARE_EXCEPTION(login_required, 47000, "Login Required");
         FC_DECLARE_EXCEPTION(rpc_msg_error, 48000, "Rpc TaskType Error");
         FC_DECLARE_EXCEPTION(task_type_error, 49000, "TaskType Error");
+		FC_DECLARE_EXCEPTION(rpc_pointrt_null, 50000, "Rpc Pointer Null");
     }
 } // lvm::global_exception
 #endif
