@@ -22,8 +22,6 @@ class RpcMgr {
     
     void start();
     
-    fc::tcp_server* get_server();
-    
     void set_endpoint(std::string& ip_addr, int port);
     
     StcpSocketPtr get_connection();
