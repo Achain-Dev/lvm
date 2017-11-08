@@ -42,13 +42,12 @@ void RegisterContractOperation::evaluate(TaskAndCallback& _inst_taskandcallback,
         GluaStateScope scope;
         GluaStateValue statevalue;
         size_t limit = _registertask_ptr->num_limit;
-        statevalue = _registertask_ptr->statevalue;
+        statevalue.pointer_value =(void *) _registertask_ptr->statevalue;
         std::string str_tmp_caller = _registertask_ptr->str_caller;
         std::string str_tmp_caller_address = _registertask_ptr->str_caller_address;
         std::string str_tmp_contract_address = _registertask_ptr->str_contract_address;
         std::string str_tmp_args = "";
         std::string str_exception_msg = "";
-        statevalue.pointer_value = nullptr;
         lvm::lua::api::global_glua_chain_api->clear_exceptions(scope.L());
         setGluaStateScopeValue(scope, str_tmp_caller, str_tmp_caller_address, statevalue, limit);
         scope.execute_contract_init_by_address(str_tmp_contract_address.c_str(), nullptr, nullptr);
@@ -99,7 +98,7 @@ void UpgradeContractOperation::evaluate(TaskAndCallback& _inst_taskandcallback, 
         std::string str_tmp_method = "on_upgrade";
         std::string str_tmp_args ="";
         std::string str_tmp_contract_addr = _upgradetask_ptr->str_contract_address;
-        statevalue.pointer_value = nullptr;
+        statevalue.pointer_value = (void *)_upgradetask_ptr->statevalue;
         setGluaStateScopeValue(scope, str_tmp_caller, str_tmp_caller_addr, statevalue, limit_num);
         scope.execute_contract_api_by_address(str_tmp_contract_addr.c_str(),
                                               str_tmp_method.c_str(),
@@ -116,9 +115,10 @@ void UpgradeContractOperation::evaluate(TaskAndCallback& _inst_taskandcallback, 
         
         if (exception_code > 0) {
             exception_msg = (char*)get_lua_state_value(scope.L(), "exception_msg").string_value;
-
-           if (exception_code == LVM_API_LVM_LIMIT_OVER_ERROR) {
-              FC_CAPTURE_AND_THROW(lvm::global_exception::contract_run_out_of_money);
+            
+            if (exception_code == LVM_API_LVM_LIMIT_OVER_ERROR) {
+                FC_CAPTURE_AND_THROW(lvm::global_exception::contract_run_out_of_money);
+                
             } else {
                 lvm::global_exception::contract_error con_err(32000, "exception", exception_msg);
                 throw con_err;
@@ -157,7 +157,7 @@ void DestroyContractOperation::evaluate(TaskAndCallback& _inst_taskandcallback, 
         std::string str_tmp_method = "on_destroy";
         std::string str_tmp_args = "";
         std::string str_tmp_contract_addr = _destroytask_ptr->str_contract_address;
-        statevalue.pointer_value = nullptr;
+        statevalue.pointer_value = (void*)_destroytask_ptr->statevalue;
         setGluaStateScopeValue(scope, str_tmp_caller, str_tmp_caller_addr, statevalue, limit_num);
         scope.execute_contract_api_by_address(str_tmp_contract_addr.c_str(),
                                               str_tmp_method.c_str(),
@@ -174,6 +174,7 @@ void DestroyContractOperation::evaluate(TaskAndCallback& _inst_taskandcallback, 
         
         if (exception_code > 0) {
             exception_msg = (char*)get_lua_state_value(scope.L(), "exception_msg").string_value;
+            
             if (exception_code == LVM_API_LVM_LIMIT_OVER_ERROR) {
                 FC_CAPTURE_AND_THROW(lvm::global_exception::contract_run_out_of_money);
                 
@@ -215,7 +216,7 @@ void CallContractOperation::evaluate(TaskAndCallback& _inst_taskandcallback, Tas
         std::string str_tmp_method = _calltask_ptr->str_method;
         std::string str_tmp_args = _calltask_ptr->str_args;
         std::string str_tmp_contract_addr = _calltask_ptr->str_contract_address;
-        statevalue.pointer_value = nullptr;
+        statevalue.pointer_value = (void*)_calltask_ptr->statevalue;
         setGluaStateScopeValue(scope, str_tmp_caller, str_tmp_caller_addr, statevalue, limit_num);
         scope.execute_contract_api_by_address(str_tmp_contract_addr.c_str(),
                                               str_tmp_method.c_str(),
@@ -232,9 +233,9 @@ void CallContractOperation::evaluate(TaskAndCallback& _inst_taskandcallback, Tas
         
         if (exception_code > 0) {
             exception_msg = (char*)get_lua_state_value(scope.L(), "exception_msg").string_value;
-
-        if (exception_code == LVM_API_LVM_LIMIT_OVER_ERROR) {
-            FC_CAPTURE_AND_THROW(lvm::global_exception::contract_run_out_of_money);
+            
+            if (exception_code == LVM_API_LVM_LIMIT_OVER_ERROR) {
+                FC_CAPTURE_AND_THROW(lvm::global_exception::contract_run_out_of_money);
                 
             } else {
                 lvm::global_exception::contract_error con_err(32000, "exception", exception_msg);
@@ -276,7 +277,7 @@ void TransferContractOperation::evaluate(TaskAndCallback& _inst_taskandcallback,
         std::string str_tmp_method = "on_deposit";
         std::string str_tmp_args = _transfertask_ptr->str_args;
         std::string str_tmp_contract_addr = _transfertask_ptr->str_contract_address;
-        statevalue.pointer_value = nullptr;
+        statevalue.pointer_value = (void*)_transfertask_ptr->statevalue;
         setGluaStateScopeValue(scope, str_tmp_caller, str_tmp_caller_addr, statevalue, limit_num);
         scope.execute_contract_api_by_address(str_tmp_contract_addr.c_str(),
                                               str_tmp_method.c_str(),
@@ -293,8 +294,9 @@ void TransferContractOperation::evaluate(TaskAndCallback& _inst_taskandcallback,
         
         if (exception_code > 0) {
             exception_msg = (char*)get_lua_state_value(scope.L(), "exception_msg").string_value;
-        if (exception_code == LVM_API_LVM_LIMIT_OVER_ERROR) {
-            FC_CAPTURE_AND_THROW(lvm::global_exception::contract_run_out_of_money);
+            
+            if (exception_code == LVM_API_LVM_LIMIT_OVER_ERROR) {
+                FC_CAPTURE_AND_THROW(lvm::global_exception::contract_run_out_of_money);
                 
             } else {
                 lvm::global_exception::contract_error con_err(32000, "exception", exception_msg);
