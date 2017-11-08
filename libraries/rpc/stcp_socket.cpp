@@ -83,9 +83,6 @@ bool StcpSocket::eof()const {
 }
 
 size_t StcpSocket::writesome(const char* buffer, size_t len) {
-    char ch[50];
-    memcpy(ch, buffer, len);
-    
     try {
         assert(len > 0 && (len % 16) == 0);
         const std::size_t write_buffer_length = 4096;
