@@ -32,7 +32,6 @@ enum LuaRpcMessageTypeEnum {
 struct MessageHeader {
     uint32_t        size;//number of bytes in message, capped at MAX_MESSAGE_SIZE
     uint32_t        msg_type;
-    uint32_t        msg_id;// msg from chain has a unique id,lvm response the msg will use this id geted from chain msg.
 };
 
 typedef fc::uint160_t MessageHashType;
@@ -60,7 +59,6 @@ struct Message : public MessageHeader {
         msg_type = T::type;
         data = fc::raw::pack(m);
         size = (uint32_t)data.size();
-        msg_id = 0;     //init to 0
     }
     
     fc::uint160_t id()const {
@@ -223,7 +221,7 @@ struct DestroyTaskResultRpc {
 
 
 FC_REFLECT_ENUM(LuaRpcMessageTypeEnum, (COMPILE_MESSAGE_TYPE)(CALL_MESSAGE_TYPE)(REGTISTER_MESSAGE_TYPE))
-FC_REFLECT(MessageHeader, (size)(msg_id)(msg_type)(from))
+FC_REFLECT(MessageHeader, (size)(msg_type))
 FC_REFLECT_DERIVED(Message, (MessageHeader), (data))
 
 FC_REFLECT(CompileTaskRpc, (data))
