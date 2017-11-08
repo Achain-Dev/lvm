@@ -20,8 +20,8 @@ RpcMgr::~RpcMgr() {
 
 void RpcMgr::start() {
     if (!_b_valid_flag) {
-        std::cout << "RpcMgr::start()  _valid_flag error " << std::endl;
-        throw lvm::global_exception::rpc_exception();
+		FC_THROW_EXCEPTION(lvm::global_exception::rpc_exception, \
+			"rpc server configuration error, please set the endpoint. ");
     }
     
     _rpc_server.set_reuse_address();
@@ -37,11 +37,6 @@ void RpcMgr::set_endpoint(std::string& ip_addr, int port) {
     _b_valid_flag = true;
     return;
 }
-
-fc::tcp_server* RpcMgr::get_server() {
-    return &_rpc_server;
-}
-
 
 void RpcMgr::insert_connection(StcpSocketPtr& sock) {
     _connection_mutex.lock();
@@ -79,8 +74,9 @@ StcpSocketPtr RpcMgr::get_connection() {
 
 void RpcMgr::accept_loop() {
     if (!_rpc_handler_ptr) {
-        std::cout << "RpcMgr::accept_loop error " << std::endl;
-        return;
+        
+		FC_THROW_EXCEPTION(lvm::global_exception::rpc_pointrt_null, \
+			"rpc process is null, please set the rpc processor. ");
     }
     
     while (true) {
