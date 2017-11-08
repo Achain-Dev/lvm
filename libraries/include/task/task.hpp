@@ -126,9 +126,11 @@ struct RegisterTask : public TaskBase {
     int                     num_limit;
     std::string             str_caller;
     std::string             str_caller_address;
+    std::string             str_contract_name;
     std::string             str_contract_address;
     std::string             str_contract_id;
-    //GluaStateValue          statevalue;
+    GluaStateValue          statevalue;
+    std::string             api_name;
     //
     Code                    contract_code;
     
