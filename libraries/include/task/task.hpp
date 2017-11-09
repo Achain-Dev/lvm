@@ -122,12 +122,11 @@ struct RegisterTask : public TaskBase {
         task_type = REGISTER_TASK;
     };
     
-    std::string              gpc_code;
-    intptr_t                  statevalue;
-    int                         num_limit;
+    std::string             gpc_code;
+    intptr_t                statevalue;
+    int                     num_limit;
     std::string             str_caller;
     std::string             str_caller_address;
-    std::string             str_contract_name;
     std::string             str_contract_address;
     std::string             str_contract_id;
     Code                    contract_code;
@@ -137,8 +136,8 @@ struct UpgradeTask : public TaskBase {
     UpgradeTask() {
         task_type = UPGRADE_TASK;
     };
-    intptr_t                 statevalue;
-    int                         num_limit;
+    intptr_t                statevalue;
+    int                     num_limit;
     std::string             str_caller;
     std::string             str_caller_address;
     std::string             str_contract_address;
@@ -150,8 +149,8 @@ struct CallTask : public TaskBase {
     CallTask() {
         task_type = CALL_TASK;
     };
-    intptr_t                 statevalue;
-    int                         num_limit;
+    intptr_t                statevalue;
+    int                     num_limit;
     std::string             str_caller;
     std::string             str_caller_address;
     std::string             str_contract_address;
@@ -166,7 +165,7 @@ struct TransferTask : public TaskBase {
         task_type = TRANSFER_TASK;
     };
     intptr_t                statevalue;
-    int                         num_limit;
+    int                     num_limit;
     std::string             str_caller;
     std::string             str_caller_address;
     std::string             str_contract_address;
@@ -179,8 +178,8 @@ struct DestroyTask : public TaskBase {
     DestroyTask() {
         task_type = DESTROY_TASK;
     };
-    intptr_t                statevalue;
-    int                        num_limit;
+    intptr_t               statevalue;
+    int                    num_limit;
     std::string            str_caller;
     std::string            str_caller_address;
     std::string            str_contract_address;
