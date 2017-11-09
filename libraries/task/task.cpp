@@ -71,42 +71,36 @@ std::string CompileTaskResult::get_result_string() {
 Message CompileTaskResult::get_rpc_message() {
     CompileTaskResultRpc reslut(*this);
     Message rpc_msg(reslut);
-    rpc_msg.msg_id = reslut.data.task_id;
     return rpc_msg;
 }
 
 Message RegisterTaskResult::get_rpc_message() {
     RegisterTaskResultRpc reslut(*this);
     Message rpc_msg(reslut);
-    rpc_msg.msg_id = reslut.data.task_id;
     return rpc_msg;
 }
 
 Message CallTaskResult::get_rpc_message() {
     CallTaskResultRpc reslut(*this);
     Message rpc_msg(reslut);
-    rpc_msg.msg_id = reslut.data.task_id;
     return rpc_msg;
 }
 
 Message TransferTaskResult::get_rpc_message() {
     TransferTaskResultRpc reslut(*this);
     Message rpc_msg(reslut);
-    rpc_msg.msg_id = reslut.data.task_id;
     return rpc_msg;
 }
 
 Message UpgradeTaskResult::get_rpc_message() {
     UpgradeTaskResultRpc reslut(*this);
     Message rpc_msg(reslut);
-    rpc_msg.msg_id = reslut.data.task_id;
     return rpc_msg;
 }
 
 Message DestroyTaskResult::get_rpc_message() {
     DestroyTaskResultRpc reslut(*this);
     Message rpc_msg(reslut);
-    rpc_msg.msg_id = reslut.data.task_id;
     return rpc_msg;
 }
 
