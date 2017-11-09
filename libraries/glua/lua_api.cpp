@@ -231,7 +231,7 @@ namespace lvm {
                 //thinkyoung::blockchain::TransactionEvaluationState* eval_state_ptr =
                 //    (thinkyoung::blockchain::TransactionEvaluationState*)
                 //    (thinkyoung::lua::lib::get_lua_state_value(L, "evaluate_state").pointer_value);
-                //    
+                //
                 //if (!eval_state_ptr)
                 //    return NULL;
                 /*thinkyoung::blockchain::ChainInterface* cur_state = eval_state_ptr->_current_state;
@@ -259,26 +259,6 @@ namespace lvm {
                     return get_bytestream_from_code(L, entry->code);
                     }*/
                 return NULL;
-            }
-            
-            GluaStorageValue GluaChainApi::get_storage_value_from_thinkyoung(lua_State *L, const char *contract_name, std::string name) {
-                GluaStorageValue null_storage;
-                null_storage.type = lvm::blockchain::StorageValueTypes::storage_value_null;
-                /*thinkyoung::blockchain::TransactionEvaluationState* eval_state_ptr =
-                    (thinkyoung::blockchain::TransactionEvaluationState*)
-                    (thinkyoung::lua::lib::get_lua_state_value(L, "evaluate_state").pointer_value);
-                
-                    if (!eval_state_ptr)
-                    return null_storage;
-                
-                    thinkyoung::blockchain::ChainInterface* cur_state = eval_state_ptr->_current_state;
-                    oContractEntry entry = cur_state->get_contract_entry(std::string(contract_name));
-                
-                    if (!entry.valid()) {
-                    return null_storage;
-                    }  */
-                //return get_storage_value_from_thinkyoung_by_address(L, entry->id.AddressToString(AddressType::contract_address).c_str(), name);
-                return null_storage;
             }
             
             GluaStorageValue GluaChainApi::get_storage_value_from_thinkyoung_by_address(lua_State *L, const char *contract_address, std::string name) {
