@@ -23,6 +23,7 @@ enum LUA_TASK_TYPE {
     CALL_TASK,
     TRANSFER_TASK,
     DESTROY_TASK,
+    HELLO_MSG = 100,
     TASK_COUNT
 };
 
@@ -42,15 +43,20 @@ struct TaskBase {
 
 struct TaskImplResult : public TaskBase {
     TaskImplResult();
+    virtual ~TaskImplResult() {};
     
     void   init_task_base(TaskBase* task);
     
     virtual  std::string  get_result_string();
-    virtual  Message get_rpc_message() = 0;
+    virtual  Message get_rpc_message();
   public:
     uint64_t      error_code;
     std::string   error_msg;
 };
+
+//hello msg
+typedef struct TaskBase HelloMsg;
+typedef struct TaskImplResult HelloMsgResult;
 
 struct CompileTaskResult : public TaskImplResult {
     CompileTaskResult() {}
@@ -203,7 +209,7 @@ FC_REFLECT_ENUM(LUA_TASK_TYPE,
                 (CALL_TASK)
                 (TRANSFER_TASK)
                 (DESTROY_TASK)
-               )
+                (HELLO_MSG))
 
 FC_REFLECT(TaskBase, (task_id)(task_type)(task_from))
 FC_REFLECT_DERIVED(CompileTask, (TaskBase), (glua_path_file))

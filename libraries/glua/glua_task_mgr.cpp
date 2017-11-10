@@ -72,6 +72,13 @@ void GluaTaskMgr::execute_task(TaskAndCallback task) {
     ContractOperation* _contractop_ptr = nullptr;
     
     switch (task.task_base->task_type) {
+        case HELLO_MSG: {
+            result = new HelloMsgResult();
+            result->task_type = HELLO_MSG;
+            result->task_from = FROM_RPC;
+            break;
+        }
+        
         case COMPILE_TASK:
             result = execute_compile_glua_file(task.task_base);
             break;
