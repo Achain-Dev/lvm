@@ -129,37 +129,33 @@ struct RegisterTask : public TaskBase {
     };
     
     std::string             gpc_code;
+    intptr_t                statevalue;
     int                     num_limit;
     std::string             str_caller;
     std::string             str_caller_address;
-    std::string             str_contract_name;
     std::string             str_contract_address;
     std::string             str_contract_id;
-    GluaStateValue          statevalue;
-    std::string             api_name;
     Code                    contract_code;
-    
 };
 
 struct UpgradeTask : public TaskBase {
     UpgradeTask() {
         task_type = UPGRADE_TASK;
     };
-    std::string             gpc_code;
+    intptr_t                statevalue;
     int                     num_limit;
     std::string             str_caller;
     std::string             str_caller_address;
     std::string             str_contract_address;
     std::string             str_contract_id;
     Code                    contract_code;
-    
 };
 
 struct CallTask : public TaskBase {
     CallTask() {
         task_type = CALL_TASK;
     };
-    std::string             gpc_code;
+    intptr_t                statevalue;
     int                     num_limit;
     std::string             str_caller;
     std::string             str_caller_address;
@@ -174,7 +170,7 @@ struct TransferTask : public TaskBase {
     TransferTask() {
         task_type = TRANSFER_TASK;
     };
-    std::string             gpc_code;
+    intptr_t                statevalue;
     int                     num_limit;
     std::string             str_caller;
     std::string             str_caller_address;
@@ -188,7 +184,7 @@ struct DestroyTask : public TaskBase {
     DestroyTask() {
         task_type = DESTROY_TASK;
     };
-    std::string            gpc_code;
+    intptr_t               statevalue;
     int                    num_limit;
     std::string            str_caller;
     std::string            str_caller_address;
@@ -208,23 +204,24 @@ FC_REFLECT_ENUM(LUA_TASK_TYPE,
 
 FC_REFLECT(TaskBase, (task_id)(task_type)(task_from))
 FC_REFLECT_DERIVED(CompileTask, (TaskBase), (glua_path_file))
-FC_REFLECT_DERIVED(CallTask, (TaskBase), (gpc_code)(num_limit)
+
+FC_REFLECT_DERIVED(CallTask, (TaskBase), (statevalue)(num_limit)
                    (str_caller)(str_caller_address)(str_contract_address)
-                   (str_method) (str_args) (str_contract_id)(contract_code))
+                   (str_contract_id)(str_method)(str_args)(contract_code))
 
-FC_REFLECT_DERIVED(RegisterTask, (TaskBase), (gpc_code)(num_limit)
-                   (str_caller)(str_caller_address)(str_contract_address)
-                   (str_contract_id)(contract_code))
-
-FC_REFLECT_DERIVED(TransferTask, (TaskBase), (gpc_code)(num_limit)
-                   (str_caller)(str_caller_address)(str_contract_address)(str_args)
-                   (str_contract_id)(contract_code))
-
-FC_REFLECT_DERIVED(UpgradeTask, (TaskBase), (gpc_code)(num_limit)
+FC_REFLECT_DERIVED(RegisterTask, (TaskBase), (gpc_code)(statevalue)(num_limit)
                    (str_caller)(str_caller_address)(str_contract_address)
                    (str_contract_id)(contract_code))
 
-FC_REFLECT_DERIVED(DestroyTask, (TaskBase), (gpc_code)(num_limit)
+FC_REFLECT_DERIVED(TransferTask, (TaskBase), (statevalue)(num_limit)
+                   (str_caller)(str_caller_address)(str_contract_address)
+                   (str_contract_id)(str_args)(contract_code))
+
+FC_REFLECT_DERIVED(UpgradeTask, (TaskBase), (statevalue)(num_limit)
+                   (str_caller)(str_caller_address)(str_contract_address)
+                   (str_contract_id)(contract_code))
+
+FC_REFLECT_DERIVED(DestroyTask, (TaskBase), (statevalue)(num_limit)
                    (str_caller)(str_caller_address)(str_contract_address)
                    (str_contract_id)(contract_code))
 
