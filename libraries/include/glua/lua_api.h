@@ -491,8 +491,6 @@ namespace lvm {
                  */
                 virtual bool register_storage(lua_State *L, const char *contract_name, const char *name) = 0;
                 
-                virtual GluaStorageValue get_storage_value_from_thinkyoung(lua_State *L, const char *contract_name, std::string name) = 0;
-                
                 virtual GluaStorageValue get_storage_value_from_thinkyoung_by_address(lua_State *L, const char *contract_address, std::string name) = 0;
                 
                 /**

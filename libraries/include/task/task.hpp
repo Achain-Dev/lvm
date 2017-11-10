@@ -137,7 +137,6 @@ struct RegisterTask : public TaskBase {
     std::string             str_contract_id;
     GluaStateValue          statevalue;
     std::string             api_name;
-    //
     Code                    contract_code;
     
 };
@@ -152,7 +151,6 @@ struct UpgradeTask : public TaskBase {
     std::string             str_caller_address;
     std::string             str_contract_address;
     std::string             str_contract_id;
-    //GluaStateValue          statevalue;
     Code                    contract_code;
     
 };
@@ -169,7 +167,6 @@ struct CallTask : public TaskBase {
     std::string             str_contract_id;
     std::string             str_method;
     std::string             str_args;
-    //GluaStateValue          statevalue;
     Code                    contract_code;
 };
 
@@ -184,7 +181,6 @@ struct TransferTask : public TaskBase {
     std::string             str_contract_address;
     std::string             str_contract_id;
     std::string             str_args;
-    //GluaStateValue          statevalue;
     Code                    contract_code;
 };
 
@@ -198,7 +194,6 @@ struct DestroyTask : public TaskBase {
     std::string            str_caller_address;
     std::string            str_contract_address;
     std::string            str_contract_id;
-    //GluaStateValue          statevalue;
     Code                   contract_code;
 };
 
