@@ -22,8 +22,6 @@ class RpcMgr {
     
     void start();
     
-    fc::tcp_server* get_server();
-    
     void set_endpoint(std::string& ip_addr, int port);
     
     StcpSocketPtr get_connection();
@@ -32,10 +30,12 @@ class RpcMgr {
     void delete_connection();
     void close_connections();
     void send_message(Message& rpc_msg);
+	void send_hello_msg_loop();
     
   private:
     void accept_loop();
     void read_loop(StcpSocketPtr& sock);
+	void send_hello_message();
     Message& generate_message(TaskImplResult* task);
     
     

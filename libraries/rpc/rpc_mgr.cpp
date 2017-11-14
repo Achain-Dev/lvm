@@ -20,8 +20,8 @@ RpcMgr::~RpcMgr() {
 
 void RpcMgr::start() {
     if (!_b_valid_flag) {
-        std::cout << "RpcMgr::start()  _valid_flag error " << std::endl;
-        throw lvm::global_exception::rpc_exception();
+        FC_THROW_EXCEPTION(lvm::global_exception::rpc_exception, \
+                           "rpc server configuration error, please set the endpoint. ");
     }
     
     _rpc_server.set_reuse_address();
@@ -37,11 +37,6 @@ void RpcMgr::set_endpoint(std::string& ip_addr, int port) {
     _b_valid_flag = true;
     return;
 }
-
-fc::tcp_server* RpcMgr::get_server() {
-    return &_rpc_server;
-}
-
 
 void RpcMgr::insert_connection(StcpSocketPtr& sock) {
     _connection_mutex.lock();
@@ -72,15 +67,19 @@ void RpcMgr::close_connections() {
 StcpSocketPtr RpcMgr::get_connection() {
     StcpSocketPtr tmp = NULL;
     _connection_mutex.lock();
-    tmp = _rpc_connections.back();
+    
+    if (!_rpc_connections.empty()) {
+        tmp = _rpc_connections.back();
+    }
+    
     _connection_mutex.unlock();
     return tmp;
 }
 
 void RpcMgr::accept_loop() {
     if (!_rpc_handler_ptr) {
-        std::cout << "RpcMgr::accept_loop error " << std::endl;
-        return;
+        FC_THROW_EXCEPTION(lvm::global_exception::rpc_pointrt_null, \
+                           "rpc process is null, please set the rpc processor. ");
     }
     
     while (true) {
@@ -94,6 +93,7 @@ void RpcMgr::accept_loop() {
             sock_ptr->accept();
             //do read msg
             fc::async([&]() {
+                send_hello_msg_loop();
                 read_loop(sock_ptr);
             }).wait();
         }
@@ -194,7 +194,11 @@ void RpcMgr::send_message(Message& rpc_msg) {
     //send response
     try {
         sock_ptr = get_connection();
-        FC_ASSERT(sock_ptr != NULL);
+        
+        if (sock_ptr == NULL) {
+            return;
+        }
+        
         sock_ptr->write(padded_message.get(), size_with_padding);
         sock_ptr->flush();
         
@@ -207,4 +211,29 @@ void RpcMgr::send_message(Message& rpc_msg) {
     } catch (...) {
         //TODO
     }
+}
+
+//send hello msg
+void RpcMgr::send_hello_message() {
+    uint32_t msg_len = 0;
+    char* p_msg = nullptr;
+    HelloMsgRpc hello_msg;
+    hello_msg.data.task_from = FROM_RPC;
+    hello_msg.data.task_type = HELLO_MSG;
+    Message msg(hello_msg);
+    msg_len = sizeof(MessageHeader) + msg.size;
+    p_msg = new char[msg_len];
+    memcpy(p_msg, (char*)&msg, sizeof(MessageHeader));
+    memcpy(p_msg + sizeof(MessageHeader), msg.data.data(), msg.size);
+    _rpc_handler_ptr->handle_task(std::string(p_msg, msg_len), nullptr);
+    delete[] p_msg;
+}
+
+void RpcMgr::send_hello_msg_loop() {
+    send_hello_message();
+    fc::schedule([this]() {
+        send_hello_msg_loop();
+    },
+    fc::time_point::now() + fc::seconds(SEND_HELLO_MSG_INTERVAL),
+    "send_hello_msg_loop");
 }

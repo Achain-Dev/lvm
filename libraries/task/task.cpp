@@ -28,6 +28,26 @@ CompileTaskResult::CompileTaskResult(TaskBase* task) {
     init_task_base(task);
 }
 
+RegisterTaskResult::RegisterTaskResult(TaskBase* task) {
+    init_task_base(task);
+}
+
+CallTaskResult::CallTaskResult(TaskBase* task) {
+    init_task_base(task);
+}
+
+UpgradeTaskResult::UpgradeTaskResult(TaskBase* task) {
+    init_task_base(task);
+}
+
+DestroyTaskResult::DestroyTaskResult(TaskBase* task) {
+    init_task_base(task);
+}
+
+TransferTaskResult::TransferTaskResult(TaskBase* task) {
+    init_task_base(task);
+}
+
 std::string TaskImplResult::get_result_string() {
     std::stringstream stream_result;
     stream_result << "\n";
@@ -48,45 +68,47 @@ std::string CompileTaskResult::get_result_string() {
     return result;
 }
 
+
+Message TaskImplResult::get_rpc_message() {
+    HelloMsgResultRpc result(*this);
+    Message rpc_msg(result);
+    return rpc_msg;
+}
+
+
 Message CompileTaskResult::get_rpc_message() {
-    CompileTaskResultRpc reslut(*this);
-    Message rpc_msg(reslut);
-    rpc_msg.msg_id = reslut.data.task_id;
+    CompileTaskResultRpc result(*this);
+    Message rpc_msg(result);
     return rpc_msg;
 }
 
 Message RegisterTaskResult::get_rpc_message() {
-    RegisterTaskResultRpc reslut(*this);
-    Message rpc_msg(reslut);
-    rpc_msg.msg_id = reslut.data.task_id;
+    RegisterTaskResultRpc result(*this);
+    Message rpc_msg(result);
     return rpc_msg;
 }
 
 Message CallTaskResult::get_rpc_message() {
-    CallTaskResultRpc reslut(*this);
-    Message rpc_msg(reslut);
-    rpc_msg.msg_id = reslut.data.task_id;
+    CallTaskResultRpc result(*this);
+    Message rpc_msg(result);
     return rpc_msg;
 }
 
 Message TransferTaskResult::get_rpc_message() {
-    TransferTaskResultRpc reslut(*this);
-    Message rpc_msg(reslut);
-    rpc_msg.msg_id = reslut.data.task_id;
+    TransferTaskResultRpc result(*this);
+    Message rpc_msg(result);
     return rpc_msg;
 }
 
 Message UpgradeTaskResult::get_rpc_message() {
-    UpgradeTaskResultRpc reslut(*this);
-    Message rpc_msg(reslut);
-    rpc_msg.msg_id = reslut.data.task_id;
+    UpgradeTaskResultRpc result(*this);
+    Message rpc_msg(result);
     return rpc_msg;
 }
 
 Message DestroyTaskResult::get_rpc_message() {
-    DestroyTaskResultRpc reslut(*this);
-    Message rpc_msg(reslut);
-    rpc_msg.msg_id = reslut.data.task_id;
+    DestroyTaskResultRpc result(*this);
+    Message rpc_msg(result);
     return rpc_msg;
 }
 

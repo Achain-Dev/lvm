@@ -20,19 +20,19 @@ rpc message
 
 
 enum LuaRpcMessageTypeEnum {
-    COMPILE_MESSAGE_TYPE = 1008,
+    COMPILE_MESSAGE_TYPE = 0,
     CALL_MESSAGE_TYPE,
     REGTISTER_MESSAGE_TYPE,
     UPGRADE_MESSAGE_TYPE,
     TRANSFER_MESSAGE_TYPE,
     DESTROY_MESSAGE_TYPE,
+    HELLO_MESSAGE_TYPE = 100,
     MESSAGE_COUNT
 };
 
 struct MessageHeader {
     uint32_t        size;//number of bytes in message, capped at MAX_MESSAGE_SIZE
     uint32_t        msg_type;
-    uint32_t        msg_id;// msg from chain has a unique id,lvm response the msg will use this id geted from chain msg.
 };
 
 typedef fc::uint160_t MessageHashType;
@@ -60,7 +60,6 @@ struct Message : public MessageHeader {
         msg_type = T::type;
         data = fc::raw::pack(m);
         size = (uint32_t)data.size();
-        msg_id = 0;     //init to 0
     }
     
     fc::uint160_t id()const {
@@ -97,6 +96,27 @@ struct Message : public MessageHeader {
                               ("msg_type", msg_type)
                              );
     }
+};
+
+
+//HELLO MSG
+//hello msg, lvm send hello-msg to achain only, not receive hello-msg
+struct HelloMsgRpc {
+    static const LuaRpcMessageTypeEnum type;
+    HelloMsg data;
+    HelloMsgRpc() {}
+    HelloMsgRpc(HelloMsg& para) :
+        data(std::move(para))
+    {}
+};
+
+struct HelloMsgResultRpc {
+    static const LuaRpcMessageTypeEnum type;
+    HelloMsgResult data;
+    HelloMsgResultRpc() {}
+    HelloMsgResultRpc(HelloMsgResult& para) :
+        data(std::move(para))
+    {}
 };
 
 //task:
@@ -222,8 +242,9 @@ struct DestroyTaskResultRpc {
 };
 
 
-FC_REFLECT_ENUM(LuaRpcMessageTypeEnum, (COMPILE_MESSAGE_TYPE)(CALL_MESSAGE_TYPE)(REGTISTER_MESSAGE_TYPE))
-FC_REFLECT(MessageHeader, (size)(msg_id)(msg_type)(from))
+FC_REFLECT_ENUM(LuaRpcMessageTypeEnum, (COMPILE_MESSAGE_TYPE)(CALL_MESSAGE_TYPE)(REGTISTER_MESSAGE_TYPE)
+                (UPGRADE_MESSAGE_TYPE)(TRANSFER_MESSAGE_TYPE)(DESTROY_MESSAGE_TYPE)(HELLO_MESSAGE_TYPE))
+FC_REFLECT(MessageHeader, (size)(msg_type))
 FC_REFLECT_DERIVED(Message, (MessageHeader), (data))
 
 FC_REFLECT(CompileTaskRpc, (data))
@@ -240,7 +261,8 @@ FC_REFLECT(CallTaskResultRpc, (data))
 FC_REFLECT(TransferTaskResultRpc, (data))
 FC_REFLECT(UpgradeTaskResultRpc, (data))
 FC_REFLECT(DestroyTaskResultRpc, (data))
-
-
+//hello msg
+FC_REFLECT(HelloMsgRpc, (data))
+FC_REFLECT(HelloMsgResultRpc, (data))
 
 #endif

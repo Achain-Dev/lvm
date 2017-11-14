@@ -19,19 +19,16 @@ class RpcTaskHandler : public TaskHandlerBase {
   public:
     RpcTaskHandler(RpcMgr*);
     virtual ~RpcTaskHandler();
-    
+	Message generate_message(TaskImplResult* task_ptr);
     void send_message(Message& msg);
     
   protected:
     virtual TaskBase* parse_to_task(const std::string& task,
                                     fc::buffered_istream* argument_stream);
     virtual void task_finished(TaskImplResult* result);
-  private:
-    Message generate_message(TaskImplResult* task_ptr);
-    
+
   private:
     RpcMgr* _rpc_mgr_ptr;
-    //luamgr* _lua_mgr_ptr;
     
     
 };

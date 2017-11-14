@@ -294,9 +294,6 @@
     <ClInclude Include="libraries\include\glua\exceptions.h">
       <Filter>libraries\include\glua</Filter>
     </ClInclude>
-    <ClInclude Include="libraries\include\lua\exceptions.h">
-      <Filter>libraries\include\glua</Filter>
-    </ClInclude>
     <ClInclude Include="libraries\include\glua\glua_api_types.h">
       <Filter>libraries\include\glua</Filter>
     </ClInclude>
@@ -514,4 +511,4 @@
       <Filter>libraries\include\glua</Filter>
     </ClInclude>
   </ItemGroup>
-</Project>
+  </Project>
