@@ -112,7 +112,6 @@ void UpgradeContractOperation::evaluate(TaskAndCallback& _inst_taskandcallback, 
         int exception_code = 0;
         std::string exception_msg;
         exception_code = get_lua_state_value(scope.L(), "exception_code").int_value;
-        
         if (exception_code > 0) {
             exception_msg = (char*)get_lua_state_value(scope.L(), "exception_msg").string_value;
             

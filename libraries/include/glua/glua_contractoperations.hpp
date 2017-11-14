@@ -33,7 +33,6 @@ struct DestroyContractOperation: ContractOperation {
     virtual void evaluate(TaskAndCallback& _inst_taskandcallback, TaskImplResult* result) const;
 };
 
-
 struct CallContractOperation : ContractOperation  {
     static const OperationTypeEnum type;
     CallContractOperation() {}

@@ -207,8 +207,10 @@ void RpcMgr::post_message(Message& rpc_msg) {
         sock_ptr->flush();
         
     } catch (fc::exception& er) {
+        er;
         //TODO
     } catch (const std::exception& e) {
+        e;
         //TODO
     } catch (...) {
         //TODO
