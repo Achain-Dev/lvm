@@ -29,14 +29,16 @@ class RpcMgr {
     void insert_connection(StcpSocketPtr&);
     void delete_connection();
     void close_connections();
-    void send_message(Message& rpc_msg);
-	void send_hello_msg_loop();
+    void post_message(Message& rpc_msg);
+    void send_hello_msg_loop();
+    void send_message(TaskBase* task_p);
     
   private:
     void accept_loop();
     void read_loop(StcpSocketPtr& sock);
-	void send_hello_message();
+    void send_hello_message();
     Message& generate_message(TaskImplResult* task);
+    void read_message(StcpSocketPtr& sock, std::string& msg_str);
     
     
   private:

@@ -105,46 +105,50 @@ void RpcMgr::accept_loop() {
         }
     }
 }
+
+
+void RpcMgr::read_message(StcpSocketPtr& sock, std::string& msg_str) {
+    uint64_t bytes_received = 0;
+    uint64_t remaining_bytes_with_padding = 0;
+    char* buffer_sock = NULL;
+    MessageHeader m;
+    char buffer[BUFFER_SIZE];
+    int leftover = BUFFER_SIZE - sizeof(MessageHeader);
+    /*first: read msgHead, get data.size*/
+    sock->read(buffer, BUFFER_SIZE);
+    _bytes_received += BUFFER_SIZE;
+    /*convert to MessageHeader*/
+    memcpy((char*)&m, buffer, sizeof(MessageHeader));
+    FC_ASSERT(m.size <= MAX_MESSAGE_SIZE, "", ("m.size", m.size)("MAX_MESSAGE_SIZE", MAX_MESSAGE_SIZE));
+    /*the total len of the msg:(header + data)*/
+    bytes_received = 16 * ((sizeof(MessageHeader) + m.size + 15) / 16);
+    buffer_sock = new char[bytes_received];
+    memset(buffer_sock, 0, bytes_received);
+    memcpy(buffer_sock, buffer, BUFFER_SIZE);
+    /*remaining len of byte to read from socket*/
+    remaining_bytes_with_padding = 16 * ((m.size - leftover + 15) / 16);
+    
+    /*read the remain bytes*/
+    if (remaining_bytes_with_padding) {
+        sock->read(buffer_sock + BUFFER_SIZE, remaining_bytes_with_padding);
+        _bytes_received += remaining_bytes_with_padding;
+    }
+    
+    msg_str = std::string(buffer_sock, bytes_received);
+    delete buffer_sock;
+}
+
 void RpcMgr::read_loop(StcpSocketPtr& sock) {
-    const int BUFFER_SIZE = 16;
-    const int LEFTOVER = BUFFER_SIZE - sizeof(MessageHeader);
-    static_assert(BUFFER_SIZE >= sizeof(MessageHeader), "insufficient buffer");
     _connected_time = fc::time_point::now();
     fc::oexception exception_to_rethrow;
     bool call_on_connection_closed = false;
+    std::string msg_str = "";
     
     try {
-        MessageHeader m;
-        
         while (true) {
-            uint64_t bytes_received = 0;
-            uint64_t remaining_bytes_with_padding = 0;
-            char* buffer_sock = NULL;
-            char buffer[BUFFER_SIZE];
-            /*first: read msgHead, get data.size*/
-            sock->read(buffer, BUFFER_SIZE);
-            _bytes_received += BUFFER_SIZE;
-            /*convert to MessageHeader*/
-            memcpy((char*)&m, buffer, sizeof(MessageHeader));
-            FC_ASSERT(m.size <= MAX_MESSAGE_SIZE, "", ("m.size", m.size)("MAX_MESSAGE_SIZE", MAX_MESSAGE_SIZE));
-            /*the total len of the msg:(header + data)*/
-            bytes_received = 16 * ((sizeof(MessageHeader) + m.size + 15) / 16);
-            buffer_sock = new char[bytes_received];
-            memset(buffer_sock, 0, bytes_received);
-            memcpy(buffer_sock, buffer, BUFFER_SIZE);
-            /*remaining len of byte to read from socket*/
-            remaining_bytes_with_padding = 16 * ((m.size - LEFTOVER + 15) / 16);
-            
-            /*read the remain bytes*/
-            if (remaining_bytes_with_padding) {
-                sock->read(buffer_sock + BUFFER_SIZE, remaining_bytes_with_padding);
-                _bytes_received += remaining_bytes_with_padding;
-            }
-            
-            std::string msg_str(buffer_sock, bytes_received);
+            read_message(sock, msg_str);
             _rpc_handler_ptr->handle_task(msg_str, nullptr);
             _last_message_received_time = fc::time_point::now();
-            delete buffer_sock;
         }
         
     } catch (const fc::canceled_exception& e) {
@@ -179,7 +183,7 @@ void RpcMgr::read_loop(StcpSocketPtr& sock) {
         throw *exception_to_rethrow;
 }
 
-void RpcMgr::send_message(Message& rpc_msg) {
+void RpcMgr::post_message(Message& rpc_msg) {
     uint32_t size_of_message_and_header = 0;
     uint32_t size_with_padding = 0;
     StcpSocketPtr sock_ptr = NULL;
@@ -209,6 +213,23 @@ void RpcMgr::send_message(Message& rpc_msg) {
     } catch (...) {
         //TODO
     }
+}
+
+//sync
+void RpcMgr::send_message(TaskBase* task_p) {
+    FC_ASSERT(task_p != NULL);
+    Message m;
+    std::string msg;
+    /*
+    if (task_p->task_type != || task_p->task_from != ) {
+    }
+    */
+    //generate message
+    //send msg
+    fc::sync_call(_receive_msg_thread_ptr.get(), [&]() {
+        read_message(get_connection(), msg);
+    }, "receive msg");
+    return;
 }
 
 //send hello msg

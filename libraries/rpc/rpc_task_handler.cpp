@@ -134,13 +134,13 @@ void RpcTaskHandler::task_finished(TaskImplResult* result) {
     FC_ASSERT(result != NULL);
     FC_ASSERT(result->task_from == FROM_RPC);
     Message msg(generate_message(result));
-    send_message(msg);
+    post_message(msg);
 }
 
 
-void RpcTaskHandler::send_message(Message& msg) {
+void RpcTaskHandler::post_message(Message& msg) {
     FC_ASSERT(_rpc_mgr_ptr != NULL);
-    return _rpc_mgr_ptr->send_message(msg);
+    return _rpc_mgr_ptr->post_message(msg);
 }
 
 Message RpcTaskHandler::generate_message(TaskImplResult* task_ptr) {

@@ -17,6 +17,7 @@ rpc message
 #include <task/task.hpp>
 
 #define MAX_MESSAGE_SIZE   (512 * 10000 * 5)
+const int BUFFER_SIZE = 16;
 
 
 enum LuaRpcMessageTypeEnum {
