@@ -34,10 +34,9 @@ class Client {
     void quit_client(bool quit) {
         _b_client_quit = quit;
     };
-    
     void configure_from_command_line(int argc, char** argv);
     fc::future<void> start();
-    
+
   private:
     boost::program_options::variables_map parse_option_variables(int argc,
             char** argv);

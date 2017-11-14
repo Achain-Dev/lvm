@@ -45,7 +45,7 @@ void UpgradeContractOperation::evaluate(TaskAndCallback& _inst_taskandcallback, 
                                           str_tmp_method.c_str(),
                                           str_tmp_args.c_str(),
                                           nullptr);
-                                          
+
     if (scope.L()->force_stopping == true && scope.L()->exit_code == LUA_API_INTERNAL_ERROR) {
         FC_CAPTURE_AND_THROW(lvm::global_exception::lua_executor_internal_error, (""));
     }

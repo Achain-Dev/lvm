@@ -6,6 +6,7 @@
 
 struct TaskBase;
 struct TaskImplResult;
+class TaskHandlerBase;
 
 class ITaskImplementFinishNotify {
 public:
@@ -14,7 +15,7 @@ public:
 
 struct TaskAndCallback{
     TaskBase* task_base;
-    ITaskImplementFinishNotify* call_back;
+    TaskHandlerBase* task_handler;
 };
 
 #endif

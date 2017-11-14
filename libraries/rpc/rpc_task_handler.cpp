@@ -92,7 +92,6 @@ void RpcTaskHandler::task_finished(TaskImplResult* result) {
     send_message(msg);
 }
 
-
 void RpcTaskHandler::send_message(Message& msg) {
     FC_ASSERT(_rpc_mgr_ptr != NULL);
     return _rpc_mgr_ptr->send_message(msg);

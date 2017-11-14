@@ -40,11 +40,11 @@ void TaskDispatcher::del_dispatcher() {
 }
 
 void TaskDispatcher::push_task(TaskBase* task_base,
-    ITaskImplementFinishNotify* call_back) {
+    TaskHandlerBase* call_back) {
     _task_mutex.lock();
     TaskAndCallback task;
     task.task_base = task_base;
-    task.call_back = call_back;
+    task.task_handler = call_back;
     _tasks.push_back(task);
     _task_mutex.unlock();
     dispatch_task();
@@ -87,6 +87,11 @@ void TaskHandlerBase::handle_task(const std::string& task,
     if (dispatcher) {
         dispatcher->push_task(task_base, this);
     }
+}
+
+void TaskHandlerBase::lua_request(LuaRequestTask& request_task,
+    std::string& response_data) {
+    response_data = "";
 }
 
 TaskBase* TaskHandlerBase::gen_compile_param_from_istream(
