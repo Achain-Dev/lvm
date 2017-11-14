@@ -1,4 +1,3 @@
-
 #include <rpc/rpc_task_handler.hpp>
 #include <rpc/rpc_mgr.hpp>
 #include <rpc/rpc_msg.hpp>

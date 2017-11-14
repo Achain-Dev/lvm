@@ -18,6 +18,9 @@ public:
 
     void execute_task(TaskAndCallback task);
 
+    // sync call
+    void lua_request(LuaRequestTask& request_task, std::string& response_data);
+
 private:
     GluaTaskMgr();
     virtual ~GluaTaskMgr();
@@ -26,6 +29,7 @@ private:
 
 private:
     static GluaTaskMgr*  _s_p_glua_task_mgr;
+    TaskHandlerBase*   _p_task_handler;
 };
 
 #endif
