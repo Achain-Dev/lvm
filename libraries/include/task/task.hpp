@@ -122,12 +122,32 @@ struct CompileTask : public TaskBase {
     CompileTask() {
         task_type = COMPILE_TASK;
     };
+    
+    CompileTask(const CompileTask& task) {
+        memcpy(this, &task, sizeof(TaskBase));
+        task_type = COMPILE_TASK;
+        glua_path_file = task.glua_path_file;
+    };
+    
     fc::path glua_path_file;
 };
 
 struct RegisterTask : public TaskBase {
     RegisterTask() {
         task_type = REGISTER_TASK;
+    };
+    
+    RegisterTask(const RegisterTask& task) {
+        memcpy(this, &task, sizeof(TaskBase));
+        task_type = REGISTER_TASK;
+        memcpy(&(this->contract_code), &task.contract_code, sizeof(task.contract_code));
+        statevalue = task.statevalue;
+        num_limit = task.num_limit;
+        gpc_code = task.gpc_code;
+        str_caller = task.str_caller;
+        str_caller_address = task.str_caller_address;
+        str_contract_address = task.str_contract_address;
+        str_contract_id = task.str_contract_id;
     };
     
     std::string             gpc_code;
@@ -144,6 +164,19 @@ struct UpgradeTask : public TaskBase {
     UpgradeTask() {
         task_type = UPGRADE_TASK;
     };
+    
+    UpgradeTask(const UpgradeTask& task) {
+        memcpy(this, &task, sizeof(TaskBase));
+        task_type = UPGRADE_TASK;
+        memcpy(&(this->contract_code), &task.contract_code, sizeof(task.contract_code));
+        statevalue = task.statevalue;
+        num_limit = task.num_limit;
+        str_caller = task.str_caller;
+        str_caller_address = task.str_caller_address;
+        str_contract_address = task.str_contract_address;
+        str_contract_id = task.str_contract_id;
+    }
+    
     intptr_t                statevalue;
     int                     num_limit;
     std::string             str_caller;
@@ -157,6 +190,19 @@ struct CallTask : public TaskBase {
     CallTask() {
         task_type = CALL_TASK;
     };
+    CallTask(const CallTask& task) {
+        memcpy(this, &task, sizeof(TaskBase));
+        task_type = CALL_TASK;
+        memcpy(&(this->contract_code), &task.contract_code, sizeof(task.contract_code));
+        statevalue = task.statevalue;
+        num_limit = task.num_limit;
+        str_caller = task.str_caller;
+        str_caller_address = task.str_caller_address;
+        str_contract_address = task.str_contract_address;
+        str_contract_id = task.str_contract_id;
+        str_method = task.str_method;
+        str_args = task.str_args;
+    }
     intptr_t                statevalue;
     int                     num_limit;
     std::string             str_caller;
@@ -172,6 +218,19 @@ struct TransferTask : public TaskBase {
     TransferTask() {
         task_type = TRANSFER_TASK;
     };
+    
+    TransferTask(const TransferTask& task) {
+        memcpy(this, &task, sizeof(TaskBase));
+        task_type = TRANSFER_TASK;
+        memcpy(&(this->contract_code), &task.contract_code, sizeof(task.contract_code));
+        statevalue = task.statevalue;
+        num_limit = task.num_limit;
+        str_caller = task.str_caller;
+        str_caller_address = task.str_caller_address;
+        str_contract_address = task.str_contract_address;
+        str_contract_id = task.str_contract_id;
+        str_args = task.str_args;
+    }
     intptr_t                statevalue;
     int                     num_limit;
     std::string             str_caller;
@@ -186,6 +245,17 @@ struct DestroyTask : public TaskBase {
     DestroyTask() {
         task_type = DESTROY_TASK;
     };
+    DestroyTask(const DestroyTask& task) {
+        memcpy(this, &task, sizeof(TaskBase));
+        task_type = DESTROY_TASK;
+        memcpy(&(this->contract_code), &task.contract_code, sizeof(task.contract_code));
+        statevalue = task.statevalue;
+        num_limit = task.num_limit;
+        str_caller = task.str_caller;
+        str_caller_address = task.str_caller_address;
+        str_contract_address = task.str_contract_address;
+        str_contract_id = task.str_contract_id;
+    }
     intptr_t               statevalue;
     int                    num_limit;
     std::string            str_caller;
@@ -200,7 +270,12 @@ struct LuaRequestTask : public TaskBase {
         task_type = LUA_REQUEST_TASK;
         task_from = FROM_LUA_TO_CHAIN;
     }
-
+    LuaRequestTask(const LuaRequestTask& task) {
+        memcpy(this, &task, sizeof(TaskBase));
+        task_type = LUA_REQUEST_TASK;
+        task_from = FROM_LUA_TO_CHAIN;
+        task_param = task.task_param;
+    }
     fc::variant         task_param;
 };
 
@@ -211,6 +286,7 @@ FC_REFLECT_ENUM(LUA_TASK_TYPE,
                 (CALL_TASK)
                 (TRANSFER_TASK)
                 (DESTROY_TASK)
+                (LUA_REQUEST_TASK)
                 (HELLO_MSG))
 
 FC_REFLECT(TaskBase, (task_id)(task_type)(task_from))
@@ -235,6 +311,8 @@ FC_REFLECT_DERIVED(UpgradeTask, (TaskBase), (statevalue)(num_limit)
 FC_REFLECT_DERIVED(DestroyTask, (TaskBase), (statevalue)(num_limit)
                    (str_caller)(str_caller_address)(str_contract_address)
                    (str_contract_id)(contract_code))
+
+FC_REFLECT_DERIVED(LuaRequestTask, (TaskBase), (task_param))
 
 FC_REFLECT_DERIVED(TaskImplResult, (TaskBase), (error_code)(error_msg))
 FC_REFLECT_DERIVED(CompileTaskResult, (TaskImplResult), (gpc_path_file))
