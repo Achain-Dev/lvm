@@ -22,37 +22,37 @@ class RpcMgr {
     
     void start();
     
-    void set_endpoint(std::string& ip_addr, int port);
+    void set_endpoint(std::string& ip_addr, int port, SocketMode emode);
     
-    StcpSocketPtr get_connection();
+    StcpSocketPtr get_connection(SocketMode emode);
     
-    void insert_connection(StcpSocketPtr&);
-    void delete_connection();
     void close_connections();
-    void send_message(Message& rpc_msg);
-	void send_hello_msg_loop();
+    void post_message(Message& rpc_msg);
+    void send_hello_msg_loop();
+    void send_message(TaskBase* task_p, std::string& resp);
     
   private:
-    void accept_loop();
+    void accept_loop(SocketMode emode);
     void read_loop(StcpSocketPtr& sock);
-	void send_hello_message();
+    void send_hello_message();
     Message& generate_message(TaskImplResult* task);
+    void read_message(StcpSocketPtr& sock, std::string& msg_str);
+    void insert_connection(StcpSocketPtr& sock, SocketMode emode);
+    void delete_connection(SocketMode emode);
+    void send_to_chain(Message& m, StcpSocketPtr& sock);
     
     
   private:
-    fc::tcp_server _rpc_server;
-    fc::ip::endpoint _end_point;
-    std::shared_ptr<fc::thread> _receive_msg_thread_ptr;
-    //std::unordered_map<uint32_t, StcpSocketPtr> _rpc_connections;
+    fc::tcp_server _rpc_server[MODE_COUNT];
+    fc::ip::endpoint _end_point[MODE_COUNT];
+    fc::future<void>     _terminate_hello_loop_done;
+    std::shared_ptr<fc::thread> _sync_thread_ptr;
+    std::shared_ptr<fc::thread> _async_thread_ptr;
     std::vector<StcpSocketPtr>      _rpc_connections;
     std::mutex              _connection_mutex;
     RpcTaskHandlerPtr _rpc_handler_ptr;
     Client* _client_ptr;
-    bool _b_valid_flag;
-    
-    uint64_t _bytes_received;
-    fc::time_point _connected_time;
-    fc::time_point _last_message_received_time;
+    bool _b_valid_flag[MODE_COUNT];
 };
 
 #endif
