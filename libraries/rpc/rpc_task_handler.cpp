@@ -11,6 +11,7 @@ const LuaRpcMessageTypeEnum RegisterTaskRpc::type = LuaRpcMessageTypeEnum::REGTI
 const LuaRpcMessageTypeEnum UpgradeTaskRpc::type = LuaRpcMessageTypeEnum::UPGRADE_MESSAGE_TYPE;
 const LuaRpcMessageTypeEnum DestroyTaskRpc::type = LuaRpcMessageTypeEnum::DESTROY_MESSAGE_TYPE;
 const LuaRpcMessageTypeEnum TransferTaskRpc::type = LuaRpcMessageTypeEnum::TRANSFER_MESSAGE_TYPE;
+const LuaRpcMessageTypeEnum LuaRequestTaskRpc::type = LuaRpcMessageTypeEnum::LUA_REQUEST_MESSAGE_TYPE;
 
 //result
 const LuaRpcMessageTypeEnum CompileTaskResultRpc::type = LuaRpcMessageTypeEnum::COMPILE_MESSAGE_TYPE;
@@ -56,61 +57,55 @@ TaskBase* RpcTaskHandler::parse_to_task(const std::string& task,
             
             case COMPILE_MESSAGE_TYPE: {
                 CompileTaskRpc compile_task(m.as<CompileTaskRpc>());
-                CompileTask* compile_ptr = new CompileTask();
+                CompileTask* compile_ptr = new CompileTask(compile_task.data);
                 FC_ASSERT(compile_ptr->task_type == compile_task.data.task_type, "", \
                           ("CompileTask::task_type", compile_ptr->task_type) \
                           ("CompileTaskRpc::task_type", compile_task.data.task_type));
-                memcpy(compile_ptr, &compile_task.data, sizeof(compile_task.data));
                 return compile_ptr;
             }
             
             case CALL_MESSAGE_TYPE: {
                 CallTaskRpc call_task(m.as<CallTaskRpc>());
-                CallTask* call_ptr = new CallTask();
+                CallTask* call_ptr = new CallTask(call_task.data);
                 FC_ASSERT(call_ptr->task_type == call_task.data.task_type, "", \
                           ("CallTask::task_type", call_ptr->task_type) \
                           ("CallTaskRpc::task_type", call_task.data.task_type));
-                memcpy(call_ptr, &call_task.data, sizeof(call_task.data));
                 return call_ptr;
             }
             
             case REGTISTER_MESSAGE_TYPE: {
                 RegisterTaskRpc register_task(m.as<RegisterTaskRpc>());
-                RegisterTask* register_ptr = new RegisterTask();
+                RegisterTask* register_ptr = new RegisterTask(register_task.data);
                 FC_ASSERT(register_ptr->task_type == register_task.data.task_type, "", \
                           ("CallTask::task_type", register_ptr->task_type) \
                           ("CallTaskRpc::task_type", register_task.data.task_type));
-                memcpy(register_ptr, &register_task.data, sizeof(register_task.data));
                 return register_ptr;
             }
             
             case UPGRADE_MESSAGE_TYPE: {
                 UpgradeTaskRpc upgrade_task(m.as<UpgradeTaskRpc>());
-                UpgradeTask* upgrade_ptr = new UpgradeTask();
+                UpgradeTask* upgrade_ptr = new UpgradeTask(upgrade_task.data);
                 FC_ASSERT(upgrade_ptr->task_type == upgrade_task.data.task_type, "", \
                           ("CompileTask::task_type", upgrade_ptr->task_type) \
                           ("CompileTaskRpc::task_type", upgrade_task.data.task_type));
-                memcpy(upgrade_ptr, &upgrade_task.data, sizeof(upgrade_task.data));
                 return upgrade_ptr;
             }
             
             case TRANSFER_MESSAGE_TYPE: {
                 TransferTaskRpc transfer_task(m.as<TransferTaskRpc>());
-                TransferTask* transfer_ptr = new TransferTask();
+                TransferTask* transfer_ptr = new TransferTask(transfer_task.data);
                 FC_ASSERT(transfer_ptr->task_type == transfer_task.data.task_type, "", \
                           ("CompileTask::task_type", transfer_ptr->task_type) \
                           ("CompileTaskRpc::task_type", transfer_task.data.task_type));
-                memcpy(transfer_ptr, &transfer_task.data, sizeof(transfer_task.data));
                 return transfer_ptr;
             }
             
             case DESTROY_MESSAGE_TYPE: {
                 DestroyTaskRpc destroy_task(m.as<DestroyTaskRpc>());
-                DestroyTask* destroy_ptr = new DestroyTask();
+                DestroyTask* destroy_ptr = new DestroyTask(destroy_task.data);
                 FC_ASSERT(destroy_ptr->task_type == destroy_task.data.task_type, "", \
                           ("CompileTask::task_type", destroy_ptr->task_type) \
                           ("CompileTaskRpc::task_type", destroy_task.data.task_type));
-                memcpy(destroy_ptr, &destroy_task.data, sizeof(destroy_task.data));
                 return destroy_ptr;
             }
             
@@ -125,7 +120,6 @@ TaskBase* RpcTaskHandler::parse_to_task(const std::string& task,
         //TODO
     }
     
-    //TODO
     return nullptr;
 }
 
@@ -134,6 +128,12 @@ void RpcTaskHandler::task_finished(TaskImplResult* result) {
     FC_ASSERT(result->task_from == FROM_RPC);
     Message msg(generate_message(result));
     post_message(msg);
+}
+
+void RpcTaskHandler::lua_request(LuaRequestTask& request_task,
+                                 std::string& response_data) {
+    FC_ASSERT(_rpc_mgr_ptr != NULL);
+    _rpc_mgr_ptr->send_message(&request_task, response_data);
 }
 
 

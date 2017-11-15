@@ -20,6 +20,11 @@ rpc message
 const int BUFFER_SIZE = 16;
 
 
+enum SocketMode {
+    SYNC_MODE = 0,
+    ASYNC_MODE,
+    MODE_COUNT
+};
 enum LuaRpcMessageTypeEnum {
     COMPILE_MESSAGE_TYPE = 0,
     CALL_MESSAGE_TYPE,
@@ -27,7 +32,8 @@ enum LuaRpcMessageTypeEnum {
     UPGRADE_MESSAGE_TYPE,
     TRANSFER_MESSAGE_TYPE,
     DESTROY_MESSAGE_TYPE,
-    HELLO_MESSAGE_TYPE = 100,
+    LUA_REQUEST_MESSAGE_TYPE,
+    HELLO_MESSAGE_TYPE,
     MESSAGE_COUNT
 };
 
@@ -181,6 +187,16 @@ struct DestroyTaskRpc {
     {}
 };
 
+struct LuaRequestTaskRpc {
+    static const LuaRpcMessageTypeEnum type;
+    LuaRequestTask data;
+    
+    LuaRequestTaskRpc() {}
+    LuaRequestTaskRpc(LuaRequestTask& para) :
+        data(std::move(para))
+    {}
+};
+
 //result:
 struct CompileTaskResultRpc {
     static const LuaRpcMessageTypeEnum type;
@@ -244,7 +260,8 @@ struct DestroyTaskResultRpc {
 
 
 FC_REFLECT_ENUM(LuaRpcMessageTypeEnum, (COMPILE_MESSAGE_TYPE)(CALL_MESSAGE_TYPE)(REGTISTER_MESSAGE_TYPE)
-                (UPGRADE_MESSAGE_TYPE)(TRANSFER_MESSAGE_TYPE)(DESTROY_MESSAGE_TYPE)(HELLO_MESSAGE_TYPE))
+                (UPGRADE_MESSAGE_TYPE)(TRANSFER_MESSAGE_TYPE)(DESTROY_MESSAGE_TYPE)
+                (LUA_REQUEST_MESSAGE_TYPE)(HELLO_MESSAGE_TYPE))
 FC_REFLECT(MessageHeader, (size)(msg_type))
 FC_REFLECT_DERIVED(Message, (MessageHeader), (data))
 
@@ -254,6 +271,7 @@ FC_REFLECT(RegisterTaskRpc, (data))
 FC_REFLECT(TransferTaskRpc, (data))
 FC_REFLECT(UpgradeTaskRpc, (data))
 FC_REFLECT(DestroyTaskRpc, (data))
+FC_REFLECT(LuaRequestTaskRpc, (data))
 
 //result
 FC_REFLECT(CompileTaskResultRpc, (data))

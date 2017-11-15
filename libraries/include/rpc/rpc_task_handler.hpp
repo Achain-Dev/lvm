@@ -27,6 +27,9 @@ class RpcTaskHandler : public TaskHandlerBase {
                                     fc::buffered_istream* argument_stream);
     virtual void task_finished(TaskImplResult* result);
     
+    virtual void lua_request(LuaRequestTask& request_task,
+                             std::string& response_data);
+                             
   private:
     RpcMgr* _rpc_mgr_ptr;
     
