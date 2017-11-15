@@ -124,8 +124,9 @@ struct CompileTask : public TaskBase {
     };
     
     CompileTask(const CompileTask& task) {
-        memcpy(this, &task, sizeof(TaskBase));
         task_type = COMPILE_TASK;
+        task_id = task.task_id;
+        task_from = task.task_from;
         glua_path_file = task.glua_path_file;
     };
     
@@ -138,7 +139,8 @@ struct RegisterTask : public TaskBase {
     };
     
     RegisterTask(const RegisterTask& task) {
-        memcpy(this, &task, sizeof(TaskBase));
+        task_id = task.task_id;
+        task_from = task.task_from;
         task_type = REGISTER_TASK;
         contract_code = task.contract_code;
         statevalue = task.statevalue;
@@ -166,7 +168,8 @@ struct UpgradeTask : public TaskBase {
     };
     
     UpgradeTask(const UpgradeTask& task) {
-        memcpy(this, &task, sizeof(TaskBase));
+        task_id = task.task_id;
+        task_from = task.task_from;
         task_type = UPGRADE_TASK;
         contract_code = task.contract_code;
         statevalue = task.statevalue;
@@ -191,7 +194,8 @@ struct CallTask : public TaskBase {
         task_type = CALL_TASK;
     };
     CallTask(const CallTask& task) {
-        memcpy(this, &task, sizeof(TaskBase));
+        task_id = task.task_id;
+        task_from = task.task_from;
         task_type = CALL_TASK;
         contract_code = task.contract_code;
         statevalue = task.statevalue;
@@ -220,7 +224,8 @@ struct TransferTask : public TaskBase {
     };
     
     TransferTask(const TransferTask& task) {
-        memcpy(this, &task, sizeof(TaskBase));
+        task_id = task.task_id;
+        task_from = task.task_from;
         task_type = TRANSFER_TASK;
         contract_code = task.contract_code;
         statevalue = task.statevalue;
@@ -246,7 +251,8 @@ struct DestroyTask : public TaskBase {
         task_type = DESTROY_TASK;
     };
     DestroyTask(const DestroyTask& task) {
-        memcpy(this, &task, sizeof(TaskBase));
+        task_id = task.task_id;
+        task_from = task.task_from;
         task_type = DESTROY_TASK;
         contract_code = task.contract_code;
         statevalue = task.statevalue;
@@ -271,7 +277,7 @@ struct LuaRequestTask : public TaskBase {
         task_from = FROM_LUA_TO_CHAIN;
     }
     LuaRequestTask(const LuaRequestTask& task) {
-        memcpy(this, &task, sizeof(TaskBase));
+        task_id = task.task_id;
         task_type = LUA_REQUEST_TASK;
         task_from = FROM_LUA_TO_CHAIN;
         task_param = task.task_param;
