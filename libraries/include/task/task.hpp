@@ -23,13 +23,15 @@ enum LUA_TASK_TYPE {
     CALL_TASK,
     TRANSFER_TASK,
     DESTROY_TASK,
-    HELLO_MSG = 100,
+    LUA_REQUEST_TASK,
+    HELLO_MSG,
     TASK_COUNT
 };
 
 enum LUA_TASK_FROM {
     FROM_CLI = 0,
     FROM_RPC,
+    FROM_LUA_TO_CHAIN,
     FROM_COUNT
 };
 
@@ -191,6 +193,15 @@ struct DestroyTask : public TaskBase {
     std::string            str_contract_address;
     std::string            str_contract_id;
     Code                   contract_code;
+};
+
+struct LuaRequestTask : public TaskBase {
+    LuaRequestTask() {
+        task_type = LUA_REQUEST_TASK;
+        task_from = FROM_LUA_TO_CHAIN;
+    }
+
+    fc::variant         task_param;
 };
 
 FC_REFLECT_ENUM(LUA_TASK_TYPE,
