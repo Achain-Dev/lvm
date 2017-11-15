@@ -140,7 +140,7 @@ struct RegisterTask : public TaskBase {
     RegisterTask(const RegisterTask& task) {
         memcpy(this, &task, sizeof(TaskBase));
         task_type = REGISTER_TASK;
-        memcpy(&(this->contract_code), &task.contract_code, sizeof(task.contract_code));
+        contract_code = task.contract_code;
         statevalue = task.statevalue;
         num_limit = task.num_limit;
         gpc_code = task.gpc_code;
@@ -168,7 +168,7 @@ struct UpgradeTask : public TaskBase {
     UpgradeTask(const UpgradeTask& task) {
         memcpy(this, &task, sizeof(TaskBase));
         task_type = UPGRADE_TASK;
-        memcpy(&(this->contract_code), &task.contract_code, sizeof(task.contract_code));
+        contract_code = task.contract_code;
         statevalue = task.statevalue;
         num_limit = task.num_limit;
         str_caller = task.str_caller;
@@ -193,7 +193,7 @@ struct CallTask : public TaskBase {
     CallTask(const CallTask& task) {
         memcpy(this, &task, sizeof(TaskBase));
         task_type = CALL_TASK;
-        memcpy(&(this->contract_code), &task.contract_code, sizeof(task.contract_code));
+        contract_code = task.contract_code;
         statevalue = task.statevalue;
         num_limit = task.num_limit;
         str_caller = task.str_caller;
@@ -222,7 +222,7 @@ struct TransferTask : public TaskBase {
     TransferTask(const TransferTask& task) {
         memcpy(this, &task, sizeof(TaskBase));
         task_type = TRANSFER_TASK;
-        memcpy(&(this->contract_code), &task.contract_code, sizeof(task.contract_code));
+        contract_code = task.contract_code;
         statevalue = task.statevalue;
         num_limit = task.num_limit;
         str_caller = task.str_caller;
@@ -248,7 +248,7 @@ struct DestroyTask : public TaskBase {
     DestroyTask(const DestroyTask& task) {
         memcpy(this, &task, sizeof(TaskBase));
         task_type = DESTROY_TASK;
-        memcpy(&(this->contract_code), &task.contract_code, sizeof(task.contract_code));
+        contract_code = task.contract_code;
         statevalue = task.statevalue;
         num_limit = task.num_limit;
         str_caller = task.str_caller;
