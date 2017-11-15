@@ -189,6 +189,7 @@ void RpcMgr::read_loop(StcpSocketPtr& sock) {
     }
     
     if (b_need_restart) {
+        b_need_restart = false;
         delete_connection(ASYNC_MODE);
         _terminate_hello_loop_done.cancel();
         _async_thread_ptr->async([&]() {
