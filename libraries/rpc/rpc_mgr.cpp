@@ -6,50 +6,76 @@
 #include <base/exceptions.hpp>
 #include <iostream>
 
+const uint32_t MAX_MESSAGE_SIZE = (512 * 10000 * 5);
+const int BUFFER_SIZE = 16;
+
 
 RpcMgr::RpcMgr(Client* client)
     :_sync_thread_ptr(std::make_shared<fc::thread>("sync_sock_server")),
      _async_thread_ptr(std::make_shared<fc::thread>("async_sock_server")),
+     _b_valid_flag(false),
      _rpc_handler_ptr(std::make_shared<RpcTaskHandler>(this)) {
     _client_ptr = client;
-    _rpc_connections.resize(MODE_COUNT);
-    
-    for (int iter = SYNC_MODE; iter < MODE_COUNT; iter++) {
-        _b_valid_flag[iter] = false;
-    }
 }
 
 RpcMgr::~RpcMgr() {
     close_connections();
-    
-    for (int iter = SYNC_MODE; iter < MODE_COUNT; iter++) {
-        _rpc_server[iter].close();
-    }
-    
+    _rpc_server.close();
     _sync_thread_ptr->quit();
     _async_thread_ptr->quit();
 }
 
 void RpcMgr::start() {
-    if (!_b_valid_flag[ASYNC_MODE] || !_b_valid_flag[SYNC_MODE]) {
+    if (!_b_valid_flag) {
         FC_THROW_EXCEPTION(lvm::global_exception::rpc_exception, \
                            "rpc server configuration error, please set the endpoint. ");
     }
     
-    _rpc_server[ASYNC_MODE].set_reuse_address();
-    _rpc_server[ASYNC_MODE].listen(_end_point[ASYNC_MODE]);
-    _rpc_server[SYNC_MODE].set_reuse_address();
-    _rpc_server[SYNC_MODE].listen(_end_point[SYNC_MODE]);
-    //receive socket
-    _sync_thread_ptr->async([&]() {
-        this->accept_loop(SYNC_MODE);
-    });
-    _async_thread_ptr->async([&]() {
-        this->accept_loop(ASYNC_MODE);
+    _rpc_server.set_reuse_address();
+    _rpc_server.listen(_end_point);
+    fc::async([&]() {
+        this->accept_loop();
     });
 }
 
-void RpcMgr::accept_loop(SocketMode emode) {
+//in _rpc_connections, the first socket  is async,the second socket is sync
+void RpcMgr::process_connection(SocketMode emode) {
+    if (emode >= MODE_COUNT) {
+        FC_THROW_EXCEPTION(lvm::global_exception::socket_mode_error, \
+                           "rpc mode error. ");
+    }
+    
+    if (ASYNC_MODE == emode) {
+        _async_thread_ptr->async([&]() {
+            this->process_rpc(ASYNC_MODE);
+        });
+        
+    } else {
+        _sync_thread_ptr->async([&]() {
+            this->process_rpc(SYNC_MODE);
+        });
+    }
+}
+
+void RpcMgr::process_rpc(SocketMode emode) {
+    StcpSocketPtr sock_ptr = get_connection(emode);
+    FC_ASSERT(sock_ptr);
+    sock_ptr->accept();
+    
+    if (ASYNC_MODE == emode) {
+        _terminate_hello_loop_done = fc::async([&]() {
+            send_hello_msg_loop();
+        }, "send_hello_msg_loop");
+        fc::async([&]() {
+            read_loop(sock_ptr);
+        }).wait();
+    }
+    
+    return;
+}
+void RpcMgr::accept_loop() {
+    int rpc_mode = MODE_COUNT;
+    
     if (!_rpc_handler_ptr) {
         FC_THROW_EXCEPTION(lvm::global_exception::rpc_pointrt_null, \
                            "rpc process is null, please set the rpc processor. ");
@@ -59,46 +85,42 @@ void RpcMgr::accept_loop(SocketMode emode) {
         StcpSocketPtr sock_ptr = std::make_shared<StcpSocket>();
         
         try {
-            _rpc_server[emode].accept(sock_ptr->get_socket());
+            _rpc_server.accept(sock_ptr->get_socket());
             //insert into container
-            insert_connection(sock_ptr, emode);
-            //do_key_exchange()
-            sock_ptr->accept();
-            
-            //do read msg
-            if (ASYNC_MODE == emode) {
-                _terminate_hello_loop_done = fc::async([&]() {
-                    send_hello_msg_loop();
-                }, "send_hello_msg_loop");
-                fc::async([&]() {
-                    read_loop(sock_ptr);
-                }).wait();
-            }
+            rpc_mode = insert_connection(sock_ptr);
+            FC_ASSERT(rpc_mode < MODE_COUNT);
+            process_connection((SocketMode)rpc_mode);
         }
         
         /*后续完善异常*/
         catch (fc::exception& e) {
-            delete_connection(emode);
+            delete_connection((SocketMode)rpc_mode);
             elog("close connection ${e}", ("e", e.to_detail_string()));
         }
     }
 }
 
-void RpcMgr::set_endpoint(std::string& ip_addr, int port, SocketMode emode) {
+void RpcMgr::set_endpoint(std::string& ip_addr, int port) {
     fc::ip::address ip(ip_addr);
-    _end_point[emode] = fc::ip::endpoint(ip, port);
-    _b_valid_flag[emode] = true;
+    _end_point = fc::ip::endpoint(ip, port);
+    _b_valid_flag = true;
     return;
 }
 
-void RpcMgr::insert_connection(StcpSocketPtr& sock, SocketMode emode) {
+int RpcMgr::insert_connection(StcpSocketPtr& sock) {
+    int rpc_mode = ASYNC_MODE;
     _connection_mutex.lock();
-    _rpc_connections[emode] = sock;
+    _rpc_connections.push_back(sock);
+    rpc_mode = _rpc_connections.size() - 1;
     _connection_mutex.unlock();
-    return;
+    return rpc_mode;
 }
 
 void RpcMgr::delete_connection(SocketMode emode) {
+    if (emode >= MODE_COUNT) {
+        return;
+    }
+    
     _connection_mutex.lock();
     _rpc_connections[emode]->close();
     _rpc_connections.erase(_rpc_connections.begin() + uint32_t(emode));
@@ -190,11 +212,8 @@ void RpcMgr::read_loop(StcpSocketPtr& sock) {
     
     if (b_need_restart) {
         b_need_restart = false;
-        delete_connection(ASYNC_MODE);
+        close_connections();
         _terminate_hello_loop_done.cancel();
-        _async_thread_ptr->async([&]() {
-            this->accept_loop(ASYNC_MODE);
-        });
     }
 }
 
@@ -264,6 +283,11 @@ void RpcMgr::send_message(TaskBase* task_p, std::string& resp) {
         delete_connection(SYNC_MODE);
         FC_THROW_EXCEPTION(lvm::global_exception::sync_socket_error, \
                            "sync socket error: sync send message error. ");
+                           
+    } catch (lvm::global_exception::socket_read_error& e) {
+        delete_connection(SYNC_MODE);
+        FC_THROW_EXCEPTION(lvm::global_exception::sync_socket_error, \
+                           "sync socket error: sync read message error. ");
     }
     
     return;

@@ -16,13 +16,10 @@ rpc message
 #include <util/util.hpp>
 #include <task/task.hpp>
 
-#define MAX_MESSAGE_SIZE   (512 * 10000 * 5)
-const int BUFFER_SIZE = 16;
-
 
 enum SocketMode {
-    SYNC_MODE = 0,
-    ASYNC_MODE,
+    ASYNC_MODE = 0,
+    SYNC_MODE,
     MODE_COUNT
 };
 enum LuaRpcMessageTypeEnum {
