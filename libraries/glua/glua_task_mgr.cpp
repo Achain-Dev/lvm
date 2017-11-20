@@ -74,6 +74,7 @@ void GluaTaskMgr::execute_task(TaskAndCallback task) {
     TaskImplResult* result = nullptr;
     ContractOperation* _contractop_ptr = nullptr;
     _p_task_handler = task.task_handler;
+    
     switch (task.task_base->task_type) {
         case HELLO_MSG: {
             result = new HelloMsgResult();
@@ -114,7 +115,7 @@ void GluaTaskMgr::execute_task(TaskAndCallback task) {
     if (_contractop_ptr) {
         _contractop_ptr->evaluate(task, result);
     }
-
+    
     if (!result) {
         return;
     }
@@ -127,8 +128,12 @@ void GluaTaskMgr::execute_task(TaskAndCallback task) {
     return;
 }
 
-void GluaTaskMgr::lua_request(LuaRequestTask& request_task, std::string& response_data) {
+LuaRequestTaskResult GluaTaskMgr::lua_request(LuaRequestTask& request_task) {
+    LuaRequestTaskResult response_result;
+    
     if (_p_task_handler) {
-        _p_task_handler->lua_request(request_task, response_data);
+        response_result =_p_task_handler->lua_request(request_task);
     }
+    
+    return response_result;
 }

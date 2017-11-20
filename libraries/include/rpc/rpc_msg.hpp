@@ -22,14 +22,22 @@ enum SocketMode {
     SYNC_MODE,
     MODE_COUNT
 };
+
 enum LuaRpcMessageTypeEnum {
     COMPILE_MESSAGE_TYPE = 0,
+    COMPILE_RESULT_MESSAGE_TYPE,
     CALL_MESSAGE_TYPE,
+    CALL_RESULT_MESSAGE_TYPE,
     REGTISTER_MESSAGE_TYPE,
+    REGTISTER_RESULT_MESSAGE_TYPE,
     UPGRADE_MESSAGE_TYPE,
+    UPGRADE_RESULT_MESSAGE_TYPE,
     TRANSFER_MESSAGE_TYPE,
+    TRANSFER_RESULT_MESSAGE_TYPE,
     DESTROY_MESSAGE_TYPE,
+    DESTROY_RESULT_MESSAGE_TYPE,
     LUA_REQUEST_MESSAGE_TYPE,
+    LUA_REQUEST_RESULT_MESSAGE_TYPE,
     HELLO_MESSAGE_TYPE,
     MESSAGE_COUNT
 };
@@ -255,10 +263,33 @@ struct DestroyTaskResultRpc {
     {}
 };
 
+struct LuaRequestTaskResultRpc {
+    static const LuaRpcMessageTypeEnum type;
+    LuaRequestTaskResult data;
+    
+    LuaRequestTaskResultRpc() {}
+    LuaRequestTaskResultRpc(LuaRequestTaskResult& para) :
+        data(std::move(para))
+    {}
+};
 
-FC_REFLECT_ENUM(LuaRpcMessageTypeEnum, (COMPILE_MESSAGE_TYPE)(CALL_MESSAGE_TYPE)(REGTISTER_MESSAGE_TYPE)
-                (UPGRADE_MESSAGE_TYPE)(TRANSFER_MESSAGE_TYPE)(DESTROY_MESSAGE_TYPE)
-                (LUA_REQUEST_MESSAGE_TYPE)(HELLO_MESSAGE_TYPE))
+
+FC_REFLECT_ENUM(LuaRpcMessageTypeEnum, (COMPILE_MESSAGE_TYPE)
+                (COMPILE_RESULT_MESSAGE_TYPE)
+                (CALL_MESSAGE_TYPE)
+                (CALL_RESULT_MESSAGE_TYPE)
+                (REGTISTER_MESSAGE_TYPE)
+                (REGTISTER_RESULT_MESSAGE_TYPE)
+                (UPGRADE_MESSAGE_TYPE)
+                (UPGRADE_RESULT_MESSAGE_TYPE)
+                (TRANSFER_MESSAGE_TYPE)
+                (TRANSFER_RESULT_MESSAGE_TYPE)
+                (DESTROY_MESSAGE_TYPE)
+                (DESTROY_RESULT_MESSAGE_TYPE)
+                (LUA_REQUEST_MESSAGE_TYPE)
+                (LUA_REQUEST_RESULT_MESSAGE_TYPE)
+                (HELLO_MESSAGE_TYPE))
+
 FC_REFLECT(MessageHeader, (size)(msg_type))
 FC_REFLECT_DERIVED(Message, (MessageHeader), (data))
 
@@ -277,6 +308,8 @@ FC_REFLECT(CallTaskResultRpc, (data))
 FC_REFLECT(TransferTaskResultRpc, (data))
 FC_REFLECT(UpgradeTaskResultRpc, (data))
 FC_REFLECT(DestroyTaskResultRpc, (data))
+FC_REFLECT(LuaRequestTaskResultRpc, (data))
+
 //hello msg
 FC_REFLECT(HelloMsgRpc, (data))
 FC_REFLECT(HelloMsgResultRpc, (data))
