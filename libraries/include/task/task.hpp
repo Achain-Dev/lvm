@@ -18,12 +18,19 @@ struct Message;
 
 enum LUA_TASK_TYPE {
     COMPILE_TASK = 0,
+    COMPILE_TASK_RESULT,
     REGISTER_TASK,
+    REGISTER_TASK_RESULT,
     UPGRADE_TASK,
+    UPGRADE_TASK_RESULT,
     CALL_TASK,
+    CALL_TASK_RESULT,
     TRANSFER_TASK,
+    TRANSFER_TASK_RESULT,
     DESTROY_TASK,
+    DESTROY_TASK_RESULT,
     LUA_REQUEST_TASK,
+    LUA_REQUEST_RESULT_TASK,
     HELLO_MSG,
     TASK_COUNT
 };
@@ -33,6 +40,29 @@ enum LUA_TASK_FROM {
     FROM_RPC,
     FROM_LUA_TO_CHAIN,
     FROM_COUNT
+};
+
+enum LUA_REQUEST_METHOD {
+    GET_STORED_CONTRACT_INFO_BY_ADDRESS = 0,
+    GET_CONTRACT_ADDRESS_BY_NAME,
+    CHECK_CONTRACT_EXIST_BY_ADDRESS,
+    CHECK_CONTRACT_EXIST,
+    OPEN_CONTRACT,
+    OPEN_CONTRACT_BY_ADDRESS,
+    GET_STORAGE_VALUE_FROM_THINKYOUNG,
+    GET_CONTRACT_BALANCE_AMOUNT,
+    GET_TRANSACTION_FEE,
+    GET_CHAIN_NOW,
+    GET_CHAIN_RANDOM,
+    GET_TRANSACTION_ID,
+    GET_HEADER_BLOCK_NUM,
+    WAIT_FOR_FUTURE_RANDOM,
+    GET_WAITED,
+    COMMIT_STORAGE_CHANGES_TO_THINKYOUNG,
+    TRANSFER_FROM_CONTRACT_TO_ADDRESS,
+    TRANSFER_FROM_CONTRACT_TO_PUBLIC_ACCOUNT,
+    EMIT,
+    COUNT
 };
 
 struct TaskBase {
@@ -115,7 +145,6 @@ struct DestroyTaskResult : public TaskImplResult {
     virtual  Message get_rpc_message();
     //TODO
 };
-
 
 //task
 struct CompileTask : public TaskBase {
@@ -236,6 +265,7 @@ struct TransferTask : public TaskBase {
         str_contract_id = task.str_contract_id;
         str_args = task.str_args;
     }
+    
     intptr_t                statevalue;
     int                     num_limit;
     std::string             str_caller;
@@ -276,25 +306,72 @@ struct LuaRequestTask : public TaskBase {
         task_type = LUA_REQUEST_TASK;
         task_from = FROM_LUA_TO_CHAIN;
     }
+    
     LuaRequestTask(const LuaRequestTask& task) {
         task_id = task.task_id;
         task_type = LUA_REQUEST_TASK;
         task_from = FROM_LUA_TO_CHAIN;
-        task_param = task.task_param;
     }
-    fc::variant         task_param;
+    
+    int     method;
+    std::vector<fc::variant> params;
 };
+
+struct LuaRequestTaskResult : public TaskBase {
+    LuaRequestTaskResult() {
+        task_type = LUA_REQUEST_RESULT_TASK;
+        task_from = FROM_RPC;
+    }
+    
+    LuaRequestTaskResult(const LuaRequestTaskResult& task) {
+        method = task.method;
+    }
+    
+    int     method;
+    std::vector<fc::variant> result;
+};
+
+FC_REFLECT_ENUM(LUA_REQUEST_METHOD,
+                (GET_STORED_CONTRACT_INFO_BY_ADDRESS)
+                (GET_CONTRACT_ADDRESS_BY_NAME)
+                (CHECK_CONTRACT_EXIST_BY_ADDRESS)
+                (CHECK_CONTRACT_EXIST)
+                (OPEN_CONTRACT)
+                (OPEN_CONTRACT_BY_ADDRESS)
+                (GET_STORAGE_VALUE_FROM_THINKYOUNG)
+                (GET_CONTRACT_BALANCE_AMOUNT)
+                (GET_TRANSACTION_FEE)
+                (GET_CHAIN_NOW)
+                (GET_CHAIN_RANDOM)
+                (GET_TRANSACTION_ID)
+                (GET_HEADER_BLOCK_NUM)
+                (WAIT_FOR_FUTURE_RANDOM)
+                (GET_WAITED)
+                (COMMIT_STORAGE_CHANGES_TO_THINKYOUNG)
+                (TRANSFER_FROM_CONTRACT_TO_ADDRESS)
+                (TRANSFER_FROM_CONTRACT_TO_PUBLIC_ACCOUNT)
+                (EMIT)
+               )
 
 FC_REFLECT_ENUM(LUA_TASK_TYPE,
                 (COMPILE_TASK)
+                (COMPILE_TASK_RESULT)
                 (REGISTER_TASK)
+                (REGISTER_TASK_RESULT)
                 (UPGRADE_TASK)
+                (UPGRADE_TASK_RESULT)
                 (CALL_TASK)
+                (CALL_TASK_RESULT)
                 (TRANSFER_TASK)
+                (TRANSFER_TASK_RESULT)
                 (DESTROY_TASK)
+                (DESTROY_TASK_RESULT)
                 (LUA_REQUEST_TASK)
-                (HELLO_MSG))
+                (LUA_REQUEST_RESULT_TASK)
+                (HELLO_MSG)
+               )
 
+FC_REFLECT_TYPENAME(std::vector<fc::variant>)
 FC_REFLECT(TaskBase, (task_id)(task_type)(task_from))
 FC_REFLECT_DERIVED(CompileTask, (TaskBase), (glua_path_file))
 
@@ -318,7 +395,8 @@ FC_REFLECT_DERIVED(DestroyTask, (TaskBase), (statevalue)(num_limit)
                    (str_caller)(str_caller_address)(str_contract_address)
                    (str_contract_id)(contract_code))
 
-FC_REFLECT_DERIVED(LuaRequestTask, (TaskBase), (task_param))
+FC_REFLECT_DERIVED(LuaRequestTask, (TaskBase), (method)(params))
+FC_REFLECT_DERIVED(LuaRequestTaskResult, (TaskBase), (method)(result))
 
 FC_REFLECT_DERIVED(TaskImplResult, (TaskBase), (error_code)(error_msg))
 FC_REFLECT_DERIVED(CompileTaskResult, (TaskImplResult), (gpc_path_file))

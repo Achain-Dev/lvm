@@ -40,7 +40,7 @@ void TaskDispatcher::del_dispatcher() {
 }
 
 void TaskDispatcher::push_task(TaskBase* task_base,
-    TaskHandlerBase* call_back) {
+                               TaskHandlerBase* call_back) {
     _task_mutex.lock();
     TaskAndCallback task;
     task.task_base = task_base;
@@ -90,9 +90,9 @@ void TaskHandlerBase::handle_task(const std::string& task,
     }
 }
 
-void TaskHandlerBase::lua_request(LuaRequestTask& request_task,
-    std::string& response_data) {
-    response_data = "";
+LuaRequestTaskResult TaskHandlerBase::lua_request(LuaRequestTask& request_task) {
+    LuaRequestTaskResult response_result;
+    return response_result;
 }
 
 TaskBase* TaskHandlerBase::gen_compile_param_from_istream(
