@@ -139,8 +139,7 @@ void Client::init() {
     
     if (!_sp_rpc_mgr) {
         _sp_rpc_mgr = std::make_shared<RpcMgr>(this);
-        _sp_rpc_mgr->set_endpoint(std::string("127.0.0.1"), 65000, ASYNC_MODE);
-        _sp_rpc_mgr->set_endpoint(std::string("127.0.0.1"), 65001, SYNC_MODE);
+        _sp_rpc_mgr->set_endpoint(std::string("127.0.0.1"), 65000);
         _sp_rpc_mgr->start();
     }
 }

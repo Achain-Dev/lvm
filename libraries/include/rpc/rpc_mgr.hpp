@@ -22,7 +22,7 @@ class RpcMgr {
     
     void start();
     
-    void set_endpoint(std::string& ip_addr, int port, SocketMode emode);
+    void set_endpoint(std::string& ip_addr, int port);
     
     StcpSocketPtr get_connection(SocketMode emode);
     
@@ -32,19 +32,19 @@ class RpcMgr {
     void send_message(TaskBase* task_p, std::string& resp);
     
   private:
-    void accept_loop(SocketMode emode);
+    void accept_loop();
     void read_loop(StcpSocketPtr& sock);
     void send_hello_message();
     Message& generate_message(TaskImplResult* task);
     void read_message(StcpSocketPtr& sock, std::string& msg_str);
-    void insert_connection(StcpSocketPtr& sock, SocketMode emode);
+    int insert_connection(StcpSocketPtr& sock);
     void delete_connection(SocketMode emode);
     void send_to_chain(Message& m, StcpSocketPtr& sock);
-    
-    
+    void process_connection(SocketMode emode);
+    void process_rpc(SocketMode emode);
   private:
-    fc::tcp_server _rpc_server[MODE_COUNT];
-    fc::ip::endpoint _end_point[MODE_COUNT];
+    fc::tcp_server _rpc_server;
+    fc::ip::endpoint _end_point;
     fc::future<void>     _terminate_hello_loop_done;
     std::shared_ptr<fc::thread> _sync_thread_ptr;
     std::shared_ptr<fc::thread> _async_thread_ptr;
@@ -52,7 +52,7 @@ class RpcMgr {
     std::mutex              _connection_mutex;
     RpcTaskHandlerPtr _rpc_handler_ptr;
     Client* _client_ptr;
-    bool _b_valid_flag[MODE_COUNT];
+    bool _b_valid_flag;
 };
 
 #endif
