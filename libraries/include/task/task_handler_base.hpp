@@ -1,4 +1,4 @@
-/* 
+/*
    author: pli
    date: 2017.10.17
    Handle the command line and message from chain.
@@ -22,49 +22,48 @@ struct MethodData;
 class ITaskImplementFinishNotify;
 
 class TaskHandlerBase : public ITaskImplementFinishNotify {
-public:
+  public:
     TaskHandlerBase() {};
     virtual ~TaskHandlerBase();
-
+    
     void handle_task(const std::string& task,
-        fc::buffered_istream* argument_stream);
-
-    virtual void lua_request(LuaRequestTask& request_task,
-        std::string& response_data);
-
+                     fc::buffered_istream* argument_stream);
+                     
+    virtual LuaRequestTaskResult lua_request(LuaRequestTask& request_task);
+    
     virtual  void task_finished(TaskImplResult* result) = 0;
-
-protected:
+    
+  protected:
     virtual  TaskBase* parse_to_task(const std::string& task,
-        fc::buffered_istream* argument_stream) = 0;
+                                     fc::buffered_istream* argument_stream) = 0;
     TaskBase* gen_task_base_from_method_data(MethodData* method_data,
-        fc::buffered_istream* argument_stream);
-
-private:
+            fc::buffered_istream* argument_stream);
+            
+  private:
     TaskBase* gen_compile_param_from_istream(
         fc::buffered_istream* argument_stream);
 };
 
 class TaskDispatcher {
-public:
+  public:
     static TaskDispatcher* get_dispatcher();
     static void del_dispatcher();
-
+    
     void push_task(TaskBase* task_base, TaskHandlerBase* call_back);
-
-private:
+    
+  private:
     TaskDispatcher();
     virtual ~TaskDispatcher();
-
+    
     void dispatch_task();
     void dispatch_task_impl();
-
-private:
+    
+  private:
     std::vector<TaskAndCallback>  _tasks;
     fc::thread              _dispatch_task_thread;
     std::mutex              _task_mutex;
-
-private:
+    
+  private:
     static TaskDispatcher*  s_dispatcher;
 };
 
