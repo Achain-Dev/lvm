@@ -203,6 +203,7 @@ namespace lvm {
         FC_DECLARE_EXCEPTION(socket_read_error, 52000, "Socket Read Error");
         FC_DECLARE_EXCEPTION(sync_socket_error, 53000, "Sync Socket Error");
         FC_DECLARE_EXCEPTION(async_socket_error, 54000, "Async Socket Error");
+        FC_DECLARE_EXCEPTION(socket_mode_error, 55000, "Socket Mode Error");
     }
 } // lvm::global_exception
 #endif
