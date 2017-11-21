@@ -27,14 +27,13 @@ class RpcMgr {
     void close_connection();
     void post_message(Message& rpc_msg);
     void send_hello_msg_loop();
-    void send_message(TaskBase* task_p, std::string& resp);
     
   private:
     void accept_loop();
     void read_loop();
     void send_hello_message();
     Message& generate_message(TaskImplResult* task);
-    void read_message(std::string& msg_str);
+    uint32_t read_message(std::string& msg_str);
     void send_to_chain(Message& m);
     void process_connection();
     void process_rpc();

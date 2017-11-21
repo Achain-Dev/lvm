@@ -85,7 +85,7 @@ void RpcMgr::close_connection() {
     return;
 }
 
-void RpcMgr::read_message(std::string& msg_str) {
+uint32_t RpcMgr::read_message(std::string& msg_str) {
     uint64_t bytes_received = 0;
     uint64_t remaining_bytes_with_padding = 0;
     char* buffer_sock = NULL;
@@ -119,16 +119,24 @@ void RpcMgr::read_message(std::string& msg_str) {
     
     msg_str = std::string(buffer_sock, bytes_received);
     delete[] buffer_sock;
+    return m.msg_type;
 }
 
 void RpcMgr::read_loop() {
     std::string msg_str = "";
+    uint32_t type = 0;
     bool b_need_restart = false;
     
     try {
         while (true) {
-            read_message(msg_str);
-            _rpc_handler_ptr->handle_task(msg_str, nullptr);
+            type = read_message(msg_str);
+            
+            if (type == LUA_REQUEST_RESULT_MESSAGE_TYPE) {
+                _rpc_handler_ptr->set_value(msg_str);
+                
+            } else {
+                _rpc_handler_ptr->handle_task(msg_str, nullptr);
+            }
         }
         
     } catch (lvm::global_exception::socket_read_error& e) {
@@ -179,30 +187,6 @@ void RpcMgr::post_message(Message& rpc_msg) {
         FC_THROW_EXCEPTION(lvm::global_exception::async_socket_error, \
                            "async socket error: async send message error. ");
     }
-}
-
-void RpcMgr::send_message(TaskBase* task_p, std::string& resp) {
-    //generate message
-    LuaRequestTaskRpc task(*(LuaRequestTask*)task_p);
-    Message m(task);
-    
-    //send msg
-    try {
-        send_to_chain(m);
-        read_message(resp);
-        
-    } catch (lvm::global_exception::socket_send_error& e) {
-        close_connection();
-        FC_THROW_EXCEPTION(lvm::global_exception::sync_socket_error, \
-                           "sync socket error: sync send message error. ");
-                           
-    } catch (lvm::global_exception::socket_read_error& e) {
-        close_connection();
-        FC_THROW_EXCEPTION(lvm::global_exception::sync_socket_error, \
-                           + "sync socket error: sync read message error. ");
-    }
-    
-    return;
 }
 
 //send hello msg
