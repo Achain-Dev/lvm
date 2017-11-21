@@ -24,32 +24,26 @@ class RpcMgr {
     
     void set_endpoint(std::string& ip_addr, int port);
     
-    StcpSocketPtr get_connection(SocketMode emode);
-    
-    void close_connections();
+    void close_connection();
     void post_message(Message& rpc_msg);
     void send_hello_msg_loop();
     void send_message(TaskBase* task_p, std::string& resp);
     
   private:
     void accept_loop();
-    void read_loop(StcpSocketPtr& sock);
+    void read_loop();
     void send_hello_message();
     Message& generate_message(TaskImplResult* task);
-    void read_message(StcpSocketPtr& sock, std::string& msg_str);
-    int insert_connection(StcpSocketPtr& sock);
-    void delete_connection(SocketMode emode);
-    void send_to_chain(Message& m, StcpSocketPtr& sock);
-    void process_connection(SocketMode emode);
-    void process_rpc(SocketMode emode);
+    void read_message(std::string& msg_str);
+    void send_to_chain(Message& m);
+    void process_connection();
+    void process_rpc();
   private:
     fc::tcp_server _rpc_server;
     fc::ip::endpoint _end_point;
     fc::future<void>     _terminate_hello_loop_done;
-    std::shared_ptr<fc::thread> _sync_thread_ptr;
-    std::shared_ptr<fc::thread> _async_thread_ptr;
-    std::vector<StcpSocketPtr>      _rpc_connections;
-    std::mutex              _connection_mutex;
+    std::shared_ptr<fc::thread> _socket_thread_ptr;
+    StcpSocketPtr  _rpc_connection;
     RpcTaskHandlerPtr _rpc_handler_ptr;
     Client* _client_ptr;
     bool _b_valid_flag;
