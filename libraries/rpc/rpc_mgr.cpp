@@ -15,7 +15,6 @@ RpcMgr::RpcMgr(Client* client)
      _b_valid_flag(false),
      _rpc_handler_ptr(std::make_shared<RpcTaskHandler>(this)) {
     _client_ptr = client;
-    _rpc_connection = std::make_shared<StcpSocket>();
 }
 
 RpcMgr::~RpcMgr() {
@@ -32,7 +31,7 @@ void RpcMgr::start() {
     
     _rpc_server.set_reuse_address();
     _rpc_server.listen(_end_point);
-    fc::async([&]() {
+    _socket_thread_ptr->async([&]() {
         this->accept_loop();
     });
 }
@@ -45,8 +44,9 @@ void RpcMgr::accept_loop() {
     
     while (true) {
         try {
-            _rpc_server.accept(_rpc_connection->get_socket());
-            process_connection();
+            _rpc_server.accept(_rpc_connection.get_socket());
+            _rpc_connection.accept();
+            process_rpc();
             
         } catch (fc::exception& e) {
             close_connection();
@@ -55,14 +55,7 @@ void RpcMgr::accept_loop() {
     }
 }
 
-void RpcMgr::process_connection() {
-    _socket_thread_ptr->async([&]() {
-        this->process_rpc();
-    });
-}
-
 void RpcMgr::process_rpc() {
-    _rpc_connection->accept();
     _terminate_hello_loop_done = fc::async([&]() {
         send_hello_msg_loop();
     }, "send_hello_msg_loop");
@@ -81,7 +74,7 @@ void RpcMgr::set_endpoint(std::string& ip_addr, int port) {
 }
 
 void RpcMgr::close_connection() {
-    _rpc_connection->close();
+    _rpc_connection.close();
     return;
 }
 
@@ -93,7 +86,7 @@ uint32_t RpcMgr::read_message(std::string& msg_str) {
     char buffer[BUFFER_SIZE];
     int leftover = BUFFER_SIZE - sizeof(MessageHeader);
     /*first: read msgHead, get data.size*/
-    _rpc_connection->read(buffer, BUFFER_SIZE);
+    _rpc_connection.read(buffer, BUFFER_SIZE);
     /*convert to MessageHeader*/
     memcpy((char*)&m, buffer, sizeof(MessageHeader));
     FC_ASSERT(m.size <= MAX_MESSAGE_SIZE, "", ("m.size", m.size)("MAX_MESSAGE_SIZE", MAX_MESSAGE_SIZE));
@@ -108,7 +101,7 @@ uint32_t RpcMgr::read_message(std::string& msg_str) {
     /*read the remain bytes*/
     try {
         if (remaining_bytes_with_padding) {
-            _rpc_connection->read(buffer_sock + BUFFER_SIZE, remaining_bytes_with_padding);
+            _rpc_connection.read(buffer_sock + BUFFER_SIZE, remaining_bytes_with_padding);
         }
         
     } catch (...) {
@@ -166,8 +159,8 @@ void RpcMgr::send_to_chain(Message& m) {
     
     //send
     try {
-        _rpc_connection->write(padded_message.get(), size_with_padding);
-        _rpc_connection->flush();
+        _rpc_connection.write(padded_message.get(), size_with_padding);
+        _rpc_connection.flush();
         
     } catch (...) {
         elog("send message exception");
