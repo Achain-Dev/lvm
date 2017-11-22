@@ -69,8 +69,8 @@ struct TaskBase {
     TaskBase();
     
     uint32_t task_id;     //a random value,CLI or achain launch a request with a task_id
-    uint16_t task_type;   //here,change LUA_TASK_TYPE to uint32_t, fit FC name
-    uint8_t task_from;    //LUA_TASK_FORM_CLI LUA_TASK_FORM_RPC
+    LUA_TASK_TYPE task_type;   //here,change LUA_TASK_TYPE to uint32_t, fit FC name
+    LUA_TASK_FROM task_from;    //LUA_TASK_FORM_CLI LUA_TASK_FORM_RPC
 };
 
 struct TaskImplResult : public TaskBase {
@@ -313,7 +313,7 @@ struct LuaRequestTask : public TaskBase {
         task_from = FROM_LUA_TO_CHAIN;
     }
     
-    int     method;
+    LUA_REQUEST_METHOD     method;
     std::vector<fc::variant> params;
 };
 
@@ -327,9 +327,18 @@ struct LuaRequestTaskResult : public TaskBase {
         method = task.method;
     }
     
-    int     method;
+    LUA_REQUEST_METHOD     method;
     std::vector<fc::variant> result;
 };
+
+FC_REFLECT_TYPENAME(LUA_TASK_FROM)
+FC_REFLECT_ENUM(LUA_TASK_FROM,
+                (FROM_CLI)
+                (FROM_RPC)
+                (FROM_LUA_TO_CHAIN)
+               )
+
+FC_REFLECT_TYPENAME(LUA_REQUEST_METHOD)
 
 FC_REFLECT_ENUM(LUA_REQUEST_METHOD,
                 (GET_STORED_CONTRACT_INFO_BY_ADDRESS)
@@ -353,6 +362,7 @@ FC_REFLECT_ENUM(LUA_REQUEST_METHOD,
                 (EMIT)
                )
 
+FC_REFLECT_TYPENAME(LUA_TASK_TYPE)
 FC_REFLECT_ENUM(LUA_TASK_TYPE,
                 (COMPILE_TASK)
                 (COMPILE_TASK_RESULT)
@@ -371,7 +381,6 @@ FC_REFLECT_ENUM(LUA_TASK_TYPE,
                 (HELLO_MSG)
                )
 
-FC_REFLECT_TYPENAME(std::vector<fc::variant>)
 FC_REFLECT(TaskBase, (task_id)(task_type)(task_from))
 FC_REFLECT_DERIVED(CompileTask, (TaskBase), (glua_path_file))
 
