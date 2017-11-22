@@ -14,12 +14,12 @@ const LuaRpcMessageTypeEnum TransferTaskRpc::type = LuaRpcMessageTypeEnum::TRANS
 const LuaRpcMessageTypeEnum LuaRequestTaskRpc::type = LuaRpcMessageTypeEnum::LUA_REQUEST_MESSAGE_TYPE;
 
 //result
-const LuaRpcMessageTypeEnum CompileTaskResultRpc::type = LuaRpcMessageTypeEnum::COMPILE_MESSAGE_TYPE;
-const LuaRpcMessageTypeEnum RegisterTaskResultRpc::type = LuaRpcMessageTypeEnum::REGTISTER_MESSAGE_TYPE;
-const LuaRpcMessageTypeEnum CallTaskResultRpc::type = LuaRpcMessageTypeEnum::CALL_MESSAGE_TYPE;
-const LuaRpcMessageTypeEnum UpgradeTaskResultRpc::type = LuaRpcMessageTypeEnum::UPGRADE_MESSAGE_TYPE;
-const LuaRpcMessageTypeEnum DestroyTaskResultRpc::type = LuaRpcMessageTypeEnum::DESTROY_MESSAGE_TYPE;
-const LuaRpcMessageTypeEnum TransferTaskResultRpc::type = LuaRpcMessageTypeEnum::TRANSFER_MESSAGE_TYPE;
+const LuaRpcMessageTypeEnum CompileTaskResultRpc::type = LuaRpcMessageTypeEnum::COMPILE_RESULT_MESSAGE_TYPE;
+const LuaRpcMessageTypeEnum RegisterTaskResultRpc::type = LuaRpcMessageTypeEnum::REGTISTER_RESULT_MESSAGE_TYPE;
+const LuaRpcMessageTypeEnum CallTaskResultRpc::type = LuaRpcMessageTypeEnum::CALL_RESULT_MESSAGE_TYPE;
+const LuaRpcMessageTypeEnum UpgradeTaskResultRpc::type = LuaRpcMessageTypeEnum::UPGRADE_RESULT_MESSAGE_TYPE;
+const LuaRpcMessageTypeEnum DestroyTaskResultRpc::type = LuaRpcMessageTypeEnum::DESTROY_RESULT_MESSAGE_TYPE;
+const LuaRpcMessageTypeEnum TransferTaskResultRpc::type = LuaRpcMessageTypeEnum::TRANSFER_RESULT_MESSAGE_TYPE;
 const LuaRpcMessageTypeEnum LuaRequestTaskResultRpc::type = LuaRpcMessageTypeEnum::LUA_REQUEST_RESULT_MESSAGE_TYPE;
 
 //hello msg
@@ -46,6 +46,8 @@ void RpcTaskHandler::string_to_msg(const std::string& str_msg, Message& msg) {
 
 TaskBase* RpcTaskHandler::parse_to_task(const std::string& task,
                                         fc::buffered_istream* argument_stream) {
+    //parse the msg from chain
+    //include two parts: part 1: chain call contract operation; part 2: chain response to lvm LUA_REQUEST
     Message m;
     string_to_msg(task, m);
     
@@ -112,6 +114,8 @@ TaskBase* RpcTaskHandler::parse_to_task(const std::string& task,
                 return destroy_ptr;
             }
             
+#if 0
+            
             case LUA_REQUEST_MESSAGE_TYPE: {
                 LuaRequestTaskRpc lua_request_task(m.as<LuaRequestTaskRpc>());
                 LuaRequestTask* lua_request_ptr = new LuaRequestTask(lua_request_task.data);
@@ -120,6 +124,8 @@ TaskBase* RpcTaskHandler::parse_to_task(const std::string& task,
                           ("LuaRequestTaskRpc::task_type", lua_request_task.data.task_type));
                 return lua_request_ptr;
             }
+            
+#endif
             
             case LUA_REQUEST_RESULT_MESSAGE_TYPE: {
                 LuaRequestTaskResultRpc lua_request_result_task(m.as<LuaRequestTaskResultRpc>());
@@ -146,8 +152,9 @@ TaskBase* RpcTaskHandler::parse_to_task(const std::string& task,
 
 void RpcTaskHandler::task_finished(TaskImplResult* result) {
     //response: lvm to chain
-    //the circle: chain start request,lvm receive and response the msg
+    //the circle: chain start request,lvm receive and response the msg, the msg type is xxxx_RESULT_MESSAGE_xxxx
     FC_ASSERT(result != NULL);
+    //the msg type is xxxx_RESULT_MESSAGE_xxxx
     Message msg(generate_message(result));
     post_result(msg);
 }
@@ -207,6 +214,7 @@ void RpcTaskHandler::set_value(const std::string& result) {
     _task_mutex.unlock();
 }
 Message RpcTaskHandler::generate_message(TaskImplResult* task_ptr) {
+    //this function process chain call contract operations only + hello_msg
     FC_ASSERT(task_ptr != NULL);
     FC_ASSERT(task_ptr->task_type == HELLO_MSG || task_ptr->task_type == COMPILE_TASK
               || task_ptr->task_type == REGISTER_TASK ||task_ptr->task_type == UPGRADE_TASK
