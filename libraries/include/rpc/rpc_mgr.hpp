@@ -34,15 +34,14 @@ class RpcMgr {
     void send_hello_message();
     Message& generate_message(TaskImplResult* task);
     uint32_t read_message(std::string& msg_str);
-    void send_to_chain(Message& m);
-    void process_connection();
+    void send_to_chain(Message& m);;
     void process_rpc();
   private:
     fc::tcp_server _rpc_server;
     fc::ip::endpoint _end_point;
     fc::future<void>     _terminate_hello_loop_done;
     std::shared_ptr<fc::thread> _socket_thread_ptr;
-    StcpSocketPtr  _rpc_connection;
+    StcpSocket  _rpc_connection;
     RpcTaskHandlerPtr _rpc_handler_ptr;
     Client* _client_ptr;
     bool _b_valid_flag;
