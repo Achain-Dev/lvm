@@ -113,7 +113,7 @@ void GluaTaskMgr::execute_task(TaskAndCallback task) {
     }
     
     if (_contractop_ptr) {
-        _contractop_ptr->evaluate(task, result);
+        _contractop_ptr->evaluate(task, &result);
     }
     
     if (!result) {

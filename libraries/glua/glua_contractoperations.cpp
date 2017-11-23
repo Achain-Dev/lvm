@@ -19,7 +19,7 @@ static void setGluaStateScopeValue(lvm::lua::lib::GluaStateScope& scope,
     scope.set_instructions_limit(limit_num);
 }
 
-void RegisterContractOperation::evaluate(TaskAndCallback& _inst_taskandcallback, TaskImplResult* result) const  {
+void RegisterContractOperation::evaluate(TaskAndCallback& _inst_taskandcallback, TaskImplResult** result) const  {
     TaskBase* _taskbase_ptr = _inst_taskandcallback.task_base;
     
     if (!_taskbase_ptr) {
@@ -32,8 +32,8 @@ void RegisterContractOperation::evaluate(TaskAndCallback& _inst_taskandcallback,
         return;
     }
     
-    if (!result) {
-        result = new RegisterTaskResult(_taskbase_ptr);
+    if (!*result) {
+        *result = new RegisterTaskResult(_taskbase_ptr);
     }
     
     try {
@@ -67,16 +67,16 @@ void RegisterContractOperation::evaluate(TaskAndCallback& _inst_taskandcallback,
         }
         
     } catch (lvm::global_exception::contract_run_out_of_money& e) {
-        result->error_msg = e.to_detail_string();
-        result->error_code = e.code();
+        (*result)->error_msg = e.to_detail_string();
+        (*result)->error_code = e.code();
         
     } catch (lvm::global_exception::contract_error& e) {
-        result->error_msg = e.to_detail_string();
-        result->error_code = e.code();
+        (*result)->error_msg = e.to_detail_string();
+        (*result)->error_code = e.code();
     }
 }
 
-void UpgradeContractOperation::evaluate(TaskAndCallback& _inst_taskandcallback, TaskImplResult* result) const  {
+void UpgradeContractOperation::evaluate(TaskAndCallback& _inst_taskandcallback, TaskImplResult** result) const  {
     TaskBase* _taskbase_ptr = _inst_taskandcallback.task_base;
     UpgradeTask* _upgradetask_ptr = (UpgradeTask*)_taskbase_ptr;
     
@@ -84,8 +84,8 @@ void UpgradeContractOperation::evaluate(TaskAndCallback& _inst_taskandcallback, 
         return;
     }
     
-    if (!result) {
-        result = new UpgradeTaskResult(_taskbase_ptr);
+    if (!*result) {
+        *result = new UpgradeTaskResult(_taskbase_ptr);
     }
     
     try {
@@ -112,6 +112,7 @@ void UpgradeContractOperation::evaluate(TaskAndCallback& _inst_taskandcallback, 
         int exception_code = 0;
         std::string exception_msg;
         exception_code = get_lua_state_value(scope.L(), "exception_code").int_value;
+        
         if (exception_code > 0) {
             exception_msg = (char*)get_lua_state_value(scope.L(), "exception_msg").string_value;
             
@@ -125,16 +126,16 @@ void UpgradeContractOperation::evaluate(TaskAndCallback& _inst_taskandcallback, 
         }
         
     } catch (lvm::global_exception::contract_run_out_of_money& e) {
-        result->error_msg = e.to_detail_string();
-        result->error_code = e.code();
+        (*result)->error_msg = e.to_detail_string();
+        (*result)->error_code = e.code();
         
     } catch (lvm::global_exception::contract_error& e) {
-        result->error_msg = e.to_detail_string();
-        result->error_code = e.code();
+        (*result)->error_msg = e.to_detail_string();
+        (*result)->error_code = e.code();
     }
 }
 
-void DestroyContractOperation::evaluate(TaskAndCallback& _inst_taskandcallback, TaskImplResult* result) const {
+void DestroyContractOperation::evaluate(TaskAndCallback& _inst_taskandcallback, TaskImplResult** result) const {
     TaskBase* _taskbase_ptr = _inst_taskandcallback.task_base;
     DestroyTask* _destroytask_ptr = (DestroyTask*)_taskbase_ptr;
     
@@ -142,8 +143,8 @@ void DestroyContractOperation::evaluate(TaskAndCallback& _inst_taskandcallback, 
         return;
     }
     
-    if (!result) {
-        result = new DestroyTaskResult(_taskbase_ptr);
+    if (!*result) {
+        *result = new DestroyTaskResult(_taskbase_ptr);
     }
     
     try {
@@ -184,16 +185,16 @@ void DestroyContractOperation::evaluate(TaskAndCallback& _inst_taskandcallback, 
         }
         
     } catch (lvm::global_exception::contract_run_out_of_money& e) {
-        result->error_msg = e.to_detail_string();
-        result->error_code = e.code();
+        (*result)->error_msg = e.to_detail_string();
+        (*result)->error_code = e.code();
         
     } catch (lvm::global_exception::contract_error& e) {
-        result->error_msg = e.to_detail_string();
-        result->error_code = e.code();
+        (*result)->error_msg = e.to_detail_string();
+        (*result)->error_code = e.code();
     }
 }
 
-void CallContractOperation::evaluate(TaskAndCallback& _inst_taskandcallback, TaskImplResult* result) const {
+void CallContractOperation::evaluate(TaskAndCallback& _inst_taskandcallback, TaskImplResult** result) const {
     TaskBase* _taskbase_ptr = _inst_taskandcallback.task_base;
     CallTask* _calltask_ptr = (CallTask*)_taskbase_ptr;
     
@@ -201,8 +202,8 @@ void CallContractOperation::evaluate(TaskAndCallback& _inst_taskandcallback, Tas
         return;
     }
     
-    if (!result) {
-        result = new CallTaskResult(_taskbase_ptr);
+    if (!*result) {
+        *result = new CallTaskResult(_taskbase_ptr);
     }
     
     try {
@@ -245,16 +246,16 @@ void CallContractOperation::evaluate(TaskAndCallback& _inst_taskandcallback, Tas
         int left = limit_num - scope.get_instructions_executed_count();
         
     } catch (lvm::global_exception::contract_run_out_of_money& e) {
-        result->error_msg = e.to_detail_string();
-        result->error_code = e.code();
+        (*result)->error_msg = e.to_detail_string();
+        (*result)->error_code = e.code();
         
     } catch (lvm::global_exception::contract_error& e) {
-        result->error_msg = e.to_detail_string();
-        result->error_code = e.code();
+        (*result)->error_msg = e.to_detail_string();
+        (*result)->error_code = e.code();
     }
 }
 
-void TransferContractOperation::evaluate(TaskAndCallback& _inst_taskandcallback, TaskImplResult* result) const {
+void TransferContractOperation::evaluate(TaskAndCallback& _inst_taskandcallback, TaskImplResult** result) const {
     TaskBase* _taskbase_ptr = _inst_taskandcallback.task_base;
     TransferTask* _transfertask_ptr = (TransferTask*)_taskbase_ptr;
     
@@ -262,8 +263,8 @@ void TransferContractOperation::evaluate(TaskAndCallback& _inst_taskandcallback,
         return;
     }
     
-    if (!result) {
-        result = new TransferTaskResult(_taskbase_ptr);
+    if (!*result) {
+        *result = new TransferTaskResult(_taskbase_ptr);
     }
     
     try {
@@ -304,11 +305,11 @@ void TransferContractOperation::evaluate(TaskAndCallback& _inst_taskandcallback,
         }
         
     } catch (lvm::global_exception::contract_run_out_of_money& e) {
-        result->error_msg = e.to_detail_string();
-        result->error_code = e.code();
+        (*result)->error_msg = e.to_detail_string();
+        (*result)->error_code = e.code();
         
     } catch (lvm::global_exception::contract_error& e) {
-        result->error_msg = e.to_detail_string();
-        result->error_code = e.code();
+        (*result)->error_msg = e.to_detail_string();
+        (*result)->error_code = e.code();
     }
 }
