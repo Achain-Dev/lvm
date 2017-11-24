@@ -68,39 +68,47 @@ std::string CompileTaskResult::get_result_string() {
     return result;
 }
 
+
+Message TaskImplResult::get_rpc_message() {
+    HelloMsgResultRpc result(*this);
+    Message rpc_msg(result);
+    return rpc_msg;
+}
+
+
 Message CompileTaskResult::get_rpc_message() {
-    CompileTaskResultRpc reslut(*this);
-    Message rpc_msg(reslut);
+    CompileTaskResultRpc result(*this);
+    Message rpc_msg(result);
     return rpc_msg;
 }
 
 Message RegisterTaskResult::get_rpc_message() {
-    RegisterTaskResultRpc reslut(*this);
-    Message rpc_msg(reslut);
+    RegisterTaskResultRpc result(*this);
+    Message rpc_msg(result);
     return rpc_msg;
 }
 
 Message CallTaskResult::get_rpc_message() {
-    CallTaskResultRpc reslut(*this);
-    Message rpc_msg(reslut);
+    CallTaskResultRpc result(*this);
+    Message rpc_msg(result);
     return rpc_msg;
 }
 
 Message TransferTaskResult::get_rpc_message() {
-    TransferTaskResultRpc reslut(*this);
-    Message rpc_msg(reslut);
+    TransferTaskResultRpc result(*this);
+    Message rpc_msg(result);
     return rpc_msg;
 }
 
 Message UpgradeTaskResult::get_rpc_message() {
-    UpgradeTaskResultRpc reslut(*this);
-    Message rpc_msg(reslut);
+    UpgradeTaskResultRpc result(*this);
+    Message rpc_msg(result);
     return rpc_msg;
 }
 
 Message DestroyTaskResult::get_rpc_message() {
-    DestroyTaskResultRpc reslut(*this);
-    Message rpc_msg(reslut);
+    DestroyTaskResultRpc result(*this);
+    Message rpc_msg(result);
     return rpc_msg;
 }
 

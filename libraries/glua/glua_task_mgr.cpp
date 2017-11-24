@@ -1,4 +1,7 @@
 #include <base/exceptions.hpp>
+#include <client/client.hpp>
+#include <task/task_handler_base.hpp>
+
 #include <glua/glua_chain_api.hpp>
 #include <glua/glua_complie_op.h>
 #include <glua/glua_task_mgr.h>
@@ -70,8 +73,16 @@ void GluaTaskMgr::execute_task(TaskAndCallback task) {
     // after execute task , gen the callback task then call back
     TaskImplResult* result = nullptr;
     ContractOperation* _contractop_ptr = nullptr;
+    _p_task_handler = task.task_handler;
     
     switch (task.task_base->task_type) {
+        case HELLO_MSG: {
+            result = new HelloMsgResult();
+            result->task_type = HELLO_MSG;
+            result->task_from = FROM_RPC;
+            break;
+        }
+        
         case COMPILE_TASK:
             result = execute_compile_glua_file(task.task_base);
             break;
@@ -102,17 +113,27 @@ void GluaTaskMgr::execute_task(TaskAndCallback task) {
     }
     
     if (_contractop_ptr) {
-        _contractop_ptr->evaluate(task, result);
+        _contractop_ptr->evaluate(task, &result);
     }
     
     if (!result) {
         return;
     }
     
-    if (task.call_back) {
-        task.call_back->task_finished(result);
+    if (_p_task_handler) {
+        _p_task_handler->task_finished(result);
     }
     
     delete result;
     return;
+}
+
+LuaRequestTaskResult GluaTaskMgr::lua_request(LuaRequestTask& request_task) {
+    LuaRequestTaskResult response_result;
+    
+    if (_p_task_handler) {
+        response_result =_p_task_handler->lua_request(request_task);
+    }
+    
+    return response_result;
 }

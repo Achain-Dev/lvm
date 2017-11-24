@@ -12,20 +12,24 @@
 struct TaskImplResult;
 
 class GluaTaskMgr {
-public:
+  public:
     static GluaTaskMgr* get_glua_task_mgr();
     static void delete_glua_task_mgr();
-
+    
     void execute_task(TaskAndCallback task);
-
-private:
+    
+    // sync call
+    LuaRequestTaskResult lua_request(LuaRequestTask& request_task);
+    
+  private:
     GluaTaskMgr();
     virtual ~GluaTaskMgr();
-
+    
     TaskImplResult*  execute_compile_glua_file(TaskBase* task);
-
-private:
+    
+  private:
     static GluaTaskMgr*  _s_p_glua_task_mgr;
+    TaskHandlerBase*   _p_task_handler;
 };
 
 #endif

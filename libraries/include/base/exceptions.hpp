@@ -36,7 +36,7 @@ namespace lvm {
         FC_DECLARE_DERIVED_EXCEPTION(invalid_address, lvm::global_exception::blockchain_exception, 30028, "invalid address");
         FC_DECLARE_DERIVED_EXCEPTION(out_of_max_block_size, lvm::global_exception::blockchain_exception, 30029, "out of max block size");
         FC_DECLARE_DERIVED_EXCEPTION(out_of_max_trx_size, lvm::global_exception::blockchain_exception, 30030, "out of max trx size");
-
+        
         FC_DECLARE_EXCEPTION(evaluation_error, 31000, "Evaluation Error");
         FC_DECLARE_DERIVED_EXCEPTION(negative_deposit, lvm::global_exception::evaluation_error, 31001, "negative deposit");
         FC_DECLARE_DERIVED_EXCEPTION(not_a_delegate, lvm::global_exception::evaluation_error, 31002, "not a delegate");
@@ -55,7 +55,7 @@ namespace lvm {
         FC_DECLARE_DERIVED_EXCEPTION(too_much_balances_withdraw_not_used_up, lvm::global_exception::evaluation_error, 31015, "too much balances withdraw which balance not used up ");
         FC_DECLARE_DERIVED_EXCEPTION(deposit_to_one_address_twice, lvm::global_exception::evaluation_error, 31016, "deposit to one address twice");
         FC_DECLARE_DERIVED_EXCEPTION(too_much_deposit, lvm::global_exception::evaluation_error, 31017, "too much deposit");
-
+        
         FC_DECLARE_DERIVED_EXCEPTION(invalid_account_name, lvm::global_exception::evaluation_error, 31101, "invalid account name");
         FC_DECLARE_DERIVED_EXCEPTION(unknown_account_id, lvm::global_exception::evaluation_error, 31102, "unknown account id");
         FC_DECLARE_DERIVED_EXCEPTION(unknown_account_name, lvm::global_exception::evaluation_error, 31103, "unknown account name");
@@ -67,9 +67,9 @@ namespace lvm {
         FC_DECLARE_DERIVED_EXCEPTION(too_may_delegates_in_slate, lvm::global_exception::evaluation_error, 31112, "too many delegates in slate");
         FC_DECLARE_DERIVED_EXCEPTION(pay_balance_remaining, lvm::global_exception::evaluation_error, 31113, "pay balance remaining");
         FC_DECLARE_DERIVED_EXCEPTION(message_too_long, lvm::global_exception::evaluation_error, 31114, "message is to long");
-
+        
         FC_DECLARE_DERIVED_EXCEPTION(not_a_delegate_signature, lvm::global_exception::evaluation_error, 31202, "not delegates signature");
-
+        
         FC_DECLARE_DERIVED_EXCEPTION(invalid_precision, lvm::global_exception::evaluation_error, 31301, "invalid precision");
         FC_DECLARE_DERIVED_EXCEPTION(invalid_asset_symbol, lvm::global_exception::evaluation_error, 31302, "invalid asset symbol");
         FC_DECLARE_DERIVED_EXCEPTION(unknown_asset_id, lvm::global_exception::evaluation_error, 31303, "unknown asset id");
@@ -82,13 +82,13 @@ namespace lvm {
         FC_DECLARE_DERIVED_EXCEPTION(not_user_issued, lvm::global_exception::evaluation_error, 31310, "not user issued");
         FC_DECLARE_DERIVED_EXCEPTION(invalid_asset_name, lvm::global_exception::evaluation_error, 31311, "invalid asset name");
         FC_DECLARE_DERIVED_EXCEPTION(balance_operation_overflow, lvm::global_exception::evaluation_error, 31312, "balance operation overflow");
-
+        
         FC_DECLARE_DERIVED_EXCEPTION(delegate_vote_limit, lvm::global_exception::evaluation_error, 31401, "delegate_vote_limit");
         FC_DECLARE_DERIVED_EXCEPTION(insufficient_fee, lvm::global_exception::evaluation_error, 31402, "insufficient fee");
         FC_DECLARE_DERIVED_EXCEPTION(negative_fee, lvm::global_exception::evaluation_error, 31403, "negative fee");
         FC_DECLARE_DERIVED_EXCEPTION(missing_deposit, lvm::global_exception::evaluation_error, 31404, "missing deposit");
         FC_DECLARE_DERIVED_EXCEPTION(insufficient_relay_fee, lvm::global_exception::evaluation_error, 31405, "insufficient relay fee");
-
+        
         FC_DECLARE_DERIVED_EXCEPTION(invalid_market, lvm::global_exception::evaluation_error, 31501, "invalid market");
         FC_DECLARE_DERIVED_EXCEPTION(unknown_market_order, lvm::global_exception::evaluation_error, 31502, "unknown market order");
         FC_DECLARE_DERIVED_EXCEPTION(shorting_base_shares, lvm::global_exception::evaluation_error, 31503, "shorting base shares");
@@ -96,11 +96,11 @@ namespace lvm {
         FC_DECLARE_DERIVED_EXCEPTION(insufficient_depth, lvm::global_exception::evaluation_error, 31505, "insufficient depth");
         FC_DECLARE_DERIVED_EXCEPTION(insufficient_feeds, lvm::global_exception::evaluation_error, 31506, "insufficient feeds");
         FC_DECLARE_DERIVED_EXCEPTION(invalid_feed_price, lvm::global_exception::evaluation_error, 31507, "invalid feed price");
-
+        
         FC_DECLARE_DERIVED_EXCEPTION(price_multiplication_overflow, lvm::global_exception::evaluation_error, 31601, "price multiplication overflow");
         FC_DECLARE_DERIVED_EXCEPTION(price_multiplication_underflow, lvm::global_exception::evaluation_error, 31602, "price multiplication underflow");
         FC_DECLARE_DERIVED_EXCEPTION(price_multiplication_undefined, lvm::global_exception::evaluation_error, 31603, "price multiplication undefined product 0*inf");
-
+        
         FC_DECLARE_EXCEPTION(contract_error, 32000, "Contract Error");
         FC_DECLARE_DERIVED_EXCEPTION(contract_address_in_use, lvm::global_exception::contract_error, 32001, "Contract Address is in use");
         FC_DECLARE_DERIVED_EXCEPTION(contract_not_exist, lvm::global_exception::contract_error, 32002, "Contract with specified address is not existed!");
@@ -132,7 +132,7 @@ namespace lvm {
         FC_DECLARE_DERIVED_EXCEPTION(contract_execute_error, lvm::global_exception::contract_error, 32028, "Execute error");
         FC_DECLARE_DERIVED_EXCEPTION(transaction_contract_registered_in_not_found, lvm::global_exception::contract_error, 32029, "transaction contract registered in not found");
         FC_DECLARE_DERIVED_EXCEPTION(no_contract_registered_in_this_transaction, lvm::global_exception::contract_error, 32030, "no contract registered in this transaction");
-
+        
         FC_DECLARE_EXCEPTION(bytecode_error, 33000, "Contract Bytecode Error");
         FC_DECLARE_DERIVED_EXCEPTION(read_verify_code_fail, lvm::global_exception::bytecode_error, 33001, "Read verify code fail!");
         FC_DECLARE_DERIVED_EXCEPTION(read_bytescode_len_fail, lvm::global_exception::bytecode_error, 33002, "Read bytescode len fail!");
@@ -151,7 +151,7 @@ namespace lvm {
         FC_DECLARE_DERIVED_EXCEPTION(read_storage_name_len_fail, lvm::global_exception::bytecode_error, 33014, "Read storage name len fail!");
         FC_DECLARE_DERIVED_EXCEPTION(read_storage_name_fail, lvm::global_exception::bytecode_error, 33015, "Read storage name fail!");
         FC_DECLARE_DERIVED_EXCEPTION(read_storage_type_fail, lvm::global_exception::bytecode_error, 33016, "Read storage type fail!");
-
+        
         FC_DECLARE_EXCEPTION(lua_error, 34000, "Lua Error");
         FC_DECLARE_DERIVED_EXCEPTION(lua_simple_error, lvm::global_exception::lua_error, 34001, "lua simple error");
         FC_DECLARE_DERIVED_EXCEPTION(lua_memory_error, lvm::global_exception::lua_error, 34002, "lua memory error");
@@ -159,7 +159,7 @@ namespace lvm {
         FC_DECLARE_DERIVED_EXCEPTION(lua_parser_error, lvm::global_exception::lua_error, 34004, "lua parser error");
         FC_DECLARE_DERIVED_EXCEPTION(lua_compile_error, lvm::global_exception::lua_error, 34005, "lua compile error");
         FC_DECLARE_DERIVED_EXCEPTION(lua_executor_internal_error, lvm::global_exception::lua_error, 34005, "lua lvm internal error");
-
+        
         FC_DECLARE_EXCEPTION(event_error, 35000, "Event Error");
         FC_DECLARE_DERIVED_EXCEPTION(event_parameter_length_over_limit, lvm::global_exception::event_error, 35001, "the parameter length of event function is over limit");
         FC_DECLARE_DERIVED_EXCEPTION(script_not_found_in_db, lvm::global_exception::event_error, 35002, "Script not found");
@@ -175,30 +175,35 @@ namespace lvm {
         FC_DECLARE_DERIVED_EXCEPTION(script_id_not_valid, lvm::global_exception::event_error, 35011, "not invalid script id");
         FC_DECLARE_DERIVED_EXCEPTION(Result_trx_id_not_found, lvm::global_exception::event_error, 35012, "result trx id not found");
         FC_DECLARE_DERIVED_EXCEPTION(Request_trx_id_not_found, lvm::global_exception::event_error, 35013, "request trx id not found");
-
+        
         FC_DECLARE_EXCEPTION(sandbox_error, 36000, "Sandbox Error");
         FC_DECLARE_DERIVED_EXCEPTION(sandbox_reopen, lvm::global_exception::sandbox_error, 36001, "you have been in sandbox, if you mean to reopen sandbox, close it first!");
         FC_DECLARE_DERIVED_EXCEPTION(sandbox_command_forbidden, lvm::global_exception::sandbox_error, 36002, "in sandbox, you can not use this command!");
         FC_DECLARE_DERIVED_EXCEPTION(sandbox_reclose, lvm::global_exception::sandbox_error, 36003, "you have closed the sandbox already!");
-
+        
         /*
         非异常定义，一些利用异常方式的状态处理
         */
-
+        
         FC_DECLARE_EXCEPTION(evaluation_state, 41000, "Evaluation State");
         FC_DECLARE_DERIVED_EXCEPTION(ignore_check_required_fee_state, lvm::global_exception::evaluation_state, 41001, "No check required fee");
-
+        
         FC_DECLARE_EXCEPTION(chaindatabasee_error, 42000, "chaindatabasee error");
         FC_DECLARE_DERIVED_EXCEPTION(store_and_index_a_seen_block, lvm::global_exception::chaindatabasee_error, 42001, "store_and_index_a_seen_block");
-
+        
         FC_DECLARE_EXCEPTION(contract_exception, 43000, "contract Error");
-		FC_DECLARE_EXCEPTION(rpc_exception, 44000, "RPC Error");
+        FC_DECLARE_EXCEPTION(rpc_exception, 44000, "RPC Error");
         FC_DECLARE_EXCEPTION(missing_parameter, 45000, "Missing Parameter");
         FC_DECLARE_EXCEPTION(unknown_method, 46000, "Unknown Method");
         FC_DECLARE_EXCEPTION(login_required, 47000, "Login Required");
         FC_DECLARE_EXCEPTION(rpc_msg_error, 48000, "Rpc TaskType Error");
         FC_DECLARE_EXCEPTION(task_type_error, 49000, "TaskType Error");
-		FC_DECLARE_EXCEPTION(rpc_pointrt_null, 50000, "Rpc Pointer Null");
+        FC_DECLARE_EXCEPTION(rpc_pointrt_null, 50000, "Rpc Pointer Null");
+        FC_DECLARE_EXCEPTION(socket_send_error, 51000, "Socket Send Error");
+        FC_DECLARE_EXCEPTION(socket_read_error, 52000, "Socket Read Error");
+        FC_DECLARE_EXCEPTION(sync_socket_error, 53000, "Sync Socket Error");
+        FC_DECLARE_EXCEPTION(async_socket_error, 54000, "Async Socket Error");
+        FC_DECLARE_EXCEPTION(socket_mode_error, 55000, "Socket Mode Error");
     }
 } // lvm::global_exception
 #endif

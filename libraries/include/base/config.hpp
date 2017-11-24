@@ -7,6 +7,7 @@
 #define LVM_NMAE   "LVM"
 #define LVM_CLI_PROMPT_SUFFIX  ">>> "
 #define DISPATCH_TASK_TIMESPAN  1
+#define SEND_HELLO_MSG_INTERVAL 30
 
 struct Config {
     bool                debug_mode;

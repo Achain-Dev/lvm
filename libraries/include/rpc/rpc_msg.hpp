@@ -16,16 +16,35 @@ rpc message
 #include <util/util.hpp>
 #include <task/task.hpp>
 
-#define MAX_MESSAGE_SIZE   (512 * 10000 * 5)
 
+enum SocketMode {
+    ASYNC_MODE = 0,
+    SYNC_MODE,
+    MODE_COUNT
+};
 
 enum LuaRpcMessageTypeEnum {
     COMPILE_MESSAGE_TYPE = 0,
+    COMPILE_RESULT_MESSAGE_TYPE,
+    COMPILE_SCRIPT_MESSAGE_TPYE,
+    COMPILE_SCRIPT_RESULT_MESSAGE_TPYE,
     CALL_MESSAGE_TYPE,
+    CALL_RESULT_MESSAGE_TYPE,
     REGTISTER_MESSAGE_TYPE,
+    REGTISTER_RESULT_MESSAGE_TYPE,
     UPGRADE_MESSAGE_TYPE,
+    UPGRADE_RESULT_MESSAGE_TYPE,
     TRANSFER_MESSAGE_TYPE,
+    TRANSFER_RESULT_MESSAGE_TYPE,
     DESTROY_MESSAGE_TYPE,
+    DESTROY_RESULT_MESSAGE_TYPE,
+    CALL_OFFLINE_MESSAGE_TYPE,
+    CALL_OFFLINE_RESULT_MESSAGE_TYPE,
+    HANDLE_EVENTS_MESSAGE_TYPE,
+    HANDLE_EVENTS_RESULT_MESSAGE_TYPE,
+    LUA_REQUEST_MESSAGE_TYPE,
+    LUA_REQUEST_RESULT_MESSAGE_TYPE,
+    HELLO_MESSAGE_TYPE,
     MESSAGE_COUNT
 };
 
@@ -97,6 +116,27 @@ struct Message : public MessageHeader {
     }
 };
 
+
+//HELLO MSG
+//hello msg, lvm send hello-msg to achain only, not receive hello-msg
+struct HelloMsgRpc {
+    static const LuaRpcMessageTypeEnum type;
+    HelloMsg data;
+    HelloMsgRpc() {}
+    HelloMsgRpc(HelloMsg& para) :
+        data(std::move(para))
+    {}
+};
+
+struct HelloMsgResultRpc {
+    static const LuaRpcMessageTypeEnum type;
+    HelloMsgResult data;
+    HelloMsgResultRpc() {}
+    HelloMsgResultRpc(HelloMsgResult& para) :
+        data(std::move(para))
+    {}
+};
+
 //task:
 struct CompileTaskRpc {
     static const LuaRpcMessageTypeEnum type;
@@ -154,6 +194,46 @@ struct DestroyTaskRpc {
     
     DestroyTaskRpc() {}
     DestroyTaskRpc(DestroyTask& para) :
+        data(std::move(para))
+    {}
+};
+
+struct LuaRequestTaskRpc {
+    static const LuaRpcMessageTypeEnum type;
+    LuaRequestTask data;
+    
+    LuaRequestTaskRpc() {}
+    LuaRequestTaskRpc(LuaRequestTask& para) :
+        data(std::move(para))
+    {}
+};
+
+struct CompileScriptTaskRpc {
+    static const LuaRpcMessageTypeEnum type;
+    CompileScriptTask data;
+    
+    CompileScriptTaskRpc() {}
+    CompileScriptTaskRpc(CompileScriptTask& para) :
+        data(std::move(para))
+    {}
+};
+
+struct HandleEventsTaskRpc {
+    static const LuaRpcMessageTypeEnum type;
+    HandleEventsTask data;
+    
+    HandleEventsTaskRpc() {}
+    HandleEventsTaskRpc(HandleEventsTask& para) :
+        data(std::move(para))
+    {}
+};
+
+struct CallContractOfflineTaskRpc {
+    static const LuaRpcMessageTypeEnum type;
+    CallContractOfflineTask data;
+    
+    CallContractOfflineTaskRpc() {}
+    CallContractOfflineTaskRpc(CallContractOfflineTask& para) :
         data(std::move(para))
     {}
 };
@@ -219,8 +299,70 @@ struct DestroyTaskResultRpc {
     {}
 };
 
+struct LuaRequestTaskResultRpc {
+    static const LuaRpcMessageTypeEnum type;
+    LuaRequestTaskResult data;
+    
+    LuaRequestTaskResultRpc() {}
+    LuaRequestTaskResultRpc(LuaRequestTaskResult& para) :
+        data(std::move(para))
+    {}
+};
 
-FC_REFLECT_ENUM(LuaRpcMessageTypeEnum, (COMPILE_MESSAGE_TYPE)(CALL_MESSAGE_TYPE)(REGTISTER_MESSAGE_TYPE))
+struct CompileScriptTaskResultRpc {
+    static const LuaRpcMessageTypeEnum type;
+    CompileScriptTaskResult data;
+    
+    CompileScriptTaskResultRpc() {}
+    CompileScriptTaskResultRpc(CompileScriptTaskResult& para) :
+        data(std::move(para))
+    {}
+};
+
+struct HandleEventsTaskResultRpc {
+    static const LuaRpcMessageTypeEnum type;
+    HandleEventsTaskResult data;
+    
+    HandleEventsTaskResultRpc() {}
+    HandleEventsTaskResultRpc(HandleEventsTaskResult& para) :
+        data(std::move(para))
+    {}
+};
+
+struct CallContractOfflineTaskResultRpc {
+    static const LuaRpcMessageTypeEnum type;
+    CallContractOfflineTaskResult data;
+    
+    CallContractOfflineTaskResultRpc() {}
+    CallContractOfflineTaskResultRpc(CallContractOfflineTaskResult& para) :
+        data(std::move(para))
+    {}
+};
+
+FC_REFLECT_ENUM(LuaRpcMessageTypeEnum,
+                (COMPILE_MESSAGE_TYPE)
+                (COMPILE_RESULT_MESSAGE_TYPE)
+                (COMPILE_SCRIPT_MESSAGE_TPYE)
+                (COMPILE_SCRIPT_RESULT_MESSAGE_TPYE)
+                (CALL_MESSAGE_TYPE)
+                (CALL_RESULT_MESSAGE_TYPE)
+                (REGTISTER_MESSAGE_TYPE)
+                (REGTISTER_RESULT_MESSAGE_TYPE)
+                (UPGRADE_MESSAGE_TYPE)
+                (UPGRADE_RESULT_MESSAGE_TYPE)
+                (TRANSFER_MESSAGE_TYPE)
+                (TRANSFER_RESULT_MESSAGE_TYPE)
+                (DESTROY_MESSAGE_TYPE)
+                (DESTROY_RESULT_MESSAGE_TYPE)
+                (CALL_OFFLINE_MESSAGE_TYPE)
+                (CALL_OFFLINE_RESULT_MESSAGE_TYPE)
+                (HANDLE_EVENTS_MESSAGE_TYPE)
+                (HANDLE_EVENTS_RESULT_MESSAGE_TYPE)
+                (LUA_REQUEST_MESSAGE_TYPE)
+                (LUA_REQUEST_RESULT_MESSAGE_TYPE)
+                (HELLO_MESSAGE_TYPE)
+               )
+
 FC_REFLECT(MessageHeader, (size)(msg_type))
 FC_REFLECT_DERIVED(Message, (MessageHeader), (data))
 
@@ -230,6 +372,10 @@ FC_REFLECT(RegisterTaskRpc, (data))
 FC_REFLECT(TransferTaskRpc, (data))
 FC_REFLECT(UpgradeTaskRpc, (data))
 FC_REFLECT(DestroyTaskRpc, (data))
+FC_REFLECT(LuaRequestTaskRpc, (data))
+FC_REFLECT(CompileScriptTaskRpc, (data))
+FC_REFLECT(HandleEventsTaskRpc, (data))
+FC_REFLECT(CallContractOfflineTaskRpc, (data))
 
 //result
 FC_REFLECT(CompileTaskResultRpc, (data))
@@ -238,7 +384,13 @@ FC_REFLECT(CallTaskResultRpc, (data))
 FC_REFLECT(TransferTaskResultRpc, (data))
 FC_REFLECT(UpgradeTaskResultRpc, (data))
 FC_REFLECT(DestroyTaskResultRpc, (data))
+FC_REFLECT(LuaRequestTaskResultRpc, (data))
+FC_REFLECT(CompileScriptTaskResultRpc, (data))
+FC_REFLECT(HandleEventsTaskResultRpc, (data))
+FC_REFLECT(CallContractOfflineTaskResultRpc, (data))
 
-
+//hello msg
+FC_REFLECT(HelloMsgRpc, (data))
+FC_REFLECT(HelloMsgResultRpc, (data))
 
 #endif
