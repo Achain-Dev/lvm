@@ -11,6 +11,10 @@
 #include <glua/glua_chain_api.hpp>
 #include <glua/glua_contractentry.hpp>
 
+#include "task/task_handler_base.hpp"
+#include "task/task.hpp"
+#include "rpc/rpc_mgr.hpp"
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdarg.h>
@@ -22,6 +26,7 @@
 #include <unordered_map>
 #include <memory>
 #include <mutex>
+
 
 namespace lvm {
     namespace lua {
@@ -175,6 +180,10 @@ namespace lvm {
                 //oContractEntry entry = cur_state->get_contract_entry(std::string(name));
                 //return entry.valid();
                 //
+                // std::shared_ptr<LuaRequestTask> p = std::make_shared<LuaRequestTask>();
+                std::shared_ptr<LuaRequestTask> p = std::make_shared<LuaRequestTask>();
+                TaskDispatcher::get_dispatcher()->push_task()
+                //  RpcMgr::
                 return true;
             }
             

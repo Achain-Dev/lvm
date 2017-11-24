@@ -434,17 +434,14 @@ struct LuaRequestTask : public TaskBase {
             task_type = LUA_REQUEST_TASK;
             task_from = FROM_LUA_TO_CHAIN;
             method = task.method;
-            params.clear();
-            
-            for (const auto& i : task.params) {
-                fc::variant v = i;
-                params.push_back(v);
-            }
+            params = task.params;
+            statevalue = task.statevalue;
         }
     }
     
     LUA_REQUEST_METHOD     method;
-    std::vector<fc::variant> params;
+    std::vector<std::vector<char>> params;
+    intptr_t statevalue;
 };
 
 struct LuaRequestTaskResult : public TaskBase {
@@ -458,17 +455,16 @@ struct LuaRequestTaskResult : public TaskBase {
             task_type = LUA_REQUEST_RESULT_TASK;
             task_from = FROM_RPC;
             method = task.method;
-            result.clear();
-            
-            for (const auto& i : task.result) {
-                fc::variant v = i;
-                result.push_back(v);
-            }
+            params = task.params;
+            ret = task.ret;
+            err_num = task.err_num;
         }
     }
-    
     LUA_REQUEST_METHOD     method;
-    std::vector<fc::variant> result;
+    std::vector<std::vector<char>> params;
+    int ret;
+    int err_num;
+    
 };
 
 FC_REFLECT_TYPENAME(LUA_TASK_FROM)
@@ -559,7 +555,7 @@ FC_REFLECT_DERIVED(CallContractOfflineTask, (TaskBase), (statevalue)(num_limit)
                    (str_contract_id)(str_method)(str_args)(contract_code))
 
 FC_REFLECT_DERIVED(LuaRequestTask, (TaskBase), (method)(params))
-FC_REFLECT_DERIVED(LuaRequestTaskResult, (TaskBase), (method)(result))
+FC_REFLECT_DERIVED(LuaRequestTaskResult, (TaskBase), (method)(params)(ret)(err_num))
 
 FC_REFLECT_DERIVED(TaskImplResult, (TaskBase), (error_code)(error_msg))
 FC_REFLECT_DERIVED(CompileTaskResult, (TaskImplResult), (gpc_path_file))

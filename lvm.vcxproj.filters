@@ -289,6 +289,7 @@
     <ClCompile Include="libraries\base\common_api.cpp">
       <Filter>libraries\base</Filter>
     </ClCompile>
+    <ClCompile Include="libraries\glua\glua_chain_rpc_api.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="libraries\include\glua\exceptions.h">
@@ -510,5 +511,8 @@
     <ClInclude Include="libraries\include\glua\glua_chain_api.hpp">
       <Filter>libraries\include\glua</Filter>
     </ClInclude>
+    <ClInclude Include="libraries\include\glua\glua_chain_rpc_api.h">
+      <Filter>libraries\include\glua</Filter>
+    </ClInclude>
   </ItemGroup>
-  </Project>
+</Project>

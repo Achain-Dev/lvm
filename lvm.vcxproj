@@ -184,6 +184,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="libraries\glua\glua_chain_rpc_api.cpp" />
     <ClCompile Include="libraries\base\config.cpp" />
     <ClCompile Include="libraries\base\common_api.cpp" />
     <ClCompile Include="libraries\client\client.cpp" />
@@ -265,6 +266,7 @@
     <ClCompile Include="main.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="libraries\include\glua\glua_chain_rpc_api.h" />
     <ClInclude Include="libraries\include\base\common_api.hpp" />
     <ClInclude Include="libraries\include\base\config.hpp" />
     <ClInclude Include="libraries\include\base\easylogging++.h" />
