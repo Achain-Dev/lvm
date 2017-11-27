@@ -1,7 +1,8 @@
 #include "base/common_api.hpp"
 #include "base/exceptions.hpp"
-#include "glua/glua_complie_op.h"
-#include "glua/glua_lutil.h"
+#include <glua/glua_complie_op.h>
+#include <glua/glua_lutil.h>
+#include <glua/lua_lib.h>
 
 #include<fc/exception/exception.hpp>
 #include<fc/string.hpp>
@@ -16,7 +17,7 @@ CompileOp::CompileOp() {
 CompileOp::~CompileOp() {
 }
 
-fc::path CompileOp::compile_contract(const fc::path& filename) const {
+fc::path CompileOp::compile_lua(const fc::path& filename, bool compile_contract) const {
     using namespace fc;
     
     // if file not exist
@@ -28,49 +29,43 @@ fc::path CompileOp::compile_contract(const fc::path& filename) const {
     string out_filename;
     size_t pos;
     pos = filename_str.find_last_of('.');
+    std::string exe_file_name = compile_contract ? ".gpc" : ".script";
     
     if ((pos != string::npos) && (filename_str.substr(pos) == ".glua" || filename_str.substr(pos) == ".lua")) {
-        out_filename = filename_str.substr(0, pos) + ".gpc";
+        out_filename = filename_str.substr(0, pos) + exe_file_name;
         
     } else {
         FC_THROW_EXCEPTION(lvm::global_exception::invalid_contract_filename, "contract source file name should end with .lua or .glua");
     }
     
-    GluaModuleByteStream* p_lua_module = new GluaModuleByteStream();
-    FC_ASSERT(p_lua_module, "p_lua_module malloc fail!");
-    /*
-    ChainInterfacePtr data_ptr = _wallet->get_correct_state_ptr();
-    PendingChainStatePtr          pend_state = std::make_shared<PendingChainState>(data_ptr);
-    TransactionEvaluationStatePtr trx_eval_state = std::make_shared<TransactionEvaluationState>(pend_state.get());
+    auto lua_module_ptr = std::make_shared<GluaModuleByteStream>();
+    FC_ASSERT(lua_module_ptr, "Alloc memory for GluaModuleByteStream failed!");
     
-    GluaStatePreProcessorFunction lua_state_pre;
-    lua_state_pre.processor = compile_contract_callback;
-    std::list<void*> args_list;
-    args_list.push_back(trx_eval_state.get());
-    lua_state_pre.args = args_list;
-    */
-    glua::util::TimeDiff time_diff;
-    time_diff.start();
-    
-    if (!lvm::lua::lib::compile_contract_to_stream(filename_str.c_str(), p_lua_module, err_msg, nullptr, USE_TYPE_CHECK)) {
-        delete p_lua_module;
-        err_msg[LUA_EXCEPTION_MULTILINE_STRNG_MAX_LENGTH] = '\0';
-        FC_THROW_EXCEPTION(lvm::global_exception::compile_contract_fail, err_msg);
+    if (compile_contract) {
+        glua::util::TimeDiff time_diff;
+        time_diff.start();
+        
+        if (!lvm::lua::lib::compile_contract_to_stream(filename_str.c_str(), lua_module_ptr.get(), err_msg, nullptr, USE_TYPE_CHECK)) {
+            err_msg[LUA_EXCEPTION_MULTILINE_STRNG_MAX_LENGTH] = '\0';
+            FC_THROW_EXCEPTION(lvm::global_exception::compile_contract_fail, err_msg);
+        }
+        
+        time_diff.end();
+        std::cout << "compile using time " << time_diff.diff_timestamp() << "s" << std::endl;
+        
+    } else {
+        lvm::lua::lib::GluaStateScope sco(false);
+        
+        if (!lvm::lua::lib::compilefile_to_stream(sco.L(), filename.generic_string().c_str(), lua_module_ptr.get(), err_msg, USE_TYPE_CHECK)) {
+            FC_THROW_EXCEPTION(lvm::global_exception::compile_script_fail, err_msg);
+        }
     }
     
-    time_diff.end();
-    std::cout << "compile using time " << time_diff.diff_timestamp() << "s" << std::endl;
-    
-    if (save_code_to_file(out_filename, p_lua_module, err_msg) < 0) {
-        delete p_lua_module;
-        p_lua_module = nullptr;
+    if (save_code_to_file(out_filename, lua_module_ptr.get(), err_msg) < 0) {
         err_msg[LUA_EXCEPTION_MULTILINE_STRNG_MAX_LENGTH] = '\0';
         FC_THROW_EXCEPTION(lvm::global_exception::save_bytecode_to_gpcfile_fail, err_msg);
     }
     
-    if (p_lua_module)
-        delete p_lua_module;
-        
     return fc::path(out_filename);
 }
 

@@ -25,8 +25,6 @@ class GluaTaskMgr {
     GluaTaskMgr();
     virtual ~GluaTaskMgr();
     
-    TaskImplResult*  execute_compile_glua_file(TaskBase* task);
-    
   private:
     static GluaTaskMgr*  _s_p_glua_task_mgr;
     TaskHandlerBase*   _p_task_handler;

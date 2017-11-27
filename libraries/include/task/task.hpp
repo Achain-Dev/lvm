@@ -90,6 +90,7 @@ struct TaskImplResult : public TaskBase {
   public:
     uint64_t      error_code;
     std::string   error_msg;
+    std::string   json_string;
 };
 
 //hello msg
@@ -152,12 +153,14 @@ struct DestroyTaskResult : public TaskImplResult {
     //TODO
 };
 
-struct CompileScriptTaskResult : TaskImplResult {
+struct CompileScriptTaskResult  : TaskImplResult {
     CompileScriptTaskResult() {}
     CompileScriptTaskResult(TaskBase* task);
     
     virtual  std::string  get_result_string();
     virtual  Message get_rpc_message();
+    
+    std::string  script_path_file;
 };
 
 struct HandleEventsTaskResult : TaskImplResult {
@@ -561,7 +564,7 @@ FC_REFLECT_DERIVED(CallContractOfflineTask, (TaskBase), (statevalue)(num_limit)
 FC_REFLECT_DERIVED(LuaRequestTask, (TaskBase), (method)(params))
 FC_REFLECT_DERIVED(LuaRequestTaskResult, (TaskBase), (method)(result))
 
-FC_REFLECT_DERIVED(TaskImplResult, (TaskBase), (error_code)(error_msg))
+FC_REFLECT_DERIVED(TaskImplResult, (TaskBase), (error_code)(error_msg)(json_string))
 FC_REFLECT_DERIVED(CompileTaskResult, (TaskImplResult), (gpc_path_file))
 FC_REFLECT_DERIVED(RegisterTaskResult, (TaskImplResult))
 FC_REFLECT_DERIVED(CallTaskResult, (TaskImplResult))

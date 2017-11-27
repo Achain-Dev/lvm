@@ -48,6 +48,18 @@ TransferTaskResult::TransferTaskResult(TaskBase* task) {
     init_task_base(task);
 }
 
+HandleEventsTaskResult::HandleEventsTaskResult(TaskBase* task) {
+    init_task_base(task);
+}
+
+CompileScriptTaskResult::CompileScriptTaskResult(TaskBase* task) {
+    init_task_base(task);
+}
+
+CallContractOfflineTaskResult::CallContractOfflineTaskResult(TaskBase* task) {
+    init_task_base(task);
+}
+
 std::string TaskImplResult::get_result_string() {
     std::stringstream stream_result;
     stream_result << "\n";
@@ -112,28 +124,58 @@ Message DestroyTaskResult::get_rpc_message() {
     return rpc_msg;
 }
 
+Message CompileScriptTaskResult::get_rpc_message() {
+    CompileScriptTaskResultRpc result(*this);
+    Message rpc_msg(result);
+    return rpc_msg;
+}
+
+Message HandleEventsTaskResult::get_rpc_message() {
+    HandleEventsTaskResultRpc result(*this);
+    Message rpc_msg(result);
+    return rpc_msg;
+}
+
+Message CallContractOfflineTaskResult::get_rpc_message() {
+    CallContractOfflineTaskResultRpc result(*this);
+    Message rpc_msg(result);
+    return rpc_msg;
+}
 
 std::string RegisterTaskResult::get_result_string() {
     //TODO
-    return NULL;
+    return "";
 }
 
 std::string CallTaskResult::get_result_string() {
     //TODO
-    return NULL;
+    return "";
 }
 
 std::string TransferTaskResult::get_result_string() {
     //TODO
-    return NULL;
+    return "";
 }
 
 std::string UpgradeTaskResult::get_result_string() {
     //TODO
-    return NULL;
+    return "";
 }
 
 std::string DestroyTaskResult::get_result_string() {
     //TODO
-    return NULL;
+    return "";
 }
+
+std::string CompileScriptTaskResult::get_result_string() {
+    return "";
+}
+
+std::string HandleEventsTaskResult::get_result_string() {
+    return "";
+}
+
+std::string CallContractOfflineTaskResult::get_result_string() {
+    return "";
+}
+
