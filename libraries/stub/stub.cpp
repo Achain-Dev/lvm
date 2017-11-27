@@ -17,5 +17,5 @@ void Stub::start() {
     // TODO: please start glua here for testing.
     lvm::lua::api::global_glua_chain_api = new lvm::lua::api::GluaChainApi();
     CompileOp op;
-    op.compile_contract(CONTRACT_PATH CONTRACT_NAME);
+    op.compile_lua(CONTRACT_PATH CONTRACT_NAME, true);
 }

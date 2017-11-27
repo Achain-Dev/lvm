@@ -239,6 +239,7 @@ Message RpcTaskHandler::generate_message(TaskImplResult* task_ptr) {
     FC_ASSERT(task_ptr->task_type == HELLO_MSG || task_ptr->task_type == COMPILE_TASK
               || task_ptr->task_type == REGISTER_TASK ||task_ptr->task_type == UPGRADE_TASK
               || task_ptr->task_type == CALL_TASK ||task_ptr->task_type == TRANSFER_TASK
-              || task_ptr->task_type == DESTROY_TASK);
+              || task_ptr->task_type == DESTROY_TASK || task_ptr->task_type == COMPILE_SCRIPT_TASK
+              || task_ptr->task_type == HANDLE_EVENTS_TASK || task_ptr->task_type == CALL_OFFLINE_TASK);
     return task_ptr->get_rpc_message();
 }
