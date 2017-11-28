@@ -10,7 +10,7 @@ class CompileOp {
   public:
     CompileOp();
     ~CompileOp();
-    fc::path compile_contract(const fc::path&) const;
+    fc::path compile_lua(const fc::path&, bool compile_contract) const;
     
   private:
     int save_code_to_file(const fc::string& name, GluaModuleByteStream *stream, char* err_msg) const;
