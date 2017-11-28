@@ -2,7 +2,7 @@
 #include <client/client.hpp>
 #include <task/task_handler_base.hpp>
 
-#include <glua/glua_chain_api.hpp>
+#include <glua/glua_chain_rpc_api.h>
 #include <glua/glua_task_mgr.h>
 #include <glua/lua_api.h>
 #include <glua/glua_contractoperations.hpp>
@@ -30,7 +30,7 @@ void GluaTaskMgr::delete_glua_task_mgr() {
 GluaTaskMgr::GluaTaskMgr() {
     if (!lvm::lua::api::global_glua_chain_api) {
         lvm::lua::api::global_glua_chain_api =
-            new lvm::lua::api::GluaChainApi;
+            new lvm::lua::api::GluaChainRpcApi;
     }
 }
 
