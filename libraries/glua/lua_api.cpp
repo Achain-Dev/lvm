@@ -11,6 +11,10 @@
 #include <glua/glua_chain_api.hpp>
 #include <glua/glua_contractentry.hpp>
 
+#include "task/task_handler_base.hpp"
+#include "task/task.hpp"
+#include "rpc/rpc_mgr.hpp"
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdarg.h>
@@ -22,6 +26,7 @@
 #include <unordered_map>
 #include <memory>
 #include <mutex>
+
 
 namespace lvm {
     namespace lua {
@@ -174,7 +179,6 @@ namespace lvm {
                 //thinkyoung::blockchain::ChainInterface* cur_state = eval_state_ptr->_current_state;
                 //oContractEntry entry = cur_state->get_contract_entry(std::string(name));
                 //return entry.valid();
-                //
                 return true;
             }
             
