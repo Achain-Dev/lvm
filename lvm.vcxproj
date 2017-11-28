@@ -260,6 +260,7 @@
     <ClCompile Include="libraries\rpc\rpc_mgr.cpp" />
     <ClCompile Include="libraries\rpc\rpc_task_handler.cpp" />
     <ClCompile Include="libraries\rpc\stcp_socket.cpp" />
+    <ClCompile Include="libraries\storage\StorageTypes.cpp" />
     <ClCompile Include="libraries\stub\stub.cpp" />
     <ClCompile Include="libraries\task\task.cpp" />
     <ClCompile Include="libraries\task\task_handle_base.cpp" />
@@ -336,6 +337,7 @@
     <ClInclude Include="libraries\include\rpc\rpc_msg.hpp" />
     <ClInclude Include="libraries\include\rpc\rpc_task_handler.hpp" />
     <ClInclude Include="libraries\include\rpc\stcp_socket.hpp" />
+    <ClInclude Include="libraries\include\storage\StorageTypes.hpp" />
     <ClInclude Include="libraries\include\stub\stub.hpp" />
     <ClInclude Include="libraries\include\task\task.hpp" />
     <ClInclude Include="libraries\include\task\task_handler_base.hpp" />

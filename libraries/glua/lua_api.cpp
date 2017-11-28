@@ -179,11 +179,6 @@ namespace lvm {
                 //thinkyoung::blockchain::ChainInterface* cur_state = eval_state_ptr->_current_state;
                 //oContractEntry entry = cur_state->get_contract_entry(std::string(name));
                 //return entry.valid();
-                //
-                // std::shared_ptr<LuaRequestTask> p = std::make_shared<LuaRequestTask>();
-                std::shared_ptr<LuaRequestTask> p = std::make_shared<LuaRequestTask>();
-                TaskDispatcher::get_dispatcher()->push_task()
-                //  RpcMgr::
                 return true;
             }
             

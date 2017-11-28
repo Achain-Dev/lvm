@@ -8,6 +8,7 @@
 #define _GLUA_TASK_MGR_H_
 
 #include <base/misc.hpp>
+#include <task/task.hpp>
 
 struct TaskImplResult;
 
