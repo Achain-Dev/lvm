@@ -89,7 +89,9 @@ struct TaskImplResult : public TaskBase {
     virtual  Message get_rpc_message();
   public:
     uint64_t      error_code;
+    uint64_t      execute_count;
     std::string   error_msg;
+    std::string   json_string;
 };
 
 //hello msg
@@ -152,12 +154,14 @@ struct DestroyTaskResult : public TaskImplResult {
     //TODO
 };
 
-struct CompileScriptTaskResult : TaskImplResult {
+struct CompileScriptTaskResult  : TaskImplResult {
     CompileScriptTaskResult() {}
     CompileScriptTaskResult(TaskBase* task);
     
     virtual  std::string  get_result_string();
     virtual  Message get_rpc_message();
+    
+    std::string  script_path_file;
 };
 
 struct HandleEventsTaskResult : TaskImplResult {
@@ -434,17 +438,14 @@ struct LuaRequestTask : public TaskBase {
             task_type = LUA_REQUEST_TASK;
             task_from = FROM_LUA_TO_CHAIN;
             method = task.method;
-            params.clear();
-            
-            for (const auto& i : task.params) {
-                fc::variant v = i;
-                params.push_back(v);
-            }
+            params = task.params;
+            statevalue = task.statevalue;
         }
     }
     
     LUA_REQUEST_METHOD     method;
-    std::vector<fc::variant> params;
+    std::vector<std::vector<char>> params;
+    intptr_t statevalue;
 };
 
 struct LuaRequestTaskResult : public TaskBase {
@@ -458,17 +459,16 @@ struct LuaRequestTaskResult : public TaskBase {
             task_type = LUA_REQUEST_RESULT_TASK;
             task_from = FROM_RPC;
             method = task.method;
-            result.clear();
-            
-            for (const auto& i : task.result) {
-                fc::variant v = i;
-                result.push_back(v);
-            }
+            params = task.params;
+            ret = task.ret;
+            err_num = task.err_num;
         }
     }
-    
     LUA_REQUEST_METHOD     method;
-    std::vector<fc::variant> result;
+    std::vector<std::vector<char>> params;
+    int ret;
+    int err_num;
+    
 };
 
 FC_REFLECT_TYPENAME(LUA_TASK_FROM)
@@ -558,10 +558,10 @@ FC_REFLECT_DERIVED(CallContractOfflineTask, (TaskBase), (statevalue)(num_limit)
                    (str_caller)(str_caller_address)(str_contract_address)
                    (str_contract_id)(str_method)(str_args)(contract_code))
 
-FC_REFLECT_DERIVED(LuaRequestTask, (TaskBase), (method)(params))
-FC_REFLECT_DERIVED(LuaRequestTaskResult, (TaskBase), (method)(result))
+FC_REFLECT_DERIVED(LuaRequestTask, (TaskBase), (method)(params)(statevalue))
+FC_REFLECT_DERIVED(LuaRequestTaskResult, (TaskBase), (method)(params)(ret)(err_num))
 
-FC_REFLECT_DERIVED(TaskImplResult, (TaskBase), (error_code)(error_msg))
+FC_REFLECT_DERIVED(TaskImplResult, (TaskBase), (error_code)(execute_count)(error_msg)(json_string))
 FC_REFLECT_DERIVED(CompileTaskResult, (TaskImplResult), (gpc_path_file))
 FC_REFLECT_DERIVED(RegisterTaskResult, (TaskImplResult))
 FC_REFLECT_DERIVED(CallTaskResult, (TaskImplResult))

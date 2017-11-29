@@ -8,6 +8,7 @@
 #define _GLUA_TASK_MGR_H_
 
 #include <base/misc.hpp>
+#include <task/task.hpp>
 
 struct TaskImplResult;
 
@@ -24,8 +25,6 @@ class GluaTaskMgr {
   private:
     GluaTaskMgr();
     virtual ~GluaTaskMgr();
-    
-    TaskImplResult*  execute_compile_glua_file(TaskBase* task);
     
   private:
     static GluaTaskMgr*  _s_p_glua_task_mgr;
