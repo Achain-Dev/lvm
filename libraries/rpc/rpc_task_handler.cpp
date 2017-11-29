@@ -217,7 +217,7 @@ void RpcTaskHandler::set_value(const std::string& result) {
     LuaRequestTaskResult* p_result = nullptr;
     string_to_msg(result, m);
     LuaRequestTaskResultRpc lua_request_result_task(m.as<LuaRequestTaskResultRpc>());
-    std::vector<LuaRequestTask>::iterator iter = _tasks.begin();
+    auto iter = _tasks.begin();
     
     for (; iter != _tasks.end(); iter++) {
         if (iter->task_id == lua_request_result_task.data.task_id) {
