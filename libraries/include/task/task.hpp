@@ -568,7 +568,7 @@ FC_REFLECT_DERIVED(CallTaskResult, (TaskImplResult))
 FC_REFLECT_DERIVED(TransferTaskResult, (TaskImplResult))
 FC_REFLECT_DERIVED(UpgradeTaskResult, (TaskImplResult))
 FC_REFLECT_DERIVED(DestroyTaskResult, (TaskImplResult))
-FC_REFLECT_DERIVED(CompileScriptTaskResult, (TaskImplResult))
+FC_REFLECT_DERIVED(CompileScriptTaskResult, (TaskImplResult), (script_path_file))
 FC_REFLECT_DERIVED(HandleEventsTaskResult, (TaskImplResult))
 FC_REFLECT_DERIVED(CallContractOfflineTaskResult, (TaskImplResult))
 
