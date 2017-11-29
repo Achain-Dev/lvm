@@ -32,15 +32,14 @@
 /**
  * wrapper contract name, so it wan't conflict with lua inner module names
  */
-#define CONTRACT_NAME_WRAPPER_PREFIX "@g_"
-
-#define CURRENT_CONTRACT_NAME   "@self"
-
-#define THINKYOUNG_CONTRACT_INITING "thinkyoung_contract_ininting"
-
-#define STARTING_CONTRACT_ADDRESS "starting_contract_address"
-
-#define LUA_STATE_DEBUGGER_INFO "lua_state_debugger_info"
+#define CONTRACT_NAME_WRAPPER_PREFIX    "@g_"
+#define CURRENT_CONTRACT_NAME                  "@self"
+#define THINKYOUNG_CONTRACT_INITING        "thinkyoung_contract_ininting"
+#define STARTING_CONTRACT_ADDRESS            "starting_contract_address"
+#define LUA_STATE_DEBUGGER_INFO                   "lua_state_debugger_info"
+#define STR_CONTRACT_ADDRESS_IN_CHAIN     "str_contract_address_in_chain"
+#define STR_CONTRACT_ID_IN_CHAIN                  "str_contract_id_in_chain"
+#define PTR_ENTRY_CODE_IN_CHAIN                    "ptr_entry_code_in_chain"
 
 
 /**

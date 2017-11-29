@@ -73,4 +73,9 @@ static void setGluaStateScopeValue(lvm::lua::lib::GluaStateScope& scope,
                                    const GluaStateValue& statevalue,
                                    const size_t limit_num
                                   );
+
+static void store_contractinfo_in_chain(lvm::lua::lib::GluaStateScope& scope,
+                                        const std::string& str_contract_address,
+                                        const std::string& str_contract_id,
+                                        Code& _code);
 #endif
