@@ -96,6 +96,7 @@ void RegisterContractOperation::evaluate(TaskAndCallback& _inst_taskandcallback,
         scope.execute_contract_init_by_address(str_tmp_contract_address.c_str(), nullptr, nullptr);
         //
         int exception_code = lvm::lua::lib::get_lua_state_value(scope.L(), "exception_code").int_value;
+        (*result)->execute_count = scope.get_instructions_executed_count();
         
         if (exception_code > 0) {
             str_exception_msg = lvm::lua::lib::get_lua_state_value(scope.L(), "exception_msg").string_value;

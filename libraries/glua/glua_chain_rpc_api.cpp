@@ -145,8 +145,8 @@ namespace lvm {
                 LuaRequestTaskResult result = GluaTaskMgr::get_glua_task_mgr()->lua_request(p);
                 
                 if (result.err_num != 0 || result.params.size() < 1) {
-                    L->force_stopping = true;
-                    L->exit_code = LUA_API_INTERNAL_ERROR;
+                    //                    L->force_stopping = true;
+                    //                    L->exit_code = LUA_API_INTERNAL_ERROR;
                     return ;
                 }
                 
