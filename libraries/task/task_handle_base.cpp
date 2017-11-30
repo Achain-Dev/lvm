@@ -52,7 +52,7 @@ void TaskDispatcher::push_task(TaskBase* task_base,
 
 void TaskDispatcher::dispatch_task_impl() {
     _task_mutex.lock();
-    std::vector<TaskAndCallback>::iterator iter = _tasks.begin();
+    auto iter = _tasks.begin();
     
     while (iter != _tasks.end()) {
         GluaTaskMgr* lua_task_mgr = GluaTaskMgr::get_glua_task_mgr();

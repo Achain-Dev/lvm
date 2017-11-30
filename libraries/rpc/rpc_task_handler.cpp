@@ -12,6 +12,9 @@ const LuaRpcMessageTypeEnum UpgradeTaskRpc::type = LuaRpcMessageTypeEnum::UPGRAD
 const LuaRpcMessageTypeEnum DestroyTaskRpc::type = LuaRpcMessageTypeEnum::DESTROY_MESSAGE_TYPE;
 const LuaRpcMessageTypeEnum TransferTaskRpc::type = LuaRpcMessageTypeEnum::TRANSFER_MESSAGE_TYPE;
 const LuaRpcMessageTypeEnum LuaRequestTaskRpc::type = LuaRpcMessageTypeEnum::LUA_REQUEST_MESSAGE_TYPE;
+const LuaRpcMessageTypeEnum CompileScriptTaskRpc::type = LuaRpcMessageTypeEnum::COMPILE_SCRIPT_MESSAGE_TPYE;
+const LuaRpcMessageTypeEnum HandleEventsTaskRpc::type = LuaRpcMessageTypeEnum::HANDLE_EVENTS_MESSAGE_TYPE;
+const LuaRpcMessageTypeEnum CallContractOfflineTaskRpc::type = LuaRpcMessageTypeEnum::CALL_OFFLINE_MESSAGE_TYPE;
 
 //result
 const LuaRpcMessageTypeEnum CompileTaskResultRpc::type = LuaRpcMessageTypeEnum::COMPILE_RESULT_MESSAGE_TYPE;
@@ -21,6 +24,9 @@ const LuaRpcMessageTypeEnum UpgradeTaskResultRpc::type = LuaRpcMessageTypeEnum::
 const LuaRpcMessageTypeEnum DestroyTaskResultRpc::type = LuaRpcMessageTypeEnum::DESTROY_RESULT_MESSAGE_TYPE;
 const LuaRpcMessageTypeEnum TransferTaskResultRpc::type = LuaRpcMessageTypeEnum::TRANSFER_RESULT_MESSAGE_TYPE;
 const LuaRpcMessageTypeEnum LuaRequestTaskResultRpc::type = LuaRpcMessageTypeEnum::LUA_REQUEST_RESULT_MESSAGE_TYPE;
+const LuaRpcMessageTypeEnum CompileScriptTaskResultRpc::type = LuaRpcMessageTypeEnum::COMPILE_SCRIPT_RESULT_MESSAGE_TPYE;
+const LuaRpcMessageTypeEnum HandleEventsTaskResultRpc::type = LuaRpcMessageTypeEnum::HANDLE_EVENTS_RESULT_MESSAGE_TYPE;
+const LuaRpcMessageTypeEnum CallContractOfflineTaskResultRpc::type = LuaRpcMessageTypeEnum::CALL_OFFLINE_RESULT_MESSAGE_TYPE;
 
 //hello msg
 const LuaRpcMessageTypeEnum HelloMsgRpc::type = LuaRpcMessageTypeEnum::HELLO_MESSAGE_TYPE;
@@ -114,18 +120,32 @@ TaskBase* RpcTaskHandler::parse_to_task(const std::string& task,
                 return destroy_ptr;
             }
             
-#if 0
-            
-            case LUA_REQUEST_MESSAGE_TYPE: {
-                LuaRequestTaskRpc lua_request_task(m.as<LuaRequestTaskRpc>());
-                LuaRequestTask* lua_request_ptr = new LuaRequestTask(lua_request_task.data);
-                FC_ASSERT(lua_request_ptr->task_type == lua_request_task.data.task_type, "", \
-                          ("LuaRequestTask::task_type", lua_request_ptr->task_type) \
-                          ("LuaRequestTaskRpc::task_type", lua_request_task.data.task_type));
-                return lua_request_ptr;
+            case COMPILE_SCRIPT_MESSAGE_TPYE: {
+                CompileScriptTaskRpc compile_script_task(m.as<CompileScriptTaskRpc>());
+                CompileScriptTask* compile_script_ptr = new CompileScriptTask(compile_script_task.data);
+                FC_ASSERT(compile_script_ptr->task_type == compile_script_task.data.task_type, "", \
+                          ("CompileScriptTask::task_type", compile_script_ptr->task_type) \
+                          ("CompileScriptTaskRpc::task_type", compile_script_task.data.task_type));
+                return compile_script_ptr;
             }
             
-#endif
+            case HANDLE_EVENTS_MESSAGE_TYPE: {
+                HandleEventsTaskRpc handle_events_task(m.as<HandleEventsTaskRpc>());
+                HandleEventsTask* handle_events_ptr = new HandleEventsTask(handle_events_task.data);
+                FC_ASSERT(handle_events_ptr->task_type == handle_events_task.data.task_type, "", \
+                          ("HandleEventsTask::task_type", handle_events_ptr->task_type) \
+                          ("HandleEventsTaskRpc::task_type", handle_events_task.data.task_type));
+                return handle_events_ptr;
+            }
+            
+            case CALL_OFFLINE_MESSAGE_TYPE: {
+                CallContractOfflineTaskRpc call_contract_offline_task(m.as<CallContractOfflineTaskRpc>());
+                CallContractOfflineTask* call_contract_offline_ptr = new CallContractOfflineTask(call_contract_offline_task.data);
+                FC_ASSERT(call_contract_offline_ptr->task_type == call_contract_offline_task.data.task_type, "", \
+                          ("CallContractOfflineTask::task_type", call_contract_offline_ptr->task_type) \
+                          ("CallContractOfflineTaskRpc::task_type", call_contract_offline_task.data.task_type));
+                return call_contract_offline_ptr;
+            }
             
             case LUA_REQUEST_RESULT_MESSAGE_TYPE: {
                 LuaRequestTaskResultRpc lua_request_result_task(m.as<LuaRequestTaskResultRpc>());
@@ -197,7 +217,7 @@ void RpcTaskHandler::set_value(const std::string& result) {
     LuaRequestTaskResult* p_result = nullptr;
     string_to_msg(result, m);
     LuaRequestTaskResultRpc lua_request_result_task(m.as<LuaRequestTaskResultRpc>());
-    std::vector<LuaRequestTask>::iterator iter = _tasks.begin();
+    auto iter = _tasks.begin();
     
     for (; iter != _tasks.end(); iter++) {
         if (iter->task_id == lua_request_result_task.data.task_id) {
@@ -219,6 +239,7 @@ Message RpcTaskHandler::generate_message(TaskImplResult* task_ptr) {
     FC_ASSERT(task_ptr->task_type == HELLO_MSG || task_ptr->task_type == COMPILE_TASK
               || task_ptr->task_type == REGISTER_TASK ||task_ptr->task_type == UPGRADE_TASK
               || task_ptr->task_type == CALL_TASK ||task_ptr->task_type == TRANSFER_TASK
-              || task_ptr->task_type == DESTROY_TASK);
+              || task_ptr->task_type == DESTROY_TASK || task_ptr->task_type == COMPILE_SCRIPT_TASK
+              || task_ptr->task_type == HANDLE_EVENTS_TASK || task_ptr->task_type == CALL_OFFLINE_TASK);
     return task_ptr->get_rpc_message();
 }

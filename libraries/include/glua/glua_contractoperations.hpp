@@ -10,40 +10,62 @@
 #include <stdint.h>
 #include <string>
 
+
 struct ContractOperation {
-    virtual  void evaluate(TaskAndCallback& _inst_taskandcallback, TaskImplResult* result) const = 0;
+    virtual  void evaluate(TaskAndCallback& _inst_taskandcallback, TaskImplResult** result) const = 0;
 };
 
 struct RegisterContractOperation : ContractOperation {
-    static const OperationTypeEnum type;
     RegisterContractOperation() {}
-    virtual void evaluate(TaskAndCallback& _inst_taskandcallback, TaskImplResult* result) const;
+    virtual void evaluate(TaskAndCallback& _inst_taskandcallback, TaskImplResult** result) const;
 };
 
 struct UpgradeContractOperation: ContractOperation {
-    static const OperationTypeEnum type;
-    
     UpgradeContractOperation() {}
-    virtual void evaluate(TaskAndCallback& _inst_taskandcallback, TaskImplResult* result) const;
+    virtual void evaluate(TaskAndCallback& _inst_taskandcallback, TaskImplResult** result) const;
 };
 
 struct DestroyContractOperation: ContractOperation {
-    static const OperationTypeEnum type;
     DestroyContractOperation() {}
-    virtual void evaluate(TaskAndCallback& _inst_taskandcallback, TaskImplResult* result) const;
+    virtual void evaluate(TaskAndCallback& _inst_taskandcallback, TaskImplResult** result) const;
 };
 
 struct CallContractOperation : ContractOperation  {
-    static const OperationTypeEnum type;
     CallContractOperation() {}
-    virtual void evaluate(TaskAndCallback& _inst_taskandcallback, TaskImplResult* result) const;
+    virtual void evaluate(TaskAndCallback& _inst_taskandcallback, TaskImplResult** result) const;
 };
 
 struct TransferContractOperation  : ContractOperation {
-    static const OperationTypeEnum type;
     TransferContractOperation() {}
-    virtual void evaluate(TaskAndCallback& _inst_taskandcallback, TaskImplResult* result) const;
+    virtual void evaluate(TaskAndCallback& _inst_taskandcallback, TaskImplResult** result) const;
 };
+
+struct CompileContractOperation : ContractOperation {
+    CompileContractOperation() {}
+    virtual void evaluate(TaskAndCallback& _inst_taskandcallback, TaskImplResult** result) const;
+};
+
+struct CompileScriptOperation : ContractOperation {
+    CompileScriptOperation() {}
+    virtual void evaluate(TaskAndCallback& _inst_taskandcallback, TaskImplResult** result) const;
+};
+
+struct HandleEventsOperation : ContractOperation {
+    HandleEventsOperation() {}
+    virtual void evaluate(TaskAndCallback& _inst_taskandcallback, TaskImplResult** result) const;
+};
+
+struct CallContractOfflineOperation : ContractOperation {
+    CallContractOfflineOperation() {}
+    virtual void evaluate(TaskAndCallback& _inst_taskandcallback, TaskImplResult** result) const;
+};
+
+struct HelloMsgOperation : ContractOperation {
+    HelloMsgOperation() {}
+    virtual void evaluate(TaskAndCallback& _inst_taskandcallback, TaskImplResult** result) const;
+};
+
+ContractOperation* BuildContractOperation(TaskBase* task);
 
 static void setGluaStateScopeValue(lvm::lua::lib::GluaStateScope& scope,
                                    const std::string& str_caller,
@@ -51,4 +73,9 @@ static void setGluaStateScopeValue(lvm::lua::lib::GluaStateScope& scope,
                                    const GluaStateValue& statevalue,
                                    const size_t limit_num
                                   );
+
+static void store_contractinfo_in_chain(lvm::lua::lib::GluaStateScope& scope,
+                                        const std::string& str_contract_address,
+                                        const std::string& str_contract_id,
+                                        Code& _code);
 #endif
