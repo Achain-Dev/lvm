@@ -80,7 +80,6 @@ std::string CompileTaskResult::get_result_string() {
     return result;
 }
 
-
 Message TaskImplResult::get_rpc_message() {
     HelloMsgResultRpc result(*this);
     Message rpc_msg(result);

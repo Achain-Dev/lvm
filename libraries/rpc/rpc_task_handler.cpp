@@ -34,7 +34,6 @@ const LuaRpcMessageTypeEnum HelloMsgResultRpc::type = LuaRpcMessageTypeEnum::HEL
 
 RpcTaskHandler::RpcTaskHandler(RpcMgr* rpcMgrPtr) {
     _rpc_mgr_ptr = rpcMgrPtr;
-    _lua_request_promise_ptr = new fc::promise<void*>("lua_request_promise");
 }
 
 RpcTaskHandler::~RpcTaskHandler() {
@@ -183,10 +182,13 @@ LuaRequestTaskResult RpcTaskHandler::lua_request(LuaRequestTask& request_task) {
     LuaRequestTaskResult* result_p = nullptr;
     FC_ASSERT(_rpc_mgr_ptr != NULL);
     post_message(request_task);
+    _lua_request_promise_ptr = fc::promise<void*>::ptr(new fc::promise<void*>("lua_request_promise"));
+    std::shared_ptr<LuaRequestTaskResult> result_ptr;
     result_p = (LuaRequestTaskResult*)(void *)_lua_request_promise_ptr->wait();
-    FC_ASSERT(result_p->task_type == LUA_REQUEST_RESULT_TASK);
-    LuaRequestTaskResult lua_request_result = *result_p;
-    delete result_p;
+    result_ptr.reset(result_p);
+    _lua_request_promise_ptr.reset();
+    FC_ASSERT(result_ptr && result_ptr->task_type == LUA_REQUEST_RESULT_TASK);
+    LuaRequestTaskResult lua_request_result = *result_ptr;
     return lua_request_result;
 }
 
@@ -202,9 +204,10 @@ void RpcTaskHandler::post_message(LuaRequestTask& lua_task) {
     FC_ASSERT(_rpc_mgr_ptr != NULL);
     LuaRequestTaskRpc lua_msg(lua_task);
     Message msg(lua_msg);
-    _rpc_mgr_ptr->post_message(msg);
     store_request(lua_task);
+    _rpc_mgr_ptr->post_message(msg);
 }
+
 void RpcTaskHandler::store_request(LuaRequestTask& task) {
     _task_mutex.lock();
     _tasks.push_back(task);
@@ -230,7 +233,10 @@ void RpcTaskHandler::set_value(const std::string& result) {
         _lua_request_promise_ptr->set_value(p_result);
     }
     
-    _tasks.erase(iter);
+    if (iter != _tasks.end()) {
+        _tasks.erase(iter);
+    }
+    
     _task_mutex.unlock();
 }
 Message RpcTaskHandler::generate_message(TaskImplResult* task_ptr) {
