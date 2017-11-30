@@ -401,9 +401,17 @@ namespace lvm {
 
             GluaStorageValue GluaChainRpcApi::get_storage_value_from_thinkyoung_by_address(lua_State *L, const char *contract_address, std::string name) {
                 lvm::lua::lib::increment_lvm_instructions_executed_count(L, CHAIN_GLUA_API_EACH_INSTRUCTIONS_COUNT - 1);
-                GluaStorageValue null_storage;
-                null_storage.type = lvm::blockchain::StorageValueTypes::storage_value_null;
                 std::string contract_addr(contract_address);
+                GluaStorageValue null_storage;
+                bool b_prefix_name = glua::util::starts_with(contract_addr, std::string(ADDRESS_CONTRACT_PREFIX)) ||
+                                     glua::util::starts_with(contract_addr, std::string(STREAM_CONTRACT_PREFIX));
+
+                if (b_prefix_name) {
+                    // no store in database with prefix @pointer_ and @stream_  ; just return
+                    return null_storage;
+                }
+
+                null_storage.type = lvm::blockchain::StorageValueTypes::storage_value_null;
                 std::string storage_name(name);
                 LuaRequestTask p;
                 p.method = CHECK_CONTRACT_EXIST_BY_ADDRESS;
