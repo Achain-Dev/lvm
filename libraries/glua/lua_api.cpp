@@ -32,29 +32,23 @@ namespace lvm {
     namespace lua {
         namespace api {
             // TODO: all these apis need TODO
-            
+
             static int has_error = 0;
-            
-            static std::string get_file_name_str_from_contract_module_name(std::string name) {
-                std::stringstream ss;
-                ss << "lvm_contract_" << name;
-                return ss.str();
-            }
-            
+
             /**
             * whether exception happen in L
             */
             bool GluaChainApi::has_exception(lua_State *L) {
                 return has_error ? true : false;
             }
-            
+
             /**
             * clear exception marked
             */
             void GluaChainApi::clear_exceptions(lua_State *L) {
                 has_error = 0;
             }
-            
+
             /**
             * when exception happened, use this api to tell lvm
             * @param L the lua stack
@@ -72,11 +66,11 @@ namespace lvm {
                 // const char *msg = luaO_pushfstring(L, error_format, vap);
                 vsnprintf(msg, LUA_EXCEPTION_MULTILINE_STRNG_MAX_LENGTH, error_format, vap);
                 va_end(vap);
-                
+
                 if (strlen(msg) > LUA_EXCEPTION_MULTILINE_STRNG_MAX_LENGTH - 1) {
                     msg[LUA_EXCEPTION_MULTILINE_STRNG_MAX_LENGTH - 1] = 0;
                 }
-                
+
                 //perror(msg);
                 //printf("\n");
                 // luaL_error(L, error_format); // notify lua error
@@ -85,12 +79,12 @@ namespace lvm {
                 //如果上次的exception code为THINKYOUNG_API_LVM_LIMIT_OVER_ERROR, 不能被其他异常覆盖
                 //只有调用clear清理后，才能继续记录异常
                 int last_code = lua::lib::get_lua_state_value(L, "exception_code").int_value;
-                
+
                 if (last_code == LVM_API_LVM_LIMIT_OVER_ERROR
                         && code != LVM_API_LVM_LIMIT_OVER_ERROR) {
                     return;
                 }
-                
+
                 GluaStateValue val_code;
                 val_code.int_value = code;
                 GluaStateValue val_msg;
@@ -98,7 +92,7 @@ namespace lvm {
                 lua::lib::set_lua_state_value(L, "exception_code", val_code, GluaStateValueType::LUA_STATE_VALUE_INT);
                 lua::lib::set_lua_state_value(L, "exception_msg", val_msg, GluaStateValueType::LUA_STATE_VALUE_STRING);
             }
-            
+
             /**
             * check whether the contract apis limit over, in this lua_State
             * @param L the lua stack
@@ -107,21 +101,21 @@ namespace lvm {
             int GluaChainApi::check_contract_api_instructions_over_limit(lua_State *L) {
                 return 0; // FIXME: need fill by thinkyoung api
             }
-            
+
             int GluaChainApi::get_stored_contract_info_by_address(lua_State *L, const char *address, std::shared_ptr<GluaContractInfo> contract_info_ret) {
                 /*blockchain::TransactionEvaluationState* pevaluate_state = (blockchain::TransactionEvaluationState*)lua::lib::get_lua_state_value(L, "evaluate_state").pointer_value;
                 blockchain::oContractEntry entry = pevaluate_state->_current_state->get_contract_entry(thinkyoung::blockchain::Address(std::string(address), AddressType::contract_address));
-                
+
                 if (!entry.valid())
                 return 0;
-                
+
                 blockchain::Code& code = entry->code;
                 contract_info_ret->contract_apis.clear();
                 std::copy(code.abi.begin(), code.abi.end(), std::back_inserter(contract_info_ret->contract_apis));
                 std::copy(code.offline_abi.begin(), code.offline_abi.end(), std::back_inserter(contract_info_ret->contract_apis));*/
                 return 1;
             }
-            
+
             void GluaChainApi::get_contract_address_by_name(lua_State *L, const char *name, char *address, size_t *address_size) {
                 ///*
                 //std::string addr_str = std::string("id_") + std::string(name);
@@ -143,21 +137,21 @@ namespace lvm {
                 //    address[CONTRACT_ID_MAX_LENGTH - 1] = '\0';
                 //}
             }
-            
+
             bool GluaChainApi::check_contract_exist_by_address(lua_State *L, const char *address) {
                 /*thinkyoung::blockchain::TransactionEvaluationState* eval_state_ptr =
                     (thinkyoung::blockchain::TransactionEvaluationState*)
                     (thinkyoung::lua::lib::get_lua_state_value(L, "evaluate_state").pointer_value);
-                
+
                     if (!eval_state_ptr)
                     return NULL;
-                
+
                     thinkyoung::blockchain::ChainInterface* cur_state = eval_state_ptr->_current_state;
                     oContractEntry entry = cur_state->get_contract_entry(thinkyoung::blockchain::Address(std::string(address), AddressType::contract_address));
                     return entry.valid();*/
                 return true;
             }
-            
+
             bool GluaChainApi::check_contract_exist(lua_State *L, const char *name) {
                 ///*
                 //char *filename = lutil_concat_str4("thinkyoung_lua_modules", file_separator_str(), "thinkyoung_contract_", name);
@@ -181,11 +175,12 @@ namespace lvm {
                 //return entry.valid();
                 return true;
             }
-            
+
             std::shared_ptr<GluaModuleByteStream> GluaChainApi::get_bytestream_from_code(lua_State *L, const Code& code) {
-                if (code.byte_code.size() > LUA_MODULE_BYTE_STREAM_BUF_SIZE)
+                if (code.byte_code.size() > LUA_MODULE_BYTE_STREAM_BUF_SIZE) {
                     return NULL;
-                    
+                }
+
                 auto p_luamodule = std::make_shared<GluaModuleByteStream>();
                 p_luamodule->is_bytes = true;
                 p_luamodule->buff.resize(code.byte_code.size());
@@ -205,32 +200,6 @@ namespace lvm {
             * load contract lua byte stream from thinkyoung api
             */
             std::shared_ptr<GluaModuleByteStream> GluaChainApi::open_contract(lua_State *L, const char *name) {
-                // FXIME
-                /*
-                bool is_bytes = true;
-                char *filename = lutil_concat_str4("thinkyoung_lua_modules", file_separator_str(), "thinkyoung_contract_", name);
-                FILE *f = fopen(filename, "rb");
-                if (NULL == f)
-                {
-                filename = lutil_concat_str(filename, ".lua");
-                f = fopen(filename, "rb");
-                if (NULL == f)
-                {
-                return NULL;
-                }
-                is_bytes = false;
-                }
-                GluaModuleByteStream *stream = (GluaModuleByteStream*)malloc(sizeof(GluaModuleByteStream));
-                stream->len = fread(stream->buff, 1024 * 1024, 1, f);
-                fseek(f, 0, SEEK_END); // seek to end of file
-                stream->len = ftell(f); // get current file pointer
-                stream->is_bytes = is_bytes;
-                fclose(f);
-                if (!is_bytes)
-                stream->buff[stream->len] = '\0';
-                free(filename);
-                return stream;
-                */
                 lvm::lua::lib::increment_lvm_instructions_executed_count(L, CHAIN_GLUA_API_EACH_INSTRUCTIONS_COUNT - 1);
                 //thinkyoung::blockchain::TransactionEvaluationState* eval_state_ptr =
                 //    (thinkyoung::blockchain::TransactionEvaluationState*)
@@ -240,70 +209,70 @@ namespace lvm {
                 //    return NULL;
                 /*thinkyoung::blockchain::ChainInterface* cur_state = eval_state_ptr->_current_state;
                 oContractEntry entry = cur_state->get_contract_entry(std::string(name));
-                
+
                 if (entry.valid() && (entry->code.byte_code.size() <= LUA_MODULE_BYTE_STREAM_BUF_SIZE)) {
                 return get_bytestream_from_code(L, entry->code);
                 }*/
                 return NULL;
             }
-            
+
             std::shared_ptr<GluaModuleByteStream> GluaChainApi::open_contract_by_address(lua_State *L, const char *address) {
                 lvm::lua::lib::increment_lvm_instructions_executed_count(L, CHAIN_GLUA_API_EACH_INSTRUCTIONS_COUNT - 1);
                 /*thinkyoung::blockchain::TransactionEvaluationState* eval_state_ptr =
                     (thinkyoung::blockchain::TransactionEvaluationState*)
                     (thinkyoung::lua::lib::get_lua_state_value(L, "evaluate_state").pointer_value);
-                
+
                     if (!eval_state_ptr)
                     return NULL;
-                
+
                     thinkyoung::blockchain::ChainInterface* cur_state = eval_state_ptr->_current_state;
                     oContractEntry entry = cur_state->get_contract_entry(thinkyoung::blockchain::Address(std::string(address), AddressType::contract_address));
-                
+
                     if (entry.valid() && (entry->code.byte_code.size() <= LUA_MODULE_BYTE_STREAM_BUF_SIZE)) {
                     return get_bytestream_from_code(L, entry->code);
                     }*/
                 return NULL;
             }
-            
+
             GluaStorageValue GluaChainApi::get_storage_value_from_thinkyoung_by_address(lua_State *L, const char *contract_address, std::string name) {
                 GluaStorageValue null_storage;
                 null_storage.type = lvm::blockchain::StorageValueTypes::storage_value_null;
                 /*thinkyoung::blockchain::TransactionEvaluationState* eval_state_ptr =
                     (thinkyoung::blockchain::TransactionEvaluationState*)
                     (thinkyoung::lua::lib::get_lua_state_value(L, "evaluate_state").pointer_value);
-                
+
                     if (!eval_state_ptr)
                     return null_storage;
-                
+
                     thinkyoung::blockchain::ChainInterface* cur_state = eval_state_ptr->_current_state;
                     oContractStorage entry = cur_state->get_contractstorage_entry(Address(std::string(contract_address), AddressType::contract_address));
-                
+
                     if (NOT entry.valid())
                     return null_storage;
-                
+
                     auto iter = entry->contract_storages.find(std::string(name));
-                
+
                     if (iter == entry->contract_storages.end())
                     return null_storage;
                     thinkyoung::blockchain::StorageDataType storage_data = iter->second;
                     return thinkyoung::blockchain::StorageDataType::create_lua_storage_from_storage_data(L, storage_data);*/
                 return null_storage;
             }
-            
+
             bool GluaChainApi::commit_storage_changes_to_thinkyoung(lua_State *L, AllContractsChangesMap &changes) {
                 /*thinkyoung::blockchain::TransactionEvaluationState* eval_state_ptr =
                     (thinkyoung::blockchain::TransactionEvaluationState*)
                     (thinkyoung::lua::lib::get_lua_state_value(L, "evaluate_state").pointer_value);
-                
+
                     if (!eval_state_ptr)
                     return false;
-                
+
                     for (auto all_con_chg_iter = changes.begin(); all_con_chg_iter != changes.end(); ++all_con_chg_iter) {
                     StorageOperation storage_op;
                     std::string contract_id = all_con_chg_iter->first;
                     ContractChangesMap contract_change = *(all_con_chg_iter->second);
                     storage_op.contract_id = Address(contract_id, AddressType::contract_address);
-                
+
                     for (auto con_chg_iter = contract_change.begin(); con_chg_iter != contract_change.end(); ++con_chg_iter) {
                     std::string contract_name = con_chg_iter->first;
                     StorageDataChangeType storage_change;
@@ -311,116 +280,118 @@ namespace lvm {
                     storage_change.storage_after = StorageDataType::get_storage_data_from_lua_storage(con_chg_iter->second.after);
                     storage_op.contract_change_storages.insert(make_pair(contract_name, storage_change));
                     }
-                
+
                     eval_state_ptr->p_result_trx.push_storage_operation(storage_op);
                     }*/
                 return true;
             }
-            
+
             //not use
             bool GluaChainApi::register_storage(lua_State *L, const char *contract_name, const char *name) {
                 // TODO
                 printf("registered storage %s[%s] to thinkyoung\n", contract_name, name);
                 return true;
             }
-            
+
             intptr_t GluaChainApi::register_object_in_pool(lua_State *L, intptr_t object_addr, GluaOutsideObjectTypes type) {
                 auto node = lvm::lua::lib::get_lua_state_value_node(L, GLUA_OUTSIDE_OBJECT_POOLS_KEY);
                 // Map<type, Map<object_key, object_addr>>
                 std::map<GluaOutsideObjectTypes, std::shared_ptr<std::map<intptr_t, intptr_t>>> *object_pools = nullptr;
-                
+
                 if (node.type == GluaStateValueType::LUA_STATE_VALUE_nullptr) {
                     node.type = GluaStateValueType::LUA_STATE_VALUE_POINTER;
                     object_pools = new std::map<GluaOutsideObjectTypes, std::shared_ptr<std::map<intptr_t, intptr_t>>>();
                     node.value.pointer_value = (void*)object_pools;
                     lvm::lua::lib::set_lua_state_value(L, GLUA_OUTSIDE_OBJECT_POOLS_KEY, node.value, node.type);
-                    
+
                 } else {
                     object_pools = (std::map<GluaOutsideObjectTypes, std::shared_ptr<std::map<intptr_t, intptr_t>>> *) node.value.pointer_value;
                 }
-                
+
                 if (object_pools->find(type) == object_pools->end()) {
                     object_pools->emplace(std::make_pair(type, std::make_shared<std::map<intptr_t, intptr_t>>()));
                 }
-                
+
                 auto pool = (*object_pools)[type];
                 auto object_key = object_addr;
                 (*pool)[object_key] = object_addr;
                 return object_key;
             }
-            
+
             intptr_t GluaChainApi::is_object_in_pool(lua_State *L, intptr_t object_key, GluaOutsideObjectTypes type) {
                 auto node = lvm::lua::lib::get_lua_state_value_node(L, GLUA_OUTSIDE_OBJECT_POOLS_KEY);
                 // Map<type, Map<object_key, object_addr>>
                 std::map<GluaOutsideObjectTypes, std::shared_ptr<std::map<intptr_t, intptr_t>>> *object_pools = nullptr;
-                
+
                 if (node.type == GluaStateValueType::LUA_STATE_VALUE_nullptr) {
                     return 0;
-                    
+
                 } else {
                     object_pools = (std::map<GluaOutsideObjectTypes, std::shared_ptr<std::map<intptr_t, intptr_t>>> *) node.value.pointer_value;
                 }
-                
+
                 if (object_pools->find(type) == object_pools->end()) {
                     object_pools->emplace(std::make_pair(type, std::make_shared<std::map<intptr_t, intptr_t>>()));
                 }
-                
+
                 auto pool = (*object_pools)[type];
                 return (*pool)[object_key];
             }
-            
+
             void GluaChainApi::release_objects_in_pool(lua_State *L) {
                 auto node = lvm::lua::lib::get_lua_state_value_node(L, GLUA_OUTSIDE_OBJECT_POOLS_KEY);
                 // Map<type, Map<object_key, object_addr>>
                 std::map<GluaOutsideObjectTypes, std::shared_ptr<std::map<intptr_t, intptr_t>>> *object_pools = nullptr;
-                
+
                 if (node.type == GluaStateValueType::LUA_STATE_VALUE_nullptr) {
                     return;
                 }
-                
+
                 object_pools = (std::map<GluaOutsideObjectTypes, std::shared_ptr<std::map<intptr_t, intptr_t>>> *) node.value.pointer_value;
-                
+
                 // TODO: 对于object_pools中不同类型的对象，分别释放
                 for (const auto &p : *object_pools) {
                     auto type = p.first;
                     auto pool = p.second;
-                    
+
                     for (const auto &object_item : *pool) {
                         auto object_key = object_item.first;
                         auto object_addr = object_item.second;
-                        
-                        if (object_addr == 0)
+
+                        if (object_addr == 0) {
                             continue;
-                            
+                        }
+
                         switch (type) {
                             case GluaOutsideObjectTypes::OUTSIDE_STREAM_STORAGE_TYPE: {
                                 auto stream = (lvm::lua::lib::GluaByteStream*) object_addr;
                                 delete stream;
                             }
                             break;
-                            
+
                             default: {
                                 continue;
                             }
                         }
                     }
                 }
-                
+
                 delete object_pools;
                 GluaStateValue null_state_value;
                 null_state_value.int_value = 0;
                 lvm::lua::lib::set_lua_state_value(L, GLUA_OUTSIDE_OBJECT_POOLS_KEY, null_state_value, GluaStateValueType::LUA_STATE_VALUE_nullptr);
             }
-            
+
             lua_Integer GluaChainApi::transfer_from_contract_to_address(lua_State *L, const char *contract_address, const char *to_address,
                     const char *asset_type, int64_t amount) {
                 lvm::lua::lib::increment_lvm_instructions_executed_count(L, CHAIN_GLUA_API_EACH_INSTRUCTIONS_COUNT - 1);
                 //printf("contract transfer from %s to %s, asset[%s] amount %ld\n", contract_address, to_address, asset_type, amount_str);
                 //return true;
-                
-                if (amount <= 0)
+
+                if (amount <= 0) {
                     return -6;
-                    
+                }
+
                 //thinkyoung::blockchain::TransactionEvaluationState* eval_state_ptr =
                 //    (thinkyoung::blockchain::TransactionEvaluationState*)
                 //    (thinkyoung::lua::lib::get_lua_state_value(L, "evaluate_state").pointer_value);
@@ -456,31 +427,31 @@ namespace lvm {
                 //}
                 return 0;
             }
-            
+
             lua_Integer GluaChainApi::transfer_from_contract_to_public_account(lua_State *L, const char *contract_address, const char *to_account_name,
                     const char *asset_type, int64_t amount) {
                 /*thinkyoung::lua::lib::increment_lvm_instructions_executed_count(L, CHAIN_GLUA_API_EACH_INSTRUCTIONS_COUNT - 1);
                 thinkyoung::blockchain::TransactionEvaluationState* eval_state_ptr =
                 (thinkyoung::blockchain::TransactionEvaluationState*)
                 (thinkyoung::lua::lib::get_lua_state_value(L, "evaluate_state").pointer_value);
-                
+
                 if (!eval_state_ptr || !eval_state_ptr->_current_state) {
                 L->force_stopping = true;
                 L->exit_code = LUA_API_INTERNAL_ERROR;
                 return -1;
                 }
-                
+
                 if (!eval_state_ptr->_current_state->is_valid_account_name(to_account_name))
                 return -7;
-                
+
                 auto acc_entry = eval_state_ptr->_current_state->get_account_entry(to_account_name);
-                
+
                 if (!acc_entry.valid())
                 return -7;
                 return transfer_from_contract_to_address(L, contract_address, acc_entry->owner_address().AddressToString().c_str(), asset_type, amount);*/
                 return -1;
             }
-            
+
             int64_t GluaChainApi::get_contract_balance_amount(lua_State *L, const char *contract_address, const char* asset_symbol) {
                 lvm::lua::lib::increment_lvm_instructions_executed_count(L, CHAIN_GLUA_API_EACH_INSTRUCTIONS_COUNT - 1);
                 //try {
@@ -523,7 +494,7 @@ namespace lvm {
                 //}
                 return -1;
             }
-            
+
             int64_t GluaChainApi::get_transaction_fee(lua_State *L) {
                 lvm::lua::lib::increment_lvm_instructions_executed_count(L, CHAIN_GLUA_API_EACH_INSTRUCTIONS_COUNT - 1);
                 /* try {
@@ -531,17 +502,17 @@ namespace lvm {
                      (thinkyoung::blockchain::TransactionEvaluationState*)
                      (thinkyoung::lua::lib::get_lua_state_value(L, "evaluate_state").pointer_value);
                      ChainInterface*  db_interface = NULL;
-                
+
                      if (!eval_state_ptr || !(db_interface = eval_state_ptr->_current_state)) {
                      FC_CAPTURE_AND_THROW(lua_executor_internal_error, (""));
                      }
-                
+
                      Asset  fee = eval_state_ptr->_current_state->get_transaction_fee();
                      oAssetEntry ass_res = db_interface->get_asset_entry(fee.asset_id);
-                
+
                      if (!ass_res.valid() || ass_res->precision == 0)
                      return -1;
-                
+
                      return fee.amount;
                      } catch (fc::exception e) {
                      L->force_stopping = true;
@@ -550,7 +521,7 @@ namespace lvm {
                      }*/
                 return -2;
             }
-            
+
             uint32_t GluaChainApi::get_chain_now(lua_State *L) {
                 lvm::lua::lib::increment_lvm_instructions_executed_count(L, CHAIN_GLUA_API_EACH_INSTRUCTIONS_COUNT - 1);
                 /* try {
@@ -558,11 +529,11 @@ namespace lvm {
                      (thinkyoung::blockchain::TransactionEvaluationState*)
                      (thinkyoung::lua::lib::get_lua_state_value(L, "evaluate_state").pointer_value);
                      thinkyoung::blockchain::ChainInterface* cur_state;
-                
+
                      if (!eval_state_ptr || !(cur_state = eval_state_ptr->_current_state)) {
                      FC_CAPTURE_AND_THROW(lua_executor_internal_error, (""));
                      }
-                
+
                      fc::time_point_sec time_stamp = cur_state->get_head_block_timestamp();
                      return time_stamp.sec_since_epoch();
                      } catch (fc::exception e) {
@@ -579,11 +550,11 @@ namespace lvm {
                     (thinkyoung::blockchain::TransactionEvaluationState*)
                     (thinkyoung::lua::lib::get_lua_state_value(L, "evaluate_state").pointer_value);
                     thinkyoung::blockchain::ChainInterface* cur_state;
-                
+
                     if (!eval_state_ptr || !(cur_state = eval_state_ptr->_current_state)) {
                     FC_CAPTURE_AND_THROW(lua_executor_internal_error, (""));
                     }
-                
+
                     return eval_state_ptr->p_result_trx.id().hash(cur_state->get_current_random_seed())._hash[2];
                     } catch (fc::exception e) {
                     L->force_stopping = true;
@@ -592,17 +563,17 @@ namespace lvm {
                     }*/
                 return 0;
             }
-            
+
             std::string GluaChainApi::get_transaction_id(lua_State *L) {
                 lvm::lua::lib::increment_lvm_instructions_executed_count(L, CHAIN_GLUA_API_EACH_INSTRUCTIONS_COUNT - 1);
                 /* try {
                      thinkyoung::blockchain::TransactionEvaluationState* eval_state_ptr =
                      (thinkyoung::blockchain::TransactionEvaluationState*)
                      (thinkyoung::lua::lib::get_lua_state_value(L, "evaluate_state").pointer_value);
-                
+
                      if (!eval_state_ptr)
                      FC_CAPTURE_AND_THROW(lua_executor_internal_error, (""));
-                
+
                      return eval_state_ptr->trx.id().str();
                      } catch (fc::exception e) {
                      L->force_stopping = true;
@@ -611,17 +582,17 @@ namespace lvm {
                      }*/
                 return "";
             }
-            
+
             uint32_t GluaChainApi::get_header_block_num(lua_State *L) {
                 lvm::lua::lib::increment_lvm_instructions_executed_count(L, CHAIN_GLUA_API_EACH_INSTRUCTIONS_COUNT - 1);
                 /*try {
                     thinkyoung::blockchain::TransactionEvaluationState* eval_state_ptr =
                     (thinkyoung::blockchain::TransactionEvaluationState*)
                     (thinkyoung::lua::lib::get_lua_state_value(L, "evaluate_state").pointer_value);
-                
+
                     if (!eval_state_ptr || !eval_state_ptr->_current_state)
                     FC_CAPTURE_AND_THROW(lua_executor_internal_error, (""));
-                
+
                     return eval_state_ptr->_current_state->get_head_block_num();
                     } catch (fc::exception e) {
                     L->force_stopping = true;
@@ -630,22 +601,22 @@ namespace lvm {
                     }*/
                 return 0;
             }
-            
+
             uint32_t GluaChainApi::wait_for_future_random(lua_State *L, int next) {
                 lvm::lua::lib::increment_lvm_instructions_executed_count(L, CHAIN_GLUA_API_EACH_INSTRUCTIONS_COUNT - 1);
                 /*try {
                     thinkyoung::blockchain::TransactionEvaluationState* eval_state_ptr =
                     (thinkyoung::blockchain::TransactionEvaluationState*)
                     (thinkyoung::lua::lib::get_lua_state_value(L, "evaluate_state").pointer_value);
-                
+
                     if (!eval_state_ptr || !eval_state_ptr->_current_state)
                     FC_CAPTURE_AND_THROW(lua_executor_internal_error, (""));
-                
+
                     uint32_t target = eval_state_ptr->_current_state->get_head_block_num() + next;
-                
+
                     if (target < next)
                     return 0;
-                
+
                     return target;
                     } catch (fc::exception e) {
                     L->force_stopping = true;
@@ -662,31 +633,31 @@ namespace lvm {
                 /* try {
                      if (num <= 1)
                      return -2;
-                
+
                      thinkyoung::blockchain::TransactionEvaluationState* eval_state_ptr =
                      (thinkyoung::blockchain::TransactionEvaluationState*)
                      (thinkyoung::lua::lib::get_lua_state_value(L, "evaluate_state").pointer_value);
                      thinkyoung::blockchain::ChainInterface* cur_state;
-                
+
                      if (!eval_state_ptr || !(cur_state = eval_state_ptr->_current_state))
                      FC_CAPTURE_AND_THROW(lua_executor_internal_error, (""));
-                
+
                      if (cur_state->get_head_block_num() < num)
                      return -1;
-                
+
                      BlockIdType id = cur_state->get_block_id(num);
                      BlockHeader _header = cur_state->get_block_header(id);
                      SecretHashType _hash = _header.previous_secret;
                      auto default_id = BlockIdType();
-                
+
                      for (int i = 0; i < 50; i++) {
                      if ((id = _header.previous) == default_id)
                      break;
-                
+
                      _header = cur_state->get_block_header(id);
                      _hash = _hash.hash(_header.previous_secret);
                      }
-                
+
                      return _hash._hash[3] % (1 << 31 - 1);
                      } catch (const fc::exception& e) {
                      L->force_stopping = true;
@@ -696,17 +667,17 @@ namespace lvm {
                 return -1;
                 //string get_wait
             }
-            
+
             void GluaChainApi::emit(lua_State *L, const char* contract_id, const char* event_name, const char* event_param) {
                 lvm::lua::lib::increment_lvm_instructions_executed_count(L, CHAIN_GLUA_API_EACH_INSTRUCTIONS_COUNT - 1);
                 /*try {
                     thinkyoung::blockchain::TransactionEvaluationState* eval_state_ptr =
                     (thinkyoung::blockchain::TransactionEvaluationState*)
                     (thinkyoung::lua::lib::get_lua_state_value(L, "evaluate_state").pointer_value);
-                
+
                     if (eval_state_ptr == NULL)
                     FC_CAPTURE_AND_THROW(lua_executor_internal_error, (""));
-                
+
                     EventOperation event_op(Address(contract_id, AddressType::contract_address), std::string(event_name), std::string(event_param));
                     eval_state_ptr->p_result_trx.push_event_operation(event_op);
                     } catch (const fc::exception&) {
