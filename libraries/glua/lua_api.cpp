@@ -286,13 +286,6 @@ namespace lvm {
                 return true;
             }
 
-            //not use
-            bool GluaChainApi::register_storage(lua_State *L, const char *contract_name, const char *name) {
-                // TODO
-                printf("registered storage %s[%s] to thinkyoung\n", contract_name, name);
-                return true;
-            }
-
             intptr_t GluaChainApi::register_object_in_pool(lua_State *L, intptr_t object_addr, GluaOutsideObjectTypes type) {
                 auto node = lvm::lua::lib::get_lua_state_value_node(L, GLUA_OUTSIDE_OBJECT_POOLS_KEY);
                 // Map<type, Map<object_key, object_addr>>
