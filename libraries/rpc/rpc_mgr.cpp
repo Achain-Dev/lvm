@@ -28,7 +28,7 @@ void RpcMgr::start() {
         FC_THROW_EXCEPTION(lvm::global_exception::rpc_exception, \
                            "rpc server configuration error, please set the endpoint. ");
     }
-    
+
     _rpc_server.set_reuse_address();
     _rpc_server.listen(_end_point);
     _socket_thread_ptr->async([&]() {
@@ -41,13 +41,13 @@ void RpcMgr::accept_loop() {
         FC_THROW_EXCEPTION(lvm::global_exception::rpc_pointrt_null, \
                            "rpc process is null, please set the rpc processor. ");
     }
-    
+
     while (true) {
         try {
             _rpc_server.accept(_rpc_connection.get_socket());
             _rpc_connection.accept();
             process_rpc();
-            
+
         } catch (fc::exception& e) {
             close_connection();
             elog("close connection ${e}", ("e", e.to_detail_string()));
@@ -97,19 +97,19 @@ uint32_t RpcMgr::read_message(std::string& msg_str) {
     memcpy(buffer_sock, buffer, BUFFER_SIZE);
     /*remaining len of byte to read from socket*/
     remaining_bytes_with_padding = 16 * ((m.size - leftover + 15) / 16);
-    
+
     /*read the remain bytes*/
     try {
         if (remaining_bytes_with_padding) {
             _rpc_connection.read(buffer_sock + BUFFER_SIZE, remaining_bytes_with_padding);
         }
-        
+
     } catch (...) {
         delete[] buffer_sock;
         FC_THROW_EXCEPTION(lvm::global_exception::socket_read_error, \
                            "socket read error. ");
     }
-    
+
     msg_str = std::string(buffer_sock, bytes_received);
     delete[] buffer_sock;
     return m.msg_type;
@@ -119,27 +119,27 @@ void RpcMgr::read_loop() {
     std::string msg_str = "";
     uint32_t type = 0;
     bool b_need_restart = false;
-    
+
     try {
         while (true) {
             type = read_message(msg_str);
-            
+
             if (type == LUA_REQUEST_RESULT_MESSAGE_TYPE) {
                 _rpc_handler_ptr->set_value(msg_str);
-                
+
             } else {
                 _rpc_handler_ptr->handle_task(msg_str, nullptr);
             }
         }
-        
+
     } catch (lvm::global_exception::socket_read_error& e) {
         wlog("disconnected ${e}", ("e", e.to_detail_string()));
         b_need_restart = true;
-        
+
     } catch (...) {
         b_need_restart = true;
     }
-    
+
     if (b_need_restart) {
         b_need_restart = false;
         close_connection();
@@ -156,12 +156,12 @@ void RpcMgr::send_to_chain(Message& m) {
     std::unique_ptr<char[]> padded_message(new char[size_with_padding]);
     memcpy(padded_message.get(), (char*)&m, sizeof(MessageHeader));
     memcpy(padded_message.get() + sizeof(MessageHeader), m.data.data(), m.size);
-    
+
     //send
     try {
         _rpc_connection.write(padded_message.get(), size_with_padding);
         _rpc_connection.flush();
-        
+
     } catch (...) {
         elog("send message exception");
         FC_THROW_EXCEPTION(lvm::global_exception::socket_send_error, \
@@ -170,11 +170,11 @@ void RpcMgr::send_to_chain(Message& m) {
 }
 void RpcMgr::post_message(Message& rpc_msg) {
     StcpSocketPtr sock_ptr = NULL;
-    
+
     //send response
     try {
         send_to_chain(rpc_msg);
-        
+
     } catch (lvm::global_exception::socket_send_error& e) {
         close_connection();
         FC_THROW_EXCEPTION(lvm::global_exception::async_socket_error, \
@@ -200,7 +200,7 @@ void RpcMgr::send_hello_message() {
 
 void RpcMgr::send_hello_msg_loop() {
     send_hello_message();
-    
+
     if (!_terminate_hello_loop_done.canceled()) {
         _terminate_hello_loop_done = fc::schedule([this]() {
             send_hello_msg_loop();
