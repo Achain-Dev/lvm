@@ -33,7 +33,6 @@
 namespace lvm {
     namespace lua {
         namespace api {
-            // TODO: all these apis need TODO
             static int has_error = 0;
 
             /**
@@ -99,7 +98,7 @@ namespace lvm {
 
             std::shared_ptr<GluaModuleByteStream> GluaChainRpcApi::get_bytestream_from_code(lua_State *L, const Code& code) {
                 if (code.byte_code.size() > LUA_MODULE_BYTE_STREAM_BUF_SIZE) {
-                    return NULL;
+                    return nullptr;
                 }
 
                 auto p_luamodule = std::make_shared<GluaModuleByteStream>();
@@ -199,6 +198,7 @@ namespace lvm {
                         *address_size = str_contract_id_in_chain.length();
                         strncpy(address, str_contract_id_in_chain.c_str(), CONTRACT_ID_MAX_LENGTH - 1);
                         address[CONTRACT_ID_MAX_LENGTH - 1] = '\0';
+                        return;
 
                     } else {
                         LuaRequestTask p;
@@ -215,6 +215,7 @@ namespace lvm {
                         *address_size = address_str.length();
                         strncpy(address, address_str.c_str(), CONTRACT_ID_MAX_LENGTH - 1);
                         address[CONTRACT_ID_MAX_LENGTH - 1] = '\0';
+                        return;
                     }
                 }
             }
@@ -327,7 +328,7 @@ namespace lvm {
 
                     {
                         LuaRequestTask p;
-                        p.method = CHECK_CONTRACT_EXIST;
+                        p.method = OPEN_CONTRACT;
                         p.params.push_back(fc::raw::pack<std::string>(contract_name));
                         p.statevalue = reinterpret_cast<intptr_t>(lvm::lua::lib::get_lua_state_value(L, "evaluate_state").pointer_value);
                         LuaRequestTaskResult result = GluaTaskMgr::get_glua_task_mgr()->lua_request(p);
@@ -377,7 +378,7 @@ namespace lvm {
 
                     {
                         LuaRequestTask p;
-                        p.method = CHECK_CONTRACT_EXIST_BY_ADDRESS;
+                        p.method = OPEN_CONTRACT_BY_ADDRESS;
                         p.params.push_back(fc::raw::pack<std::string>(contract_address));
                         p.statevalue = reinterpret_cast<intptr_t>(lvm::lua::lib::get_lua_state_value(L, "evaluate_state").pointer_value);
                         LuaRequestTaskResult result = GluaTaskMgr::get_glua_task_mgr()->lua_request(p);
@@ -414,7 +415,7 @@ namespace lvm {
                 null_storage.type = lvm::blockchain::StorageValueTypes::storage_value_null;
                 std::string storage_name(name);
                 LuaRequestTask p;
-                p.method = CHECK_CONTRACT_EXIST_BY_ADDRESS;
+                p.method = GET_STORAGE_VALUE_FROM_THINKYOUNG;
                 p.params.push_back(fc::raw::pack<std::string>(contract_address));
                 p.params.push_back(fc::raw::pack<std::string>(storage_name));
                 p.statevalue = reinterpret_cast<intptr_t>(lvm::lua::lib::get_lua_state_value(L, "evaluate_state").pointer_value);
@@ -437,6 +438,10 @@ namespace lvm {
 
 
             bool GluaChainRpcApi::commit_storage_changes_to_thinkyoung(lua_State *L, AllContractsChangesMap &changes) {
+                if (changes.empty()) {
+                    return false;
+                }
+
                 using namespace blockchain;
                 lua::lib::increment_lvm_instructions_executed_count(L, CHAIN_GLUA_API_EACH_INSTRUCTIONS_COUNT - 1);
                 LuaRequestTask p;
