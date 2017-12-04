@@ -56,7 +56,9 @@ void RpcMgr::accept_loop() {
 }
 
 void RpcMgr::process_rpc() {
+    std::cout << "process_rpc" << std::endl;
     _terminate_hello_loop_done = fc::async([&]() {
+        std::cout << "process_rpc -- _terminate_hello_loop_done" << std::endl;
         send_hello_msg_loop();
     }, "send_hello_msg_loop");
     fc::async([&]() {
@@ -169,17 +171,17 @@ void RpcMgr::send_to_chain(Message& m) {
     }
 }
 void RpcMgr::post_message(Message& rpc_msg) {
-    StcpSocketPtr sock_ptr = NULL;
-
     //send response
-    try {
-        send_to_chain(rpc_msg);
-
-    } catch (lvm::global_exception::socket_send_error& e) {
-        close_connection();
-        FC_THROW_EXCEPTION(lvm::global_exception::async_socket_error, \
-                           "async socket error: async send message error. ");
-    }
+    fc::sync_call(_socket_thread_ptr.get(), [&]() {
+        try {
+            send_to_chain(rpc_msg);
+            
+        } catch (lvm::global_exception::socket_send_error& e) {
+            close_connection();
+            FC_THROW_EXCEPTION(lvm::global_exception::async_socket_error, \
+                               "async socket error: async send message error. ");
+        };
+    }, "post_message");
 }
 
 //send hello msg
@@ -199,6 +201,7 @@ void RpcMgr::send_hello_message() {
 }
 
 void RpcMgr::send_hello_msg_loop() {
+    std::cout << "send_hello_msg_loop" << std::endl;
     send_hello_message();
 
     if (!_terminate_hello_loop_done.canceled()) {
