@@ -56,7 +56,7 @@ TaskBase* RpcTaskHandler::parse_to_task(const std::string& task,
     //include two parts: part 1: chain call contract operation; part 2: chain response to lvm LUA_REQUEST
     Message m;
     string_to_msg(task, m);
-    
+
     try {
         switch (m.msg_type) {
             case HELLO_MESSAGE_TYPE: {
@@ -65,7 +65,7 @@ TaskBase* RpcTaskHandler::parse_to_task(const std::string& task,
                 memcpy(hello_ptr, &hello_msg.data, sizeof(hello_msg.data));
                 return hello_ptr;
             }
-            
+
             case COMPILE_MESSAGE_TYPE: {
                 CompileTaskRpc compile_task(m.as<CompileTaskRpc>());
                 CompileTask* compile_ptr = new CompileTask(compile_task.data);
@@ -74,7 +74,7 @@ TaskBase* RpcTaskHandler::parse_to_task(const std::string& task,
                           ("CompileTaskRpc::task_type", compile_task.data.task_type));
                 return compile_ptr;
             }
-            
+
             case CALL_MESSAGE_TYPE: {
                 CallTaskRpc call_task(m.as<CallTaskRpc>());
                 CallTask* call_ptr = new CallTask(call_task.data);
@@ -83,7 +83,7 @@ TaskBase* RpcTaskHandler::parse_to_task(const std::string& task,
                           ("CallTaskRpc::task_type", call_task.data.task_type));
                 return call_ptr;
             }
-            
+
             case REGTISTER_MESSAGE_TYPE: {
                 RegisterTaskRpc register_task(m.as<RegisterTaskRpc>());
                 RegisterTask* register_ptr = new RegisterTask(register_task.data);
@@ -92,7 +92,7 @@ TaskBase* RpcTaskHandler::parse_to_task(const std::string& task,
                           ("RegisterTaskRpc::task_type", register_task.data.task_type));
                 return register_ptr;
             }
-            
+
             case UPGRADE_MESSAGE_TYPE: {
                 UpgradeTaskRpc upgrade_task(m.as<UpgradeTaskRpc>());
                 UpgradeTask* upgrade_ptr = new UpgradeTask(upgrade_task.data);
@@ -101,7 +101,7 @@ TaskBase* RpcTaskHandler::parse_to_task(const std::string& task,
                           ("UpgradeTaskRpc::task_type", upgrade_task.data.task_type));
                 return upgrade_ptr;
             }
-            
+
             case TRANSFER_MESSAGE_TYPE: {
                 TransferTaskRpc transfer_task(m.as<TransferTaskRpc>());
                 TransferTask* transfer_ptr = new TransferTask(transfer_task.data);
@@ -110,7 +110,7 @@ TaskBase* RpcTaskHandler::parse_to_task(const std::string& task,
                           ("TransferTaskRpc::task_type", transfer_task.data.task_type));
                 return transfer_ptr;
             }
-            
+
             case DESTROY_MESSAGE_TYPE: {
                 DestroyTaskRpc destroy_task(m.as<DestroyTaskRpc>());
                 DestroyTask* destroy_ptr = new DestroyTask(destroy_task.data);
@@ -119,7 +119,7 @@ TaskBase* RpcTaskHandler::parse_to_task(const std::string& task,
                           ("DestroyTaskRpc::task_type", destroy_task.data.task_type));
                 return destroy_ptr;
             }
-            
+
             case COMPILE_SCRIPT_MESSAGE_TPYE: {
                 CompileScriptTaskRpc compile_script_task(m.as<CompileScriptTaskRpc>());
                 CompileScriptTask* compile_script_ptr = new CompileScriptTask(compile_script_task.data);
@@ -128,7 +128,7 @@ TaskBase* RpcTaskHandler::parse_to_task(const std::string& task,
                           ("CompileScriptTaskRpc::task_type", compile_script_task.data.task_type));
                 return compile_script_ptr;
             }
-            
+
             case HANDLE_EVENTS_MESSAGE_TYPE: {
                 HandleEventsTaskRpc handle_events_task(m.as<HandleEventsTaskRpc>());
                 HandleEventsTask* handle_events_ptr = new HandleEventsTask(handle_events_task.data);
@@ -137,7 +137,7 @@ TaskBase* RpcTaskHandler::parse_to_task(const std::string& task,
                           ("HandleEventsTaskRpc::task_type", handle_events_task.data.task_type));
                 return handle_events_ptr;
             }
-            
+
             case CALL_OFFLINE_MESSAGE_TYPE: {
                 CallContractOfflineTaskRpc call_contract_offline_task(m.as<CallContractOfflineTaskRpc>());
                 CallContractOfflineTask* call_contract_offline_ptr = new CallContractOfflineTask(call_contract_offline_task.data);
@@ -146,7 +146,7 @@ TaskBase* RpcTaskHandler::parse_to_task(const std::string& task,
                           ("CallContractOfflineTaskRpc::task_type", call_contract_offline_task.data.task_type));
                 return call_contract_offline_ptr;
             }
-            
+
             case LUA_REQUEST_RESULT_MESSAGE_TYPE: {
                 LuaRequestTaskResultRpc lua_request_result_task(m.as<LuaRequestTaskResultRpc>());
                 LuaRequestTaskResult* lua_request_result_ptr = new LuaRequestTaskResult(lua_request_result_task.data);
@@ -155,18 +155,18 @@ TaskBase* RpcTaskHandler::parse_to_task(const std::string& task,
                           ("LuaRequestTaskResultRpc::task_type", lua_request_result_task.data.task_type));
                 return lua_request_result_ptr;
             }
-            
+
             default:
                 FC_THROW_EXCEPTION(lvm::global_exception::rpc_msg_error, \
                                    "the msg_type of rpc request error " \
                                    "$ {msg_type}", ("msg_type", m.msg_type));
                 return nullptr;
         }
-        
+
     } catch (const lvm::global_exception::rpc_msg_error& e) {
         //TODO
     }
-    
+
     return nullptr;
 }
 
@@ -219,20 +219,20 @@ void RpcTaskHandler::set_value(const std::string& result) {
     LuaRequestTaskResult* p_result = nullptr;
     string_to_msg(result, m);
     LuaRequestTaskResultRpc lua_request_result_task(m.as<LuaRequestTaskResultRpc>());
-    auto iter = _tasks.begin();
     std::lock_guard<std::mutex> auto_guard(_task_mutex);
-    
+    auto iter = _tasks.begin();
+
     for (; iter != _tasks.end(); iter++) {
         if (iter->task_id == lua_request_result_task.data.task_id) {
             break;
         }
     }
-    
+
     if ((iter != _tasks.end()) && (!_lua_request_promise_ptr->canceled())) {
         p_result = new LuaRequestTaskResult(lua_request_result_task.data);
         _lua_request_promise_ptr->set_value(p_result);
     }
-    
+
     if (iter != _tasks.end()) {
         _tasks.erase(iter);
     }
