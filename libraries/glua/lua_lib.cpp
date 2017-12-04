@@ -68,7 +68,7 @@ namespace lvm {
                 "pairs", "ipairs", "pairsByKeys", "collectgarbage", "error", "getmetatable", "_VERSION",
                 "tostring", "tojsonstring", "tonumber", "tointeger", "todouble", "totable",
                 "next", "rawequal", "rawlen", "rawget", "rawset", "select",
-                "setmetatable"
+                "setmetatable", "check_act_address"
             };
             
             // 这里用ordered_map而不是unordered_map是为了保持顺序，比如Stream type要在Stream构造函数前面
@@ -325,7 +325,8 @@ next: (table) => bool
                 { "rawget", "(object, object) => object" },
                 { "rawset", "(object, object, object) => void" },
                 { "select", "(...) => object" },
-                { "setmetatable", "(table, table) => void" }
+                { "setmetatable", "(table, table) => void" },
+                { "check_act_address", "(string) => bool"}
             };
             
             const std::map<std::string, std::string> *get_globalvar_type_infos() {
@@ -1961,108 +1962,108 @@ end
                     switch (o)
                     {
                     case OP_GETUPVAL:
-    {
-        // break; // FIXME: this has BUG
-        // FIXME: when instack=1, find in parent localvars, when instack=0, find in parent upval pool
-        if (a == 0)
-            break;
-        // const char *upvalue_name = UPVALNAME_OF_PROTO(proto, a);
-        const char *upvalue_name = UPVALNAME_OF_PROTO(proto, b);
-        int cidx = MYK(INDEXK(b));
-        if (nullptr == proto->k)
-            break;
-        // const char *cname = getstr(tsvalue(&proto->k[-cidx-1]));
-        const char *cname = upvalue_name;
-        bool in_whitelist = false;
-        for (size_t i = 0; i < globalvar_whitelist_count; ++i)
-        {
-            if (strcmp(cname, globalvar_whitelist[i]) == 0)
-            {
-                in_whitelist = true;
-                break;
-            }
-        }
-        if (strcmp(upvalue_name, "_ENV") == 0)
-        {
-            in_whitelist = true; // TODO: whether this can do? maybe need to get what property are fetching
-        }
-        if (!in_whitelist)
-        {
-            Upvaldesc upvaldesc = proto->upvalues[c];
-            // check in parent proto, whether defined in parent proto
-            bool upval_defined = (parents && parents->size() > 0) ? upval_defined_in_parent(L, *parents->rbegin(), parents, upvaldesc) : false;
-            if (!upval_defined)
-            {
-                lcompile_error_set(L, error, "use global variable %s not in whitelist", cname);
-                return false;
-            }
-        }
-    }	 break;
+{
+// break; // FIXME: this has BUG
+// FIXME: when instack=1, find in parent localvars, when instack=0, find in parent upval pool
+if (a == 0)
+break;
+// const char *upvalue_name = UPVALNAME_OF_PROTO(proto, a);
+const char *upvalue_name = UPVALNAME_OF_PROTO(proto, b);
+int cidx = MYK(INDEXK(b));
+if (nullptr == proto->k)
+break;
+// const char *cname = getstr(tsvalue(&proto->k[-cidx-1]));
+const char *cname = upvalue_name;
+bool in_whitelist = false;
+for (size_t i = 0; i < globalvar_whitelist_count; ++i)
+{
+if (strcmp(cname, globalvar_whitelist[i]) == 0)
+{
+in_whitelist = true;
+break;
+}
+}
+if (strcmp(upvalue_name, "_ENV") == 0)
+{
+in_whitelist = true; // TODO: whether this can do? maybe need to get what property are fetching
+}
+if (!in_whitelist)
+{
+Upvaldesc upvaldesc = proto->upvalues[c];
+// check in parent proto, whether defined in parent proto
+bool upval_defined = (parents && parents->size() > 0) ? upval_defined_in_parent(L, *parents->rbegin(), parents, upvaldesc) : false;
+if (!upval_defined)
+{
+lcompile_error_set(L, error, "use global variable %s not in whitelist", cname);
+return false;
+}
+}
+}	 break;
                     case OP_SETUPVAL:
-    {
-        const char *upvalue_name = UPVALNAME_OF_PROTO(proto, b);
-        // not support change _ENV or _G
-        if (strcmp("_ENV", upvalue_name) == 0
-            || strcmp("_G", upvalue_name) == 0)
-        {
-            lcompile_error_set(L, error, "_ENV or _G set %s is forbidden", upvalue_name);
-            return false;
-        }
-        break;
-    }
+{
+const char *upvalue_name = UPVALNAME_OF_PROTO(proto, b);
+// not support change _ENV or _G
+if (strcmp("_ENV", upvalue_name) == 0
+|| strcmp("_G", upvalue_name) == 0)
+{
+lcompile_error_set(L, error, "_ENV or _G set %s is forbidden", upvalue_name);
+return false;
+}
+break;
+}
                     case OP_GETTABUP:
-    {
-        // FIXME
-        const char *upvalue_name = UPVALNAME_OF_PROTO(proto, b);
-        if (ISK(c)){
-            int cidx = MYK(INDEXK(c));
-            const char *cname = getstr(tsvalue(&proto->k[-cidx - 1]));
-            bool in_whitelist = false;
-            for (size_t i = 0; i < globalvar_whitelist_count; ++i)
-            {
-                if (strcmp(cname, globalvar_whitelist[i]) == 0)
-                {
-                    in_whitelist = true;
-                    break;
-                }
-            }
-            if (!in_whitelist && (strcmp(upvalue_name, "_ENV") == 0 || strcmp(upvalue_name, "_G") == 0))
-            {
-                lcompile_error_set(L, error, "use global variable %s not in whitelist", cname);
-                return false;
-            }
-            // TODO: 把字节码反编译再检查
-            if (strcmp(cname, "import_contract") == 0)
-                is_importing_contract = true;
-            else if (strcmp(cname, "import_contract_address") == 0)
-                is_importing_contract_address = true;
-        }
-        else
-        {
-        }
-    }
-    break;
+{
+// FIXME
+const char *upvalue_name = UPVALNAME_OF_PROTO(proto, b);
+if (ISK(c)){
+int cidx = MYK(INDEXK(c));
+const char *cname = getstr(tsvalue(&proto->k[-cidx - 1]));
+bool in_whitelist = false;
+for (size_t i = 0; i < globalvar_whitelist_count; ++i)
+{
+if (strcmp(cname, globalvar_whitelist[i]) == 0)
+{
+in_whitelist = true;
+break;
+}
+}
+if (!in_whitelist && (strcmp(upvalue_name, "_ENV") == 0 || strcmp(upvalue_name, "_G") == 0))
+{
+lcompile_error_set(L, error, "use global variable %s not in whitelist", cname);
+return false;
+}
+// TODO: 把字节码反编译再检查
+if (strcmp(cname, "import_contract") == 0)
+is_importing_contract = true;
+else if (strcmp(cname, "import_contract_address") == 0)
+is_importing_contract_address = true;
+}
+else
+{
+}
+}
+break;
                     case OP_SETTABUP:
-    {
-        const char *upvalue_name = UPVALNAME_OF_PROTO(proto, a);
-        // not support change _ENV or _G
-        if (strcmp("_ENV", upvalue_name) == 0
-            || strcmp("_G", upvalue_name) == 0)
-        {
-            if (ISK(b)){
-                int bidx = MYK(INDEXK(b));
-                const char *bname = getstr(tsvalue(&proto->k[-bidx - 1]));
-                lcompile_error_set(L, error, "_ENV or _G set %s is forbidden", bname);
-                return false;
-            }
-            else
-            {
-                lcompile_error_set(L, error, "_ENV or _G set %s is forbidden", upvalue_name);
-                return false;
-            }
-        }
-    }
-    break;
+{
+const char *upvalue_name = UPVALNAME_OF_PROTO(proto, a);
+// not support change _ENV or _G
+if (strcmp("_ENV", upvalue_name) == 0
+|| strcmp("_G", upvalue_name) == 0)
+{
+if (ISK(b)){
+int bidx = MYK(INDEXK(b));
+const char *bname = getstr(tsvalue(&proto->k[-bidx - 1]));
+lcompile_error_set(L, error, "_ENV or _G set %s is forbidden", bname);
+return false;
+}
+else
+{
+lcompile_error_set(L, error, "_ENV or _G set %s is forbidden", upvalue_name);
+return false;
+}
+}
+}
+break;
                     default:
                         break;
                     }
@@ -2496,6 +2497,21 @@ end
                 auto contract_id_str = malloc_and_copy_string(L, contract_id.c_str());
                 return contract_id_str;
             }
+			int check_act_address(lua_State *L)
+			{
+				if (lua_gettop(L) > 0 && !lua_isstring(L, 1)) {
+					lvm::lua::api::global_glua_chain_api->throw_exception(L, 1,
+						"get_contract_balance_amount need 1 string argument of contract address");
+					return 0;
+				}
+
+				auto act_address = luaL_checkstring(L, 1);
+
+				auto result = lvm::lua::api::global_glua_chain_api->check_act_address(L, act_address);
+				lua_pushboolean(L, result);
+				return 1;
+
+			}
         }
     }
 

@@ -145,7 +145,7 @@ namespace lvm {
                 virtual int32_t get_waited(lua_State *L, uint32_t num);
                 
                 virtual void emit(lua_State *L, const char* contract_id, const char* event_name, const char* event_param);
-                
+                virtual bool check_act_address(lua_State *L, const char* act_address);
             };
             
         }

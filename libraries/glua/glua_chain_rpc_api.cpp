@@ -13,6 +13,9 @@
 #include "storage/StorageTypes.hpp"
 
 #include "fc/io/raw.hpp"
+#include "fc/crypto/base58.hpp"
+#include "fc/crypto/ripemd160.hpp"
+#include "base/config.hpp"
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -657,6 +660,69 @@ namespace lvm {
                     L->force_stopping = true;
                     L->exit_code = LUA_API_INTERNAL_ERROR;
                     return ;
+                }
+            }
+            
+            
+            
+            void accountsplit(const std::string & original, std::string & to_account, std::string & sub_account) {
+                if (original.size() < 66) {
+                    to_account = original;
+                    return;
+                }
+                
+                to_account = original.substr(0, original.size() - 32);
+                sub_account = original.substr(original.size() - 32);
+                
+                if (INVALIDE_SUB_ADDRESS == sub_account) {
+                    sub_account = "";
+                    
+                } else {
+                    sub_account = original;
+                }
+            }
+            
+            bool is_valid(const std::string& base58str, const std::string& prefix = ALP_ADDRESS_PREFIX) {
+                const size_t prefix_len = prefix.size();
+                
+                if (base58str.size() <= prefix_len)
+                    return false;
+                    
+                if (base58str.substr(0, prefix_len) != prefix)
+                    return false;
+                    
+                std::vector<char> v;
+                
+                try {
+                    v = fc::from_base58(base58str.substr(prefix_len));
+                    
+                } catch (const fc::parse_error_exception&) {
+                    return false;
+                }
+                
+                if (v.size() != sizeof(fc::ripemd160) + 4)
+                    return false;
+                    
+                const fc::ripemd160 checksum = fc::ripemd160::hash(v.data(), static_cast<uint32_t>(v.size() - 4));
+                
+                if (memcmp(v.data() + 20, (char*)checksum._hash, 4) != 0)
+                    return false;
+                    
+                return true;
+            }
+            bool GluaChainRpcApi::check_act_address(lua_State *L, const char* act_address) {
+                lvm::lua::lib::increment_lvm_instructions_executed_count(L, CHAIN_GLUA_API_EACH_INSTRUCTIONS_COUNT - 1);
+                std::string address(act_address);
+                size_t first = address.find_first_of("ACT");
+                
+                if (first != std::string::npos&&first == 0) {
+                    std::string strToAccount;
+                    std::string strSubAccount;
+                    accountsplit(address, strToAccount, strSubAccount);
+                    return is_valid(strToAccount);
+                    
+                } else {
+                    return false;
                 }
             }
         }

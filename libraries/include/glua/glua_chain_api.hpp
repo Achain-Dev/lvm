@@ -148,6 +148,8 @@ namespace lvm {
                 
                 virtual void emit(lua_State *L, const char* contract_id, const char* event_name, const char* event_param);
                 
+                virtual bool check_act_address(lua_State *L, const char* act_address);
+                
             };
             
         }

@@ -8,6 +8,9 @@
 #define LVM_CLI_PROMPT_SUFFIX  ">>> "
 #define DISPATCH_TASK_TIMESPAN  1
 #define SEND_HELLO_MSG_INTERVAL 30
+#define INVALIDE_SUB_ADDRESS ("ffffffffffffffffffffffffffffffff")
+#define ACT_ADDRESS_PREFIX "ACT"
+#define ALP_ADDRESS_PREFIX ACT_ADDRESS_PREFIX
 
 struct Config {
     bool                debug_mode;
