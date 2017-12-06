@@ -56,7 +56,6 @@ TaskBase* RpcTaskHandler::parse_to_task(const std::string& task,
     //include two parts: part 1: chain call contract operation; part 2: chain response to lvm LUA_REQUEST
     Message m;
     string_to_msg(task, m);
-
     try {
         switch (m.msg_type) {
             case HELLO_MESSAGE_TYPE: {
@@ -182,9 +181,9 @@ void RpcTaskHandler::task_finished(TaskImplResult* result) {
 LuaRequestTaskResult RpcTaskHandler::lua_request(LuaRequestTask& request_task) {
     LuaRequestTaskResult* result_p = nullptr;
     FC_ASSERT(_rpc_mgr_ptr != NULL);
-    post_message(request_task);
     _lua_request_promise_ptr = fc::promise<void*>::ptr(new fc::promise<void*>("lua_request_promise"));
     std::shared_ptr<LuaRequestTaskResult> result_ptr;
+    post_message(request_task);
     result_p = (LuaRequestTaskResult*)(void *)_lua_request_promise_ptr->wait();
     result_ptr.reset(result_p);
     _lua_request_promise_ptr.reset();
@@ -221,14 +220,15 @@ void RpcTaskHandler::set_value(const std::string& result) {
     LuaRequestTaskResultRpc lua_request_result_task(m.as<LuaRequestTaskResultRpc>());
     std::lock_guard<std::mutex> auto_guard(_task_mutex);
     auto iter = _tasks.begin();
-
     for (; iter != _tasks.end(); iter++) {
         if (iter->task_id == lua_request_result_task.data.task_id) {
             break;
         }
     }
-
-    if ((iter != _tasks.end()) && (!_lua_request_promise_ptr->canceled())) {
+    
+    FC_ASSERT(_lua_request_promise_ptr);
+    
+    if ((iter != _tasks.end()) && (_lua_request_promise_ptr) && (!_lua_request_promise_ptr->canceled())) {
         p_result = new LuaRequestTaskResult(lua_request_result_task.data);
         _lua_request_promise_ptr->set_value(p_result);
     }
@@ -237,6 +237,7 @@ void RpcTaskHandler::set_value(const std::string& result) {
         _tasks.erase(iter);
     }
 }
+
 Message RpcTaskHandler::generate_message(TaskImplResult* task_ptr) {
     //this function process chain call contract operations only + hello_msg
     FC_ASSERT(task_ptr != NULL);
