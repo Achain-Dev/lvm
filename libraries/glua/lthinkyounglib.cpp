@@ -325,14 +325,6 @@ static bool has_property_changed_in_changelist(GluaStorageChangeList *list, std:
 // FIXME: use light userdata or userdata to reconstructure storegae
 
 bool luaL_commit_storage_changes(lua_State *L) {
-    // TODO: 新storage操作方式，commit的时候再统一比较storage变化
-    /*
-    auto maybe_storage_changed_contract_ids = thinkyoung::lua::lib::get_maybe_storage_changed_contract_ids_vector(L, false);
-    if (maybe_storage_changed_contract_ids && maybe_storage_changed_contract_ids->size()>0)
-    {
-    // TODO: 如何获取到这些合约的内存中的对象
-    // printf("");
-    }*/
     GluaStateValueNode storage_changelist_node = lvm::lua::lib::get_lua_state_value_node(L, LUA_STORAGE_CHANGELIST_KEY);
 
     if (global_glua_chain_api->has_exception(L)) {
