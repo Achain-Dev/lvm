@@ -427,7 +427,7 @@ namespace lvm {
                     return null_storage;
                 }
 
-                lvm::blockchain::StorageDataType storage_data = fc::raw::unpack<lvm::blockchain::StorageDataType>(result.params[1]);
+                lvm::blockchain::StorageDataType storage_data = fc::raw::unpack<lvm::blockchain::StorageDataType>(result.params[0]);
 
                 if (fc::raw::unpack<bool>(result.params[0])) {
                     return lvm::blockchain::StorageDataType::create_lua_storage_from_storage_data(L, storage_data);
@@ -467,14 +467,15 @@ namespace lvm {
 
                 p.params.push_back(fc::raw::pack(all_change));
                 LuaRequestTaskResult result = GluaTaskMgr::get_glua_task_mgr()->lua_request(p);
-
-                if (result.err_num != 0 || result.params.size() < 1) {
+                
+                if (result.err_num != 0 ) {
                     L->force_stopping = true;
                     L->exit_code = LUA_API_INTERNAL_ERROR;
                     return false;
                 }
-
-                return fc::raw::unpack<bool>(result.params[0]);
+                
+                //return fc::raw::unpack<bool>(result.params[0]);
+                return true;
             }
 
             intptr_t GluaChainRpcApi::register_object_in_pool(lua_State *L, intptr_t object_addr, GluaOutsideObjectTypes type) {

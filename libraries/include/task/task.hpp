@@ -451,17 +451,18 @@ struct LuaRequestTask : public TaskBase {
 struct LuaRequestTaskResult : public TaskBase {
     LuaRequestTaskResult() {
         task_type = LUA_REQUEST_RESULT_TASK;
-        task_from = FROM_RPC;
+        task_from = FROM_LUA_TO_CHAIN;
     }
     
     LuaRequestTaskResult(const LuaRequestTaskResult& task) {
         if (this != &task) {
             task_type = LUA_REQUEST_RESULT_TASK;
-            task_from = FROM_RPC;
+            task_from = FROM_LUA_TO_CHAIN;
             method = task.method;
             params = task.params;
             ret = task.ret;
             err_num = task.err_num;
+            task_id = task.task_id;
         }
     }
     LUA_REQUEST_METHOD     method;
