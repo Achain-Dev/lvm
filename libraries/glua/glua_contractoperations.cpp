@@ -112,12 +112,13 @@ void RegisterContractOperation::evaluate(TaskAndCallback& _inst_taskandcallback,
         scope.execute_contract_init_by_address(str_tmp_contract_addr.c_str(), nullptr, nullptr);
         //
         int exception_code = lvm::lua::lib::get_lua_state_value(scope.L(), "exception_code").int_value;
-        str_exception_msg = lvm::lua::lib::get_lua_state_value(scope.L(), "exception_msg").string_value;
         (*result)->execute_count = scope.get_instructions_executed_count();
         (*result)->error_code = exception_code;
         (*result)->error_msg = str_exception_msg;
 
         if (exception_code > 0) {
+            str_exception_msg = lvm::lua::lib::get_lua_state_value(scope.L(), "exception_msg").string_value;
+
             if (exception_code == LVM_API_LVM_LIMIT_OVER_ERROR) {
                 FC_CAPTURE_AND_THROW(lvm::global_exception::contract_run_out_of_money);
 
@@ -171,7 +172,6 @@ void UpgradeContractOperation::evaluate(TaskAndCallback& _inst_taskandcallback, 
         int exception_code = 0;
         std::string str_exception_msg("");
         exception_code = get_lua_state_value(scope.L(), "exception_code").int_value;
-        str_exception_msg = lvm::lua::lib::get_lua_state_value(scope.L(), "exception_msg").string_value;
         (*result)->execute_count = scope.get_instructions_executed_count();
         (*result)->error_code = exception_code;
         (*result)->error_msg = str_exception_msg;
@@ -181,6 +181,8 @@ void UpgradeContractOperation::evaluate(TaskAndCallback& _inst_taskandcallback, 
         }
 
         if (exception_code > 0) {
+            str_exception_msg = lvm::lua::lib::get_lua_state_value(scope.L(), "exception_msg").string_value;
+
             if (exception_code == LVM_API_LVM_LIMIT_OVER_ERROR) {
                 FC_CAPTURE_AND_THROW(lvm::global_exception::contract_run_out_of_money);
 
@@ -234,7 +236,6 @@ void DestroyContractOperation::evaluate(TaskAndCallback& _inst_taskandcallback, 
         int exception_code = 0;
         std::string str_exception_msg("");
         exception_code = get_lua_state_value(scope.L(), "exception_code").int_value;
-        str_exception_msg = lvm::lua::lib::get_lua_state_value(scope.L(), "exception_msg").string_value;
         (*result)->execute_count = scope.get_instructions_executed_count();
         (*result)->error_code = exception_code;
         (*result)->error_msg = str_exception_msg;
@@ -244,6 +245,8 @@ void DestroyContractOperation::evaluate(TaskAndCallback& _inst_taskandcallback, 
         }
 
         if (exception_code > 0) {
+            str_exception_msg = lvm::lua::lib::get_lua_state_value(scope.L(), "exception_msg").string_value;
+
             if (exception_code == LVM_API_LVM_LIMIT_OVER_ERROR) {
                 FC_CAPTURE_AND_THROW(lvm::global_exception::contract_run_out_of_money);
 
@@ -297,7 +300,6 @@ void CallContractOperation::evaluate(TaskAndCallback& _inst_taskandcallback, Tas
         int exception_code = 0;
         std::string str_exception_msg("");
         exception_code = get_lua_state_value(scope.L(), "exception_code").int_value;
-        str_exception_msg = lvm::lua::lib::get_lua_state_value(scope.L(), "exception_msg").string_value;
         (*result)->execute_count = scope.get_instructions_executed_count();
         (*result)->error_code = exception_code;
         (*result)->error_msg = str_exception_msg;
@@ -307,6 +309,8 @@ void CallContractOperation::evaluate(TaskAndCallback& _inst_taskandcallback, Tas
         }
 
         if (exception_code > 0) {
+            str_exception_msg = lvm::lua::lib::get_lua_state_value(scope.L(), "exception_msg").string_value;
+
             if (exception_code == LVM_API_LVM_LIMIT_OVER_ERROR) {
                 FC_CAPTURE_AND_THROW(lvm::global_exception::contract_run_out_of_money);
 
@@ -360,7 +364,6 @@ void TransferContractOperation::evaluate(TaskAndCallback& _inst_taskandcallback,
         int exception_code = 0;
         std::string str_exception_msg("");
         exception_code = get_lua_state_value(scope.L(), "exception_code").int_value;
-        str_exception_msg = lvm::lua::lib::get_lua_state_value(scope.L(), "exception_msg").string_value;
         (*result)->execute_count = scope.get_instructions_executed_count();
         (*result)->error_code = exception_code;
         (*result)->error_msg = str_exception_msg;
@@ -370,6 +373,8 @@ void TransferContractOperation::evaluate(TaskAndCallback& _inst_taskandcallback,
         }
 
         if (exception_code > 0) {
+            str_exception_msg = lvm::lua::lib::get_lua_state_value(scope.L(), "exception_msg").string_value;
+
             if (exception_code == LVM_API_LVM_LIMIT_OVER_ERROR) {
                 FC_CAPTURE_AND_THROW(lvm::global_exception::contract_run_out_of_money);
 
@@ -485,10 +490,15 @@ void CallContractOfflineOperation::evaluate(TaskAndCallback& _inst_taskandcallba
         store_contractinfo_in_chain(scope, str_tmp_contract_addr, str_tmp_contract_id, _code);
         std::string json_result("");
         int exception_code = lvm::lua::lib::get_lua_state_value(scope.L(), "exception_code").int_value;
-        char* exception_msg = (char*)lvm::lua::lib::get_lua_state_value(scope.L(), "exception_msg").string_value;
+        std::string str_exception_msg("");
+
+        if (exception_code>0) {
+            str_exception_msg = lvm::lua::lib::get_lua_state_value(scope.L(), "exception_msg").string_value;
+        }
+
         call_offline_result->json_string = json_result;
         call_offline_result->error_code = exception_code;
-        call_offline_result->error_msg = exception_msg ? exception_msg : "";
+        call_offline_result->error_msg = str_exception_msg;
 
     } catch (const lvm::global_exception::contract_exception& e) {
         call_offline_result->error_msg = e.to_detail_string();
