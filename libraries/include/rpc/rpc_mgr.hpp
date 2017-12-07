@@ -41,10 +41,12 @@ class RpcMgr {
     fc::ip::endpoint _end_point;
     fc::future<void>     _terminate_hello_loop_done;
     std::shared_ptr<fc::thread> _socket_thread_ptr;
+    std::shared_ptr<fc::thread> _hello_thread_ptr;
     StcpSocket  _rpc_connection;
     RpcTaskHandlerPtr _rpc_handler_ptr;
     Client* _client_ptr;
     bool _b_valid_flag;
+    bool _b_send_hello;
 };
 
 #endif
