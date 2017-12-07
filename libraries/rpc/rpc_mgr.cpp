@@ -12,7 +12,9 @@ const int BUFFER_SIZE = 16;
 
 RpcMgr::RpcMgr(Client* client)
     :_socket_thread_ptr(std::make_shared<fc::thread>("sync_sock_server")),
+     _hello_thread_ptr(std::make_shared<fc::thread>("hello_msg_send")),
      _b_valid_flag(false),
+     _b_send_hello(false),
      _rpc_handler_ptr(std::make_shared<RpcTaskHandler>(this)) {
     _client_ptr = client;
 }
@@ -32,7 +34,10 @@ void RpcMgr::start() {
     _rpc_server.set_reuse_address();
     _rpc_server.listen(_end_point);
     _socket_thread_ptr->async([&]() {
-        this->accept_loop();
+        accept_loop();
+    });
+    _terminate_hello_loop_done = _hello_thread_ptr->async([&]() {
+        send_hello_msg_loop();
     });
 }
 
@@ -56,11 +61,7 @@ void RpcMgr::accept_loop() {
 }
 
 void RpcMgr::process_rpc() {
-    std::cout << "process_rpc" << std::endl;
-    _terminate_hello_loop_done = fc::async([&]() {
-        std::cout << "process_rpc -- _terminate_hello_loop_done" << std::endl;
-        send_hello_msg_loop();
-    }, "send_hello_msg_loop");
+    _b_send_hello = true;
     fc::async([&]() {
         read_loop();
     }).wait();
@@ -77,6 +78,7 @@ void RpcMgr::set_endpoint(std::string& ip_addr, int port) {
 
 void RpcMgr::close_connection() {
     _rpc_connection.close();
+    _b_send_hello = false;
     return;
 }
 
@@ -188,20 +190,17 @@ void RpcMgr::post_message(Message& rpc_msg) {
 void RpcMgr::send_hello_message() {
     uint32_t msg_len = 0;
     char* p_msg = nullptr;
-    HelloMsgRpc hello_msg;
-    hello_msg.data.task_from = FROM_RPC;
-    hello_msg.data.task_type = HELLO_MSG;
-    Message msg(hello_msg);
-    msg_len = sizeof(MessageHeader) + msg.size;
-    p_msg = new char[msg_len];
-    memcpy(p_msg, (char*)&msg, sizeof(MessageHeader));
-    memcpy(p_msg + sizeof(MessageHeader), msg.data.data(), msg.size);
-    _rpc_handler_ptr->handle_task(std::string(p_msg, msg_len), nullptr);
-    delete[] p_msg;
+    HelloMsgResultRpc hello_msg;
+    
+    if (_b_send_hello) {
+        hello_msg.data.task_from = FROM_RPC;
+        hello_msg.data.task_type = HELLO_MSG;
+        Message msg(hello_msg);
+        post_message(msg);
+    }
 }
 
 void RpcMgr::send_hello_msg_loop() {
-    std::cout << "send_hello_msg_loop" << std::endl;
     send_hello_message();
     
     if (!_terminate_hello_loop_done.canceled()) {
