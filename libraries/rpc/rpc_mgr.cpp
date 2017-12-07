@@ -196,7 +196,7 @@ void RpcMgr::send_hello_message() {
     p_msg = new char[msg_len];
     memcpy(p_msg, (char*)&msg, sizeof(MessageHeader));
     memcpy(p_msg + sizeof(MessageHeader), msg.data.data(), msg.size);
-    //   _rpc_handler_ptr->handle_task(std::string(p_msg, msg_len), nullptr);
+    _rpc_handler_ptr->handle_task(std::string(p_msg, msg_len), nullptr);
     delete[] p_msg;
 }
 
