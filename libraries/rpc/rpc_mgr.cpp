@@ -175,7 +175,7 @@ void RpcMgr::post_message(Message& rpc_msg) {
     fc::sync_call(_socket_thread_ptr.get(), [&]() {
         try {
             send_to_chain(rpc_msg);
-            
+
         } catch (lvm::global_exception::socket_send_error& e) {
             close_connection();
             FC_THROW_EXCEPTION(lvm::global_exception::async_socket_error, \
