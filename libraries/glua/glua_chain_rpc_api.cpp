@@ -148,6 +148,12 @@ namespace lvm {
                     }
 
                     {
+                        void * tmp_statevalue_ptr = lvm::lua::lib::get_lua_state_value(L, "evaluate_state").pointer_value;
+
+                        if (!tmp_statevalue_ptr) {
+                            return 0;
+                        }
+
                         LuaRequestTask p;
                         p.method = GET_STORED_CONTRACT_INFO_BY_ADDRESS;
                         p.params.push_back(fc::raw::pack<std::string>(contract_address));
@@ -201,6 +207,12 @@ namespace lvm {
                         return;
 
                     } else {
+                        void * tmp_statevalue_ptr = lvm::lua::lib::get_lua_state_value(L, "evaluate_state").pointer_value;
+
+                        if (!tmp_statevalue_ptr) {
+                            return ;
+                        }
+
                         LuaRequestTask p;
                         p.method = GET_CONTRACT_ADDRESS_BY_NAME;
                         p.params.push_back(fc::raw::pack<std::string>(contract_name));
@@ -244,6 +256,12 @@ namespace lvm {
                         return true;
 
                     } else {
+                        void * tmp_statevalue_ptr = lvm::lua::lib::get_lua_state_value(L, "evaluate_state").pointer_value;
+
+                        if (!tmp_statevalue_ptr) {
+                            return false;
+                        }
+
                         LuaRequestTask p;
                         p.method = CHECK_CONTRACT_EXIST_BY_ADDRESS;
                         p.params.push_back(fc::raw::pack<std::string>(contract_address));
@@ -281,6 +299,12 @@ namespace lvm {
                         return true;
 
                     } else {
+                        void * tmp_statevalue_ptr = lvm::lua::lib::get_lua_state_value(L, "evaluate_state").pointer_value;
+
+                        if (!tmp_statevalue_ptr) {
+                            return false;
+                        }
+
                         LuaRequestTask p;
                         p.method = CHECK_CONTRACT_EXIST;
                         p.params.push_back(fc::raw::pack<std::string>(contract_name));
@@ -327,6 +351,12 @@ namespace lvm {
                     }
 
                     {
+                        void * tmp_statevalue_ptr = lvm::lua::lib::get_lua_state_value(L, "evaluate_state").pointer_value;
+
+                        if (!tmp_statevalue_ptr) {
+                            return nullptr;
+                        }
+
                         LuaRequestTask p;
                         p.method = OPEN_CONTRACT;
                         p.params.push_back(fc::raw::pack<std::string>(contract_name));
@@ -377,6 +407,12 @@ namespace lvm {
                     }
 
                     {
+                        void * tmp_statevalue_ptr = lvm::lua::lib::get_lua_state_value(L, "evaluate_state").pointer_value;
+
+                        if (!tmp_statevalue_ptr) {
+                            return nullptr;
+                        }
+
                         LuaRequestTask p;
                         p.method = OPEN_CONTRACT_BY_ADDRESS;
                         p.params.push_back(fc::raw::pack<std::string>(contract_address));
@@ -412,6 +448,12 @@ namespace lvm {
                     return null_storage;
                 }
 
+                void * tmp_statevalue_ptr = lvm::lua::lib::get_lua_state_value(L, "evaluate_state").pointer_value;
+
+                if (!tmp_statevalue_ptr) {
+                    return null_storage;
+                }
+
                 null_storage.type = lvm::blockchain::StorageValueTypes::storage_value_null;
                 std::string storage_name(name);
                 LuaRequestTask p;
@@ -442,6 +484,12 @@ namespace lvm {
                     return false;
                 }
 
+                void * tmp_statevalue_ptr = lvm::lua::lib::get_lua_state_value(L, "evaluate_state").pointer_value;
+
+                if (!tmp_statevalue_ptr) {
+                    return false;
+                }
+
                 using namespace blockchain;
                 lua::lib::increment_lvm_instructions_executed_count(L, CHAIN_GLUA_API_EACH_INSTRUCTIONS_COUNT - 1);
                 LuaRequestTask p;
@@ -467,13 +515,13 @@ namespace lvm {
 
                 p.params.push_back(fc::raw::pack(all_change));
                 LuaRequestTaskResult result = GluaTaskMgr::get_glua_task_mgr()->lua_request(p);
-                
+
                 if (result.err_num != 0 ) {
                     L->force_stopping = true;
                     L->exit_code = LUA_API_INTERNAL_ERROR;
                     return false;
                 }
-                
+
                 //return fc::raw::unpack<bool>(result.params[0]);
                 return true;
             }
@@ -572,6 +620,12 @@ namespace lvm {
             lua_Integer GluaChainRpcApi::transfer_from_contract_to_address(lua_State *L, const char *contract_address, const char *to_address,
                     const char *asset_type, int64_t amount) {
                 lvm::lua::lib::increment_lvm_instructions_executed_count(L, CHAIN_GLUA_API_EACH_INSTRUCTIONS_COUNT - 1);
+                void * tmp_statevalue_ptr = lvm::lua::lib::get_lua_state_value(L, "evaluate_state").pointer_value;
+
+                if (!tmp_statevalue_ptr) {
+                    return false;
+                }
+
                 std::string contract_addr(contract_address);
                 std::string to_addr(to_address);
                 LuaRequestTask p;
@@ -604,6 +658,12 @@ namespace lvm {
             lua_Integer GluaChainRpcApi::transfer_from_contract_to_public_account(lua_State *L, const char *contract_address, const char *to_account_name,
                     const char *asset_type, int64_t amount) {
                 lvm::lua::lib::increment_lvm_instructions_executed_count(L, CHAIN_GLUA_API_EACH_INSTRUCTIONS_COUNT - 1);
+                void * tmp_statevalue_ptr = lvm::lua::lib::get_lua_state_value(L, "evaluate_state").pointer_value;
+
+                if (!tmp_statevalue_ptr) {
+                    return false;
+                }
+
                 std::string contract_addr(contract_address);
                 std::string to_acc_name(to_account_name);
                 LuaRequestTask p;
@@ -700,6 +760,12 @@ namespace lvm {
             }
             uint32_t GluaChainRpcApi::get_chain_random(lua_State *L) {
                 lvm::lua::lib::increment_lvm_instructions_executed_count(L, CHAIN_GLUA_API_EACH_INSTRUCTIONS_COUNT - 1);
+                void * tmp_statevalue_ptr = lvm::lua::lib::get_lua_state_value(L, "evaluate_state").pointer_value;
+
+                if (!tmp_statevalue_ptr) {
+                    return false;
+                }
+
                 LuaRequestTask p;
                 p.method = GET_CHAIN_RANDOM;
                 p.statevalue = reinterpret_cast<intptr_t>(lvm::lua::lib::get_lua_state_value(L, "evaluate_state").pointer_value);
@@ -715,6 +781,12 @@ namespace lvm {
             }
             std::string GluaChainRpcApi::get_transaction_id(lua_State *L) {
                 lvm::lua::lib::increment_lvm_instructions_executed_count(L, CHAIN_GLUA_API_EACH_INSTRUCTIONS_COUNT - 1);
+                void * tmp_statevalue_ptr = lvm::lua::lib::get_lua_state_value(L, "evaluate_state").pointer_value;
+
+                if (!tmp_statevalue_ptr) {
+                    return "";
+                }
+
                 LuaRequestTask p;
                 p.method = GET_TRANSACTION_ID;
                 p.statevalue = reinterpret_cast<intptr_t>(lvm::lua::lib::get_lua_state_value(L, "evaluate_state").pointer_value);
@@ -730,6 +802,12 @@ namespace lvm {
             }
             uint32_t GluaChainRpcApi::get_header_block_num(lua_State *L) {
                 lvm::lua::lib::increment_lvm_instructions_executed_count(L, CHAIN_GLUA_API_EACH_INSTRUCTIONS_COUNT - 1);
+                void * tmp_statevalue_ptr = lvm::lua::lib::get_lua_state_value(L, "evaluate_state").pointer_value;
+
+                if (!tmp_statevalue_ptr) {
+                    return 0;
+                }
+
                 LuaRequestTask p;
                 p.method = GET_HEADER_BLOCK_NUM;
                 p.statevalue = reinterpret_cast<intptr_t>(lvm::lua::lib::get_lua_state_value(L, "evaluate_state").pointer_value);
@@ -764,6 +842,12 @@ namespace lvm {
             //如投注彩票，只允许在目标块被产出前投注
             int32_t GluaChainRpcApi::get_waited(lua_State *L, uint32_t num) {
                 lvm::lua::lib::increment_lvm_instructions_executed_count(L, CHAIN_GLUA_API_EACH_INSTRUCTIONS_COUNT - 1);
+                void * tmp_statevalue_ptr = lvm::lua::lib::get_lua_state_value(L, "evaluate_state").pointer_value;
+
+                if (!tmp_statevalue_ptr) {
+                    return false;
+                }
+
                 LuaRequestTask p;
                 p.method = GET_WAITED;
                 p.statevalue = reinterpret_cast<intptr_t>(lvm::lua::lib::get_lua_state_value(L, "evaluate_state").pointer_value);
@@ -785,6 +869,12 @@ namespace lvm {
             }
             void GluaChainRpcApi::emit(lua_State *L, const char* contract_id, const char* event_name, const char* event_param) {
                 lvm::lua::lib::increment_lvm_instructions_executed_count(L, CHAIN_GLUA_API_EACH_INSTRUCTIONS_COUNT - 1);
+                void * tmp_statevalue_ptr = lvm::lua::lib::get_lua_state_value(L, "evaluate_state").pointer_value;
+
+                if (!tmp_statevalue_ptr) {
+                    return ;
+                }
+
                 std::string cact_id(contract_id);
                 std::string ev_name(event_name);
                 std::string ev_param(event_param);
