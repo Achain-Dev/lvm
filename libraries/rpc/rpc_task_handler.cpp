@@ -199,7 +199,6 @@ void RpcTaskHandler::post_result(Message& msg) {
     return _rpc_mgr_ptr->post_message(msg);
 }
 
-
 void RpcTaskHandler::post_message(LuaRequestTask& lua_task) {
     //lvm do request to chain
     FC_ASSERT(_rpc_mgr_ptr != NULL);
@@ -220,28 +219,22 @@ void RpcTaskHandler::set_value(const std::string& result) {
     string_to_msg(result, m);
     LuaRequestTaskResultRpc lua_request_result_task(m.as<LuaRequestTaskResultRpc>());
     std::lock_guard<std::mutex> auto_guard(_task_mutex);
-    auto iter = _tasks.begin();
-    
-    for (; iter != _tasks.end(); iter++) {
-        if (iter->task_id == lua_request_result_task.data.task_id) {
-            break;
-        }
-    }
-    
+    auto iter = std::find_if(begin(_tasks), end(_tasks), [=](LuaRequestTask lua_request_task) {
+        return (lua_request_task.task_id == lua_request_result_task.data.task_id);
+    });
     FC_ASSERT(_lua_request_promise_ptr);
     
-    if ((iter != _tasks.end()) && (_lua_request_promise_ptr) && (!_lua_request_promise_ptr->canceled())) {
-        p_result = new LuaRequestTaskResult(lua_request_result_task.data);
-        _lua_request_promise_ptr->set_value(p_result);
-    }
-    
     if (iter != _tasks.end()) {
+        if (_lua_request_promise_ptr && (!_lua_request_promise_ptr->canceled())) {
+            p_result = new LuaRequestTaskResult(lua_request_result_task.data);
+            _lua_request_promise_ptr->set_value(p_result);
+        }
+        
         _tasks.erase(iter);
     }
 }
 
 Message RpcTaskHandler::generate_message(TaskImplResult* task_ptr) {
-    //this function process chain call contract operations only + hello_msg
     FC_ASSERT(task_ptr != NULL);
     FC_ASSERT(task_ptr->task_type == HELLO_MSG || task_ptr->task_type == COMPILE_TASK
               || task_ptr->task_type == REGISTER_TASK ||task_ptr->task_type == UPGRADE_TASK

@@ -360,12 +360,14 @@ struct CompileScriptTask : public TaskBase {
             use_contract = task.use_contract;
             path_file_name = task.path_file_name;
             use_type_check = task.use_type_check;
+            statevalue = task.statevalue;
         }
     }
 
     bool use_contract;
     std::string path_file_name;
     bool use_type_check;
+    intptr_t  statevalue;
 };
 
 struct HandleEventsTask : public TaskBase {
@@ -552,7 +554,7 @@ FC_REFLECT_DERIVED(DestroyTask, (TaskBase), (statevalue)(num_limit)
                    (str_contract_id)(contract_code))
 
 FC_REFLECT_DERIVED(CompileScriptTask, (TaskBase), (path_file_name)(use_contract)
-                   (use_type_check))
+                   (use_type_check)(statevalue))
 FC_REFLECT_DERIVED(HandleEventsTask, (TaskBase), (contract_id)(event_type)
                    (event_param)(is_truncated)(script_code))
 FC_REFLECT_DERIVED(CallContractOfflineTask, (TaskBase), (statevalue)(num_limit)
