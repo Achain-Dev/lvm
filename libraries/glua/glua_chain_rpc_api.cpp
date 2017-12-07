@@ -327,13 +327,6 @@ namespace lvm {
                 return fc::raw::unpack<bool>(result.params[0]);
             }
             
-            //not use
-            bool GluaChainRpcApi::register_storage(lua_State *L, const char *contract_name, const char *name) {
-                // TODO
-                printf("registered storage %s[%s] to thinkyoung\n", contract_name, name);
-                return true;
-            }
-            
             intptr_t GluaChainRpcApi::register_object_in_pool(lua_State *L, intptr_t object_addr, GluaOutsideObjectTypes type) {
                 auto node = lvm::lua::lib::get_lua_state_value_node(L, GLUA_OUTSIDE_OBJECT_POOLS_KEY);
                 std::map<GluaOutsideObjectTypes, std::shared_ptr<std::map<intptr_t, intptr_t>>> *object_pools = nullptr;
@@ -710,21 +703,23 @@ namespace lvm {
                     
                 return true;
             }
+            /*
             bool GluaChainRpcApi::check_act_address(lua_State *L, const char* act_address) {
                 lvm::lua::lib::increment_lvm_instructions_executed_count(L, CHAIN_GLUA_API_EACH_INSTRUCTIONS_COUNT - 1);
                 std::string address(act_address);
                 size_t first = address.find_first_of("ACT");
-                
+            
                 if (first != std::string::npos&&first == 0) {
                     std::string strToAccount;
                     std::string strSubAccount;
                     accountsplit(address, strToAccount, strSubAccount);
                     return is_valid(strToAccount);
-                    
+            
                 } else {
                     return false;
                 }
             }
+            */
         }
     }
 }

@@ -16,7 +16,7 @@
 #include <fc/thread/thread.hpp>
 
 #include <mutex>
-#include <vector>
+#include <list>
 
 struct MethodData;
 class ITaskImplementFinishNotify;
@@ -59,7 +59,7 @@ class TaskDispatcher {
     void dispatch_task_impl();
     
   private:
-    std::vector<TaskAndCallback>  _tasks;
+    std::list<TaskAndCallback>  _tasks;
     fc::thread              _dispatch_task_thread;
     std::mutex              _task_mutex;
     

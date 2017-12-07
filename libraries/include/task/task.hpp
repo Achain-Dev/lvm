@@ -89,6 +89,7 @@ struct TaskImplResult : public TaskBase {
     virtual  Message get_rpc_message();
   public:
     uint64_t      error_code;
+    uint64_t      execute_count;
     std::string   error_msg;
     std::string   json_string;
 };
@@ -450,17 +451,18 @@ struct LuaRequestTask : public TaskBase {
 struct LuaRequestTaskResult : public TaskBase {
     LuaRequestTaskResult() {
         task_type = LUA_REQUEST_RESULT_TASK;
-        task_from = FROM_RPC;
+        task_from = FROM_LUA_TO_CHAIN;
     }
     
     LuaRequestTaskResult(const LuaRequestTaskResult& task) {
         if (this != &task) {
             task_type = LUA_REQUEST_RESULT_TASK;
-            task_from = FROM_RPC;
+            task_from = FROM_LUA_TO_CHAIN;
             method = task.method;
             params = task.params;
             ret = task.ret;
             err_num = task.err_num;
+            task_id = task.task_id;
         }
     }
     LUA_REQUEST_METHOD     method;
@@ -557,17 +559,17 @@ FC_REFLECT_DERIVED(CallContractOfflineTask, (TaskBase), (statevalue)(num_limit)
                    (str_caller)(str_caller_address)(str_contract_address)
                    (str_contract_id)(str_method)(str_args)(contract_code))
 
-FC_REFLECT_DERIVED(LuaRequestTask, (TaskBase), (method)(params))
+FC_REFLECT_DERIVED(LuaRequestTask, (TaskBase), (method)(params)(statevalue))
 FC_REFLECT_DERIVED(LuaRequestTaskResult, (TaskBase), (method)(params)(ret)(err_num))
 
-FC_REFLECT_DERIVED(TaskImplResult, (TaskBase), (error_code)(error_msg)(json_string))
+FC_REFLECT_DERIVED(TaskImplResult, (TaskBase), (error_code)(execute_count)(error_msg)(json_string))
 FC_REFLECT_DERIVED(CompileTaskResult, (TaskImplResult), (gpc_path_file))
 FC_REFLECT_DERIVED(RegisterTaskResult, (TaskImplResult))
 FC_REFLECT_DERIVED(CallTaskResult, (TaskImplResult))
 FC_REFLECT_DERIVED(TransferTaskResult, (TaskImplResult))
 FC_REFLECT_DERIVED(UpgradeTaskResult, (TaskImplResult))
 FC_REFLECT_DERIVED(DestroyTaskResult, (TaskImplResult))
-FC_REFLECT_DERIVED(CompileScriptTaskResult, (TaskImplResult))
+FC_REFLECT_DERIVED(CompileScriptTaskResult, (TaskImplResult), (script_path_file))
 FC_REFLECT_DERIVED(HandleEventsTaskResult, (TaskImplResult))
 FC_REFLECT_DERIVED(CallContractOfflineTaskResult, (TaskImplResult))
 

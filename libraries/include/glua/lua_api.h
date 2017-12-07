@@ -268,9 +268,10 @@ struct lua_table_less
     // functor for operator<
     bool operator()(const std::string& _Left, const std::string& _Right) const {
         // apply operator< to operands
-        if (_Left.length() != _Right.length())
+        if (_Left.length() != _Right.length()) {
             return _Left.length() < _Right.length();
-            
+        }
+        
         return _Left < _Right;
     }
 };
@@ -347,9 +348,10 @@ typedef struct GluaStorageValue {
         return type1 == type2;
     }
     inline bool equals(GluaStorageValue &other) {
-        if (type != other.type)
+        if (type != other.type) {
             return false;
-            
+        }
+        
         switch (type) {
             case lvm::blockchain::StorageValueTypes::storage_value_string:
                 return strcmp(value.string_value, other.value.string_value) == 0;
@@ -370,20 +372,23 @@ typedef struct GluaStorageValue {
             default: {
                 if (lvm::blockchain::is_any_table_storage_value_type(type)
                         || lvm::blockchain::is_any_array_storage_value_type(type)) {
-                    if (value.table_value->size() != other.value.table_value->size())
+                    if (value.table_value->size() != other.value.table_value->size()) {
                         return false;
-                        
+                    }
+                    
                     for (const auto &p1 : *(value.table_value)) {
                         auto found = other.value.table_value->find(p1.first);
                         
-                        if (found == other.value.table_value->end())
+                        if (found == other.value.table_value->end()) {
                             return false;
-                            
+                        }
+                        
                         auto this_item = p1.second;
                         auto other_item = found->second;
                         
-                        if (!this_item.equals(other_item))
+                        if (!this_item.equals(other_item)) {
                             return false;
+                        }
                     }
                     
                     return true;
@@ -486,11 +491,6 @@ namespace lvm {
                  */
                 virtual bool check_contract_exist_by_address(lua_State *L, const char *address) = 0;
                 
-                /**
-                 * register new storage name of contract to thinkyoung
-                 */
-                virtual bool register_storage(lua_State *L, const char *contract_name, const char *name) = 0;
-                
                 virtual GluaStorageValue get_storage_value_from_thinkyoung_by_address(lua_State *L, const char *contract_address, std::string name) = 0;
                 
                 /**
@@ -539,7 +539,7 @@ namespace lvm {
                 virtual int32_t get_waited(lua_State *L, uint32_t num) = 0;
                 
                 virtual void emit(lua_State *L, const char* contract_id, const char* event_name, const char* event_param) = 0;
-                virtual bool check_act_address(lua_State *L, const char* act_address) = 0;
+                //    virtual bool check_act_address(lua_State *L, const char* act_address) = 0;
             };
             
             

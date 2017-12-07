@@ -39,7 +39,7 @@ class RpcTaskHandler : public TaskHandlerBase {
   private:
     RpcMgr* _rpc_mgr_ptr;
     fc::promise<void*>::ptr _lua_request_promise_ptr;
-    std::vector<LuaRequestTask>  _tasks;
+    std::list<LuaRequestTask>  _tasks;
     std::mutex              _task_mutex;
 };
 typedef std::shared_ptr<RpcTaskHandler> RpcTaskHandlerPtr;
