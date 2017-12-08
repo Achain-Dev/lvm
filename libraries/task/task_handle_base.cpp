@@ -41,17 +41,18 @@ void TaskDispatcher::del_dispatcher() {
 
 void TaskDispatcher::push_task(TaskBase* task_base,
                                TaskHandlerBase* call_back) {
-    _task_mutex.lock();
     TaskAndCallback task;
     task.task_base = task_base;
     task.task_handler = call_back;
-    _tasks.push_back(task);
-    _task_mutex.unlock();
+    {
+        std::lock_guard<std::mutex> auto_guard(_task_mutex);
+        _tasks.push_back(task);
+    }
     dispatch_task();
 }
 
 void TaskDispatcher::dispatch_task_impl() {
-    _task_mutex.lock();
+    std::lock_guard<std::mutex> auto_guard(_task_mutex);
     auto iter = _tasks.begin();
     
     while (iter != _tasks.end()) {
@@ -72,7 +73,6 @@ void TaskDispatcher::dispatch_task_impl() {
     }
     
     _tasks.clear();
-    _task_mutex.unlock();
 }
 
 void TaskDispatcher::dispatch_task() {
