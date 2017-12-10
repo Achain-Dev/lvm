@@ -43,6 +43,7 @@ GluaTaskMgr::~GluaTaskMgr() {
 
 void GluaTaskMgr::execute_task(TaskAndCallback task) {
     // after execute task , gen the callback task then call back
+    std::shared_ptr<TaskImplResult> sp_result;
     TaskImplResult* result = nullptr;
     std::shared_ptr<ContractOperation> contractop_ptr;
     _p_task_handler = task.task_handler;
@@ -52,18 +53,13 @@ void GluaTaskMgr::execute_task(TaskAndCallback task) {
     
     if (contractop_ptr) {
         contractop_ptr->evaluate(task, &result);
+        sp_result.reset(result);
     }
     
-    if (!result) {
-        return;
-    }
+    FC_ASSERT(result);
     
     if (_p_task_handler) {
-        _p_task_handler->task_finished(result);
-    }
-    
-    if (result) {
-        delete result;
+        _p_task_handler->task_finished(sp_result.get());
     }
     
     return;
