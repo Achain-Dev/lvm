@@ -51,12 +51,13 @@ int main(int argc, char** argv) {
         ClientPtr client = std::make_shared<Client>();
         client->configure_from_command_line(argc, argv);
         client->start().wait();
+        
     } catch (const fc::exception& e) {
         std::cerr << "------------ error --------------\n"
                   << e.to_detail_string() << "\n";
         wlog("${e}", ("e", e.to_detail_string()));
     }
-
+    
     fc::configure_logging(fc::logging_config::default_config());
     return 0;
 }
