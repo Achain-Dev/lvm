@@ -84,7 +84,6 @@ void RpcMgr::close_connection() {
 uint32_t RpcMgr::read_message(std::string& msg_str) {
     uint64_t bytes_received = 0;
     uint64_t remaining_bytes_with_padding = 0;
-    char* buffer_sock = NULL;
     MessageHeader m;
     char buffer[BUFFER_SIZE];
     int leftover = BUFFER_SIZE - sizeof(MessageHeader);
@@ -95,26 +94,24 @@ uint32_t RpcMgr::read_message(std::string& msg_str) {
     FC_ASSERT(m.size <= MAX_MESSAGE_SIZE, "", ("m.size", m.size)("MAX_MESSAGE_SIZE", MAX_MESSAGE_SIZE));
     /*the total len of the msg:(header + data)*/
     bytes_received = 16 * ((sizeof(MessageHeader) + m.size + 15) / 16);
-    buffer_sock = new char[bytes_received];
-    memset(buffer_sock, 0, bytes_received);
-    memcpy(buffer_sock, buffer, BUFFER_SIZE);
+    std::unique_ptr<char[]> buffer_sock(new char[bytes_received]);
+    memset(buffer_sock.get(), 0, bytes_received);
+    memcpy(buffer_sock.get(), buffer, BUFFER_SIZE);
     /*remaining len of byte to read from socket*/
     remaining_bytes_with_padding = 16 * ((m.size - leftover + 15) / 16);
     
     /*read the remain bytes*/
     try {
         if (remaining_bytes_with_padding) {
-            _rpc_connection.read(buffer_sock + BUFFER_SIZE, remaining_bytes_with_padding);
+            _rpc_connection.read(buffer_sock.get() + BUFFER_SIZE, remaining_bytes_with_padding);
         }
         
     } catch (...) {
-        delete[] buffer_sock;
         FC_THROW_EXCEPTION(lvm::global_exception::socket_read_error, \
                            "socket read error. ");
     }
     
-    msg_str = std::string(buffer_sock, bytes_received);
-    delete[] buffer_sock;
+    msg_str = std::string(buffer_sock.get(), bytes_received);
     return m.msg_type;
 }
 
@@ -176,8 +173,8 @@ void RpcMgr::post_message(Message& rpc_msg) {
     fc::sync_call(_socket_thread_ptr.get(), [&]() {
         try {
             send_to_chain(rpc_msg);
-
-        } catch (lvm::global_exception::socket_send_error& e) {
+            
+        } catch (lvm::global_exception::socket_send_error&) {
             close_connection();
             FC_THROW_EXCEPTION(lvm::global_exception::async_socket_error, \
                                "async socket error: async send message error. ");
@@ -188,7 +185,6 @@ void RpcMgr::post_message(Message& rpc_msg) {
 //send hello msg
 void RpcMgr::send_hello_message() {
     uint32_t msg_len = 0;
-    char* p_msg = nullptr;
     HelloMsgResultRpc hello_msg;
     
     if (_b_send_hello) {

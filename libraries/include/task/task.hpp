@@ -73,7 +73,7 @@ enum LUA_REQUEST_METHOD {
 
 struct TaskBase {
     TaskBase();
-
+    virtual ~TaskBase() {}
     uint32_t task_id;     //a random value,CLI or achain launch a request with a task_id
     LUA_TASK_TYPE task_type;   //here,change LUA_TASK_TYPE to uint32_t, fit FC name
     LUA_TASK_FROM task_from;    //LUA_TASK_FORM_CLI LUA_TASK_FORM_RPC
@@ -82,9 +82,9 @@ struct TaskBase {
 struct TaskImplResult : public TaskBase {
     TaskImplResult();
     virtual ~TaskImplResult() {};
-
+    
     void   init_task_base(TaskBase* task);
-
+    
     virtual  std::string  get_result_string();
     virtual  Message get_rpc_message();
   public:
@@ -101,27 +101,30 @@ typedef struct TaskImplResult HelloMsgResult;
 struct CompileTaskResult : public TaskImplResult {
     CompileTaskResult() {}
     CompileTaskResult(TaskBase* task);
-
+    virtual ~CompileTaskResult() {}
+    
     virtual  std::string  get_result_string();
     virtual  Message get_rpc_message();
-
+    
     std::string  gpc_path_file;
 };
 
 struct RegisterTaskResult : public TaskImplResult {
     RegisterTaskResult() {}
     RegisterTaskResult(TaskBase* task);
-
+    virtual ~RegisterTaskResult() {}
+    
     virtual  std::string  get_result_string();
     virtual  Message get_rpc_message();
-
+    
     //TODO
 };
 
 struct CallTaskResult : public TaskImplResult {
     CallTaskResult() {}
     CallTaskResult(TaskBase* task);
-
+    virtual ~CallTaskResult() {}
+    
     virtual  std::string  get_result_string();
     virtual  Message get_rpc_message();
     //TODO
@@ -130,7 +133,8 @@ struct CallTaskResult : public TaskImplResult {
 struct TransferTaskResult : public TaskImplResult {
     TransferTaskResult() {}
     TransferTaskResult(TaskBase* task);
-
+    virtual ~TransferTaskResult() {}
+    
     virtual  std::string  get_result_string();
     virtual  Message get_rpc_message();
     //TODO
@@ -139,7 +143,8 @@ struct TransferTaskResult : public TaskImplResult {
 struct UpgradeTaskResult : public TaskImplResult {
     UpgradeTaskResult() {}
     UpgradeTaskResult(TaskBase* task);
-
+    virtual ~UpgradeTaskResult() {}
+    
     virtual  std::string  get_result_string();
     virtual  Message get_rpc_message();
     //TODO
@@ -148,7 +153,8 @@ struct UpgradeTaskResult : public TaskImplResult {
 struct DestroyTaskResult : public TaskImplResult {
     DestroyTaskResult() {}
     DestroyTaskResult(TaskBase* task);
-
+    virtual ~DestroyTaskResult() {}
+    
     virtual  std::string  get_result_string();
     virtual  Message get_rpc_message();
     //TODO
@@ -157,17 +163,19 @@ struct DestroyTaskResult : public TaskImplResult {
 struct CompileScriptTaskResult  : TaskImplResult {
     CompileScriptTaskResult() {}
     CompileScriptTaskResult(TaskBase* task);
-
+    virtual ~CompileScriptTaskResult() {}
+    
     virtual  std::string  get_result_string();
     virtual  Message get_rpc_message();
-
+    
     std::string  script_path_file;
 };
 
 struct HandleEventsTaskResult : TaskImplResult {
     HandleEventsTaskResult() {}
     HandleEventsTaskResult(TaskBase* task);
-
+    virtual ~HandleEventsTaskResult() {}
+    
     virtual  std::string  get_result_string();
     virtual  Message get_rpc_message();
 };
@@ -175,7 +183,8 @@ struct HandleEventsTaskResult : TaskImplResult {
 struct CallContractOfflineTaskResult : TaskImplResult {
     CallContractOfflineTaskResult() {}
     CallContractOfflineTaskResult(TaskBase* task);
-
+    virtual ~CallContractOfflineTaskResult() {}
+    
     virtual  std::string  get_result_string();
     virtual  Message get_rpc_message();
 };
@@ -185,7 +194,7 @@ struct CompileTask : public TaskBase {
     CompileTask() {
         task_type = COMPILE_TASK;
     };
-
+    
     CompileTask(const CompileTask& task) {
         if (this != &task) {
             task_type = COMPILE_TASK;
@@ -194,7 +203,9 @@ struct CompileTask : public TaskBase {
             glua_path_file = task.glua_path_file;
         }
     };
-
+    
+    virtual ~CompileTask() {}
+    
     fc::path glua_path_file;
 };
 
@@ -202,7 +213,7 @@ struct RegisterTask : public TaskBase {
     RegisterTask() {
         task_type = REGISTER_TASK;
     };
-
+    
     RegisterTask(const RegisterTask& task) {
         if (this != &task) {
             task_id = task.task_id;
@@ -218,7 +229,9 @@ struct RegisterTask : public TaskBase {
             str_contract_id = task.str_contract_id;
         }
     };
-
+    
+    virtual ~RegisterTask() {}
+    
     std::string             gpc_code;
     intptr_t                statevalue;
     int                     num_limit;
@@ -233,7 +246,7 @@ struct UpgradeTask : public TaskBase {
     UpgradeTask() {
         task_type = UPGRADE_TASK;
     };
-
+    
     UpgradeTask(const UpgradeTask& task) {
         if (this != &task) {
             task_id = task.task_id;
@@ -248,7 +261,9 @@ struct UpgradeTask : public TaskBase {
             str_contract_id = task.str_contract_id;
         }
     }
-
+    
+    virtual ~UpgradeTask() {}
+    
     intptr_t                statevalue;
     int                     num_limit;
     std::string             str_caller;
@@ -278,6 +293,9 @@ struct CallTask : public TaskBase {
             str_args = task.str_args;
         }
     }
+    
+    virtual ~CallTask() {}
+    
     intptr_t                statevalue;
     int                     num_limit;
     std::string             str_caller;
@@ -293,7 +311,7 @@ struct TransferTask : public TaskBase {
     TransferTask() {
         task_type = TRANSFER_TASK;
     };
-
+    
     TransferTask(const TransferTask& task) {
         if (this != &task) {
             task_id = task.task_id;
@@ -309,7 +327,9 @@ struct TransferTask : public TaskBase {
             str_args = task.str_args;
         }
     }
-
+    
+    virtual ~TransferTask() {}
+    
     intptr_t                statevalue;
     int                     num_limit;
     std::string             str_caller;
@@ -338,7 +358,9 @@ struct DestroyTask : public TaskBase {
             str_contract_id = task.str_contract_id;
         }
     }
-
+    
+    virtual ~DestroyTask() {}
+    
     intptr_t               statevalue;
     int                    num_limit;
     std::string            str_caller;
@@ -363,7 +385,9 @@ struct CompileScriptTask : public TaskBase {
             statevalue = task.statevalue;
         }
     }
-
+    
+    virtual ~CompileScriptTask() {}
+    
     bool use_contract;
     std::string path_file_name;
     bool use_type_check;
@@ -374,7 +398,7 @@ struct HandleEventsTask : public TaskBase {
     HandleEventsTask() {
         task_type = HANDLE_EVENTS_TASK;
     }
-
+    
     HandleEventsTask(const HandleEventsTask& task) {
         if (this != &task) {
             task_id = task.task_id;
@@ -387,7 +411,9 @@ struct HandleEventsTask : public TaskBase {
             script_code = task.script_code;
         }
     }
-
+    
+    virtual ~HandleEventsTask() {}
+    
     std::string contract_id;
     std::string event_type;
     std::string event_param;
@@ -399,7 +425,7 @@ struct CallContractOfflineTask : public TaskBase {
     CallContractOfflineTask() {
         task_type = CALL_OFFLINE_TASK;
     }
-
+    
     CallContractOfflineTask(const CallContractOfflineTask& task) {
         if (this != &task) {
             task_id = task.task_id;
@@ -416,7 +442,9 @@ struct CallContractOfflineTask : public TaskBase {
             contract_code = task.contract_code;
         }
     }
-
+    
+    virtual ~CallContractOfflineTask() {}
+    
     intptr_t                statevalue;
     int                     num_limit;
     std::string             str_caller;
@@ -433,7 +461,7 @@ struct LuaRequestTask : public TaskBase {
         task_type = LUA_REQUEST_TASK;
         task_from = FROM_LUA_TO_CHAIN;
     }
-
+    
     LuaRequestTask(const LuaRequestTask& task) {
         if (this != &task) {
             task_id = task.task_id;
@@ -444,7 +472,9 @@ struct LuaRequestTask : public TaskBase {
             statevalue = task.statevalue;
         }
     }
-
+    
+    virtual ~LuaRequestTask() {}
+    
     LUA_REQUEST_METHOD     method;
     std::vector<std::vector<char>> params;
     intptr_t statevalue;
@@ -455,7 +485,7 @@ struct LuaRequestTaskResult : public TaskBase {
         task_type = LUA_REQUEST_RESULT_TASK;
         task_from = FROM_LUA_TO_CHAIN;
     }
-
+    
     LuaRequestTaskResult(const LuaRequestTaskResult& task) {
         if (this != &task) {
             task_type = LUA_REQUEST_RESULT_TASK;
@@ -467,11 +497,14 @@ struct LuaRequestTaskResult : public TaskBase {
             task_id = task.task_id;
         }
     }
+    
+    virtual ~LuaRequestTaskResult() {}
+    
     LUA_REQUEST_METHOD     method;
     std::vector<std::vector<char>> params;
     int ret;
     int err_num;
-
+    
 };
 
 FC_REFLECT_TYPENAME(LUA_TASK_FROM)
