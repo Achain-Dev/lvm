@@ -12,56 +12,67 @@
 
 
 struct ContractOperation {
+    virtual ~ContractOperation() {};
     virtual  void evaluate(TaskAndCallback& _inst_taskandcallback, TaskImplResult** result) const = 0;
 };
 
 struct RegisterContractOperation : ContractOperation {
     RegisterContractOperation() {}
+    virtual ~RegisterContractOperation() {}
     virtual void evaluate(TaskAndCallback& _inst_taskandcallback, TaskImplResult** result) const;
 };
 
 struct UpgradeContractOperation: ContractOperation {
     UpgradeContractOperation() {}
+    virtual ~UpgradeContractOperation() {}
     virtual void evaluate(TaskAndCallback& _inst_taskandcallback, TaskImplResult** result) const;
 };
 
 struct DestroyContractOperation: ContractOperation {
     DestroyContractOperation() {}
+    virtual ~DestroyContractOperation() {}
     virtual void evaluate(TaskAndCallback& _inst_taskandcallback, TaskImplResult** result) const;
 };
 
 struct CallContractOperation : ContractOperation  {
     CallContractOperation() {}
+    virtual ~CallContractOperation() {}
     virtual void evaluate(TaskAndCallback& _inst_taskandcallback, TaskImplResult** result) const;
 };
 
 struct TransferContractOperation  : ContractOperation {
     TransferContractOperation() {}
+    virtual ~TransferContractOperation() {}
     virtual void evaluate(TaskAndCallback& _inst_taskandcallback, TaskImplResult** result) const;
 };
 
 struct CompileContractOperation : ContractOperation {
     CompileContractOperation() {}
+    virtual ~CompileContractOperation() {}
     virtual void evaluate(TaskAndCallback& _inst_taskandcallback, TaskImplResult** result) const;
 };
 
 struct CompileScriptOperation : ContractOperation {
     CompileScriptOperation() {}
+    virtual ~CompileScriptOperation() {}
     virtual void evaluate(TaskAndCallback& _inst_taskandcallback, TaskImplResult** result) const;
 };
 
 struct HandleEventsOperation : ContractOperation {
     HandleEventsOperation() {}
+    virtual ~HandleEventsOperation() {}
     virtual void evaluate(TaskAndCallback& _inst_taskandcallback, TaskImplResult** result) const;
 };
 
 struct CallContractOfflineOperation : ContractOperation {
     CallContractOfflineOperation() {}
+    virtual ~CallContractOfflineOperation() {}
     virtual void evaluate(TaskAndCallback& _inst_taskandcallback, TaskImplResult** result) const;
 };
 
 struct HelloMsgOperation : ContractOperation {
     HelloMsgOperation() {}
+    virtual ~HelloMsgOperation() {}
     virtual void evaluate(TaskAndCallback& _inst_taskandcallback, TaskImplResult** result) const;
 };
 

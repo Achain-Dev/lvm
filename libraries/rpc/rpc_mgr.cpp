@@ -1,4 +1,3 @@
-
 #include <client/client.hpp>
 #include <rpc/rpc_mgr.hpp>
 #include <rpc/stcp_socket.hpp>
@@ -12,7 +11,9 @@ const int BUFFER_SIZE = 16;
 
 RpcMgr::RpcMgr(Client* client)
     :_socket_thread_ptr(std::make_shared<fc::thread>("sync_sock_server")),
+     _hello_thread_ptr(std::make_shared<fc::thread>("hello_msg_send")),
      _b_valid_flag(false),
+     _b_send_hello(false),
      _rpc_handler_ptr(std::make_shared<RpcTaskHandler>(this)) {
     _client_ptr = client;
 }
@@ -32,7 +33,10 @@ void RpcMgr::start() {
     _rpc_server.set_reuse_address();
     _rpc_server.listen(_end_point);
     _socket_thread_ptr->async([&]() {
-        this->accept_loop();
+        accept_loop();
+    });
+    _terminate_hello_loop_done = _hello_thread_ptr->async([&]() {
+        send_hello_msg_loop();
     });
 }
 
@@ -56,11 +60,7 @@ void RpcMgr::accept_loop() {
 }
 
 void RpcMgr::process_rpc() {
-    std::cout << "process_rpc" << std::endl;
-    _terminate_hello_loop_done = fc::async([&]() {
-        std::cout << "process_rpc -- _terminate_hello_loop_done" << std::endl;
-        send_hello_msg_loop();
-    }, "send_hello_msg_loop");
+    _b_send_hello = true;
     fc::async([&]() {
         read_loop();
     }).wait();
@@ -77,13 +77,13 @@ void RpcMgr::set_endpoint(std::string& ip_addr, int port) {
 
 void RpcMgr::close_connection() {
     _rpc_connection.close();
+    _b_send_hello = false;
     return;
 }
 
 uint32_t RpcMgr::read_message(std::string& msg_str) {
     uint64_t bytes_received = 0;
     uint64_t remaining_bytes_with_padding = 0;
-    char* buffer_sock = NULL;
     MessageHeader m;
     char buffer[BUFFER_SIZE];
     int leftover = BUFFER_SIZE - sizeof(MessageHeader);
@@ -94,26 +94,24 @@ uint32_t RpcMgr::read_message(std::string& msg_str) {
     FC_ASSERT(m.size <= MAX_MESSAGE_SIZE, "", ("m.size", m.size)("MAX_MESSAGE_SIZE", MAX_MESSAGE_SIZE));
     /*the total len of the msg:(header + data)*/
     bytes_received = 16 * ((sizeof(MessageHeader) + m.size + 15) / 16);
-    buffer_sock = new char[bytes_received];
-    memset(buffer_sock, 0, bytes_received);
-    memcpy(buffer_sock, buffer, BUFFER_SIZE);
+    std::unique_ptr<char[]> buffer_sock(new char[bytes_received]);
+    memset(buffer_sock.get(), 0, bytes_received);
+    memcpy(buffer_sock.get(), buffer, BUFFER_SIZE);
     /*remaining len of byte to read from socket*/
     remaining_bytes_with_padding = 16 * ((m.size - leftover + 15) / 16);
     
     /*read the remain bytes*/
     try {
         if (remaining_bytes_with_padding) {
-            _rpc_connection.read(buffer_sock + BUFFER_SIZE, remaining_bytes_with_padding);
+            _rpc_connection.read(buffer_sock.get() + BUFFER_SIZE, remaining_bytes_with_padding);
         }
         
     } catch (...) {
-        delete[] buffer_sock;
         FC_THROW_EXCEPTION(lvm::global_exception::socket_read_error, \
                            "socket read error. ");
     }
     
-    msg_str = std::string(buffer_sock, bytes_received);
-    delete[] buffer_sock;
+    msg_str = std::string(buffer_sock.get(), bytes_received);
     return m.msg_type;
 }
 
@@ -175,8 +173,8 @@ void RpcMgr::post_message(Message& rpc_msg) {
     fc::sync_call(_socket_thread_ptr.get(), [&]() {
         try {
             send_to_chain(rpc_msg);
-
-        } catch (lvm::global_exception::socket_send_error& e) {
+            
+        } catch (lvm::global_exception::socket_send_error&) {
             close_connection();
             FC_THROW_EXCEPTION(lvm::global_exception::async_socket_error, \
                                "async socket error: async send message error. ");
@@ -187,21 +185,17 @@ void RpcMgr::post_message(Message& rpc_msg) {
 //send hello msg
 void RpcMgr::send_hello_message() {
     uint32_t msg_len = 0;
-    char* p_msg = nullptr;
-    HelloMsgRpc hello_msg;
-    hello_msg.data.task_from = FROM_RPC;
-    hello_msg.data.task_type = HELLO_MSG;
-    Message msg(hello_msg);
-    msg_len = sizeof(MessageHeader) + msg.size;
-    p_msg = new char[msg_len];
-    memcpy(p_msg, (char*)&msg, sizeof(MessageHeader));
-    memcpy(p_msg + sizeof(MessageHeader), msg.data.data(), msg.size);
-    _rpc_handler_ptr->handle_task(std::string(p_msg, msg_len), nullptr);
-    delete[] p_msg;
+    HelloMsgResultRpc hello_msg;
+    
+    if (_b_send_hello) {
+        hello_msg.data.task_from = FROM_RPC;
+        hello_msg.data.task_type = HELLO_MSG;
+        Message msg(hello_msg);
+        post_message(msg);
+    }
 }
 
 void RpcMgr::send_hello_msg_loop() {
-    std::cout << "send_hello_msg_loop" << std::endl;
     send_hello_message();
     
     if (!_terminate_hello_loop_done.canceled()) {
