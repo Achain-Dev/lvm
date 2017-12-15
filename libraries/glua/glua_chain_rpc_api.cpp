@@ -195,10 +195,8 @@ namespace lvm {
                     return;
                     
                 } else {
-                    GluaStateValue value = lvm::lua::lib::get_lua_state_value(L, STR_CONTRACT_ADDRESS_IN_CHAIN);
-                    std::string str_contract_address_in_chain((value.int_value != 0) ? value.string_value : "");
-                    value = lvm::lua::lib::get_lua_state_value(L, STR_CONTRACT_ID_IN_CHAIN);
-                    std::string str_contract_id_in_chain((value.int_value != 0) ? value.string_value : "");
+                    std::string str_contract_address_in_chain(lvm::lua::lib::get_lua_state_value (L, STR_CONTRACT_ADDRESS_IN_CHAIN).string_value);
+                    std::string str_contract_id_in_chain(lvm::lua::lib::get_lua_state_value(L, STR_CONTRACT_ID_IN_CHAIN).string_value);
                     
                     //the same contract name just return contract id
                     //TODO need debug to check whether contract_id is emptry
@@ -472,12 +470,7 @@ namespace lvm {
                 }
                 
                 lvm::blockchain::StorageDataType storage_data = fc::raw::unpack<lvm::blockchain::StorageDataType>(result.params[0]);
-                
-                if (fc::raw::unpack<bool>(result.params[0])) {
-                    return lvm::blockchain::StorageDataType::create_lua_storage_from_storage_data(L, storage_data);
-                }
-                
-                return null_storage;
+                return lvm::blockchain::StorageDataType::create_lua_storage_from_storage_data(L, storage_data);
             }
             
             
@@ -888,7 +881,7 @@ namespace lvm {
                 p.params.push_back(fc::raw::pack(ev_param));
                 LuaRequestTaskResult result = GluaTaskMgr::get_glua_task_mgr()->lua_request(p);
                 
-                if (result.err_num != 0 || result.params.size() < 1) {
+                if (result.err_num != 0) {
                     L->force_stopping = true;
                     L->exit_code = LUA_API_INTERNAL_ERROR;
                     return ;
