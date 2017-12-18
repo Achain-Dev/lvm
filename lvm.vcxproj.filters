@@ -471,9 +471,6 @@
     <ClInclude Include="libraries\include\glua\glua_complie_op.h">
       <Filter>libraries\include\glua</Filter>
     </ClInclude>
-    <ClInclude Include="libraries\include\base\easylogging++.h">
-      <Filter>libraries\include\base</Filter>
-    </ClInclude>
     <ClInclude Include="libraries\include\rpc\stcp_socket.hpp">
       <Filter>libraries\include\rpc</Filter>
     </ClInclude>

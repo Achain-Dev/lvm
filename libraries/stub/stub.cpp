@@ -1,5 +1,4 @@
 #include <stub/stub.hpp>
-#include "base/easylogging++.h"
 #include <glua/glua_complie_op.h>
 #include <glua/glua_chain_rpc_api.h>
 #include <fc/log/logger.hpp>

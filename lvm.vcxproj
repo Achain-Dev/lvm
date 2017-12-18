@@ -270,7 +270,6 @@
     <ClInclude Include="libraries\include\glua\glua_chain_rpc_api.h" />
     <ClInclude Include="libraries\include\base\common_api.hpp" />
     <ClInclude Include="libraries\include\base\config.hpp" />
-    <ClInclude Include="libraries\include\base\easylogging++.h" />
     <ClInclude Include="libraries\include\base\exceptions.hpp" />
     <ClInclude Include="libraries\include\base\misc.hpp" />
     <ClInclude Include="libraries\include\client\client.hpp" />
