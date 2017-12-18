@@ -118,7 +118,7 @@
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
-      <WarningLevel>Level3</WarningLevel>
+      <WarningLevel>Level4</WarningLevel>
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
       <AdditionalIncludeDirectories>.\include;.\libraries\include;</AdditionalIncludeDirectories>
@@ -255,7 +255,6 @@
     <ClCompile Include="libraries\glua\lutf8lib.cpp" />
     <ClCompile Include="libraries\glua\lvm.cpp" />
     <ClCompile Include="libraries\glua\lzio.cpp" />
-    <ClCompile Include="libraries\glua\lua_api.cpp" />
     <ClCompile Include="libraries\glua\lua_lib.cpp" />
     <ClCompile Include="libraries\rpc\rpc_mgr.cpp" />
     <ClCompile Include="libraries\rpc\rpc_task_handler.cpp" />
