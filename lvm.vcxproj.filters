@@ -280,9 +280,6 @@
     <ClCompile Include="libraries\glua\glua_contractoperations.cpp">
       <Filter>libraries\glua</Filter>
     </ClCompile>
-    <ClCompile Include="libraries\glua\lua_api.cpp">
-      <Filter>libraries\glua</Filter>
-    </ClCompile>
     <ClCompile Include="libraries\glua\lua_lib.cpp">
       <Filter>libraries\glua</Filter>
     </ClCompile>
